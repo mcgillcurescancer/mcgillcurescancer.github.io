@@ -11,6 +11,10 @@ description: >-
 
 Tables are scanning and comparison tools. Almost every rule below serves one goal: let the eye move down a column and across a row without friction. The strongest, most consistent guidance in the literature is about **alignment**.
 
+Static fundraising-site default: use tables only for real comparison or accountability data, such
+as sponsor tier benefits, annual funds raised by year, or grant allocations. Use cards or short
+stat blocks for headline impact numbers; do not turn marketing content into a table.
+
 ---
 
 ## A. Alignment (the highest-leverage rules)

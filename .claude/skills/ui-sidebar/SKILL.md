@@ -11,6 +11,10 @@ description: >-
 
 The vertical navigation rail common in web apps, dashboards, SaaS, and admin panels. It handles broader, deeper hierarchies than a horizontal bar and is the expected home for primary navigation *in applications* (vs. the header for content sites).
 
+Static fundraising-site default: do not use a sidebar for a simple club or nonprofit landing page.
+Use a top header with anchor links and a footer. Reach for this skill only if the site becomes a
+large multi-page resource hub, archive, or admin-style internal tool.
+
 ---
 
 ## A. When to use a sidebar

@@ -12,6 +12,14 @@ description: >-
 
 Rules for any rectangular container that groups content: cards, panels, popovers, sheets, and "windows." This is where the user's corner-radius intuition lives — *inner radius should harmonize with the outer radius.* These principles lean on the foundations file (sections D and E); the most container-specific rules are collected here.
 
+Static fundraising-site default: use cards for repeated, scan-friendly units such as impact stats,
+event snapshots, sponsor tiers, team members, or ways to get involved. Do not wrap entire page
+sections in cards and do not turn every block into a card; full-width sections with clear headings
+usually feel more credible and easier to scan.
+
+*Source: W3C WAI designing guidance on headings, spacing, and grouping
+(https://www.w3.org/WAI/tips/designing/)*
+
 ---
 
 ## A. Distinguishing the container from the background

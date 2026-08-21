@@ -11,6 +11,14 @@ description: >-
 
 These rules underlie every component. Get them right once and every card, form, and table inherits consistency for free.
 
+Static fundraising-site default: build a responsive long-form page, not a dashboard. Keep body copy
+in readable measure, break the page into clear full-width sections, and make the first screen answer
+who the organization is, what it does, and what the visitor can do next. Use section spacing to
+create a confident narrative rhythm: mission -> proof -> activities -> sponsors/students -> contact.
+
+*Source: NN/g homepage principles (https://www.nngroup.com/articles/homepage-design-principles/);
+W3C WAI designing guidance (https://www.w3.org/WAI/tips/designing/)*
+
 ---
 
 ## A. Spacing system (the 8-point grid)

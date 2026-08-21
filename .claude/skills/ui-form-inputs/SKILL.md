@@ -11,6 +11,11 @@ description: >-
 
 Field-level rules for individual inputs. The label is the single most important part of a field — it's the only thing that tells one empty box apart from the next. Pairs with `07-forms.md` (form-level) and `09-selection-controls.md` (choice controls).
 
+Static fundraising-site default: use plain, trust-building field labels (`Name`, `Email`,
+`Organization`, `How would you like to help?`) and persistent help text only where it reduces doubt.
+Never hide sponsorship requirements, donation-use explanations, or privacy expectations in
+placeholder text.
+
 ---
 
 ## A. Labels

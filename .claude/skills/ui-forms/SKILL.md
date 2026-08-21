@@ -11,6 +11,14 @@ description: >-
 
 Forms are where users do the work, and where they abandon. Industry data shows ~55% of people abandon forms before finishing (Zuko). The principles below are grounded heavily in Baymard Institute usability testing, NN/g, and eye-tracking research (Penzo/UXmatters, CXL). See `08-form-inputs.md` for field-level specifics.
 
+Static fundraising-site default: forms should be rare and short. For this kind of site, likely
+forms are `Contact partnerships`, `Student sign-up`, or `Email updates`; donations can safely hand
+off to a trusted external payment page. Ask only for the information needed for follow-up, and put
+contact email/Instagram/LinkedIn in the footer as a non-form fallback.
+
+*Source: M+R Benchmarks 2026 on mobile donation friction and payment options
+(https://mrbenchmarks.com/website-performance/)*
+
 ---
 
 ## A. Layout & structure

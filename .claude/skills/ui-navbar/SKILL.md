@@ -11,6 +11,15 @@ description: >-
 
 The global navigation bar and its menus. Its jobs: let people get where they're going, and tell them *where they are* and *what this site is about*. Most of these are distilled from NN/g's "Menu-Design Checklist: 17 UX Guidelines."
 
+Static fundraising-site default: use a top header with the organization name/logo, visible desktop
+anchor links, and one persistent high-priority action such as `Sponsor Us`, `Donate`, or `Join`.
+Good first-pass labels are `About`, `Impact`, `Events`, `Sponsors`, `Team`, and `Contact`. Avoid
+mega menus, sidebars, clever nav labels, and hidden desktop navigation unless the site grows into a
+deep multi-page IA.
+
+*Source: NN/g homepage principles (https://www.nngroup.com/articles/homepage-design-principles/);
+M+R Benchmarks 2026 website performance (https://mrbenchmarks.com/website-performance/)*
+
 ---
 
 ## A. Visibility & placement

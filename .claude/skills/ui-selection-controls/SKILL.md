@@ -11,6 +11,10 @@ description: >-
 
 Choosing the *right* control is most of the battle. The rules below come from a 40-year-old, GUI-standard distinction (Inside Macintosh 1984, later codified by W3C) plus NN/g and practitioner guidance.
 
+Static fundraising-site default: selection controls are only needed inside a real form or donation
+flow. Use visible radio buttons for a small set of sponsor interests, student roles, or donation
+amount choices; avoid dropdowns that hide important options on mobile.
+
 ---
 
 ## A. Pick the correct control

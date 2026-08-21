@@ -11,6 +11,15 @@ description: >-
 
 A modal is a focused overlay that blocks interaction with the rest of the page until dismissed. They're powerful but interrupting — most modal failures are either *overuse* (interrupting unnecessarily) or *broken focus/keyboard handling* (an accessibility failure). Grounded in the W3C ARIA Authoring Practices Guide (APG) and accessibility practitioners.
 
+Static fundraising-site default: avoid modals and splash screens before the visitor has received
+value. Do not gate the mission, impact proof, sponsor information, or donation path behind a popup.
+Use an inline section or a dedicated page instead. A modal is acceptable only for a short,
+user-triggered task such as expanding a sponsorship-package preview.
+
+*Source: NN/g homepage guidance on avoiding popups and splash screens
+(https://www.nngroup.com/articles/homepage-design-principles/); Google page experience guidance
+(https://developers.google.com/search/docs/appearance/page-experience)*
+
 ---
 
 ## A. When (and when not) to use a modal

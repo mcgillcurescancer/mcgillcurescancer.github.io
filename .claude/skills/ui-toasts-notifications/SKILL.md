@@ -11,6 +11,10 @@ description: >-
 
 A toast is a brief, passive, auto-dismissing message — feedback that something happened ("Saved," "Message sent"). The recurring failure mode is putting important things in a transient message that disappears before the user (especially a screen-reader user) can act on it. Pick the right pattern for the stakes, and announce it correctly to assistive tech.
 
+Static fundraising-site default: avoid toasts unless the page has a real client-side action such as
+a contact-form submission. Important messages about donations, sponsorship, errors, or next steps
+should be persistent inline content, not auto-dismissing feedback.
+
 ---
 
 ## A. Pick the right pattern for the stakes

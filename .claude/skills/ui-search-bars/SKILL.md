@@ -11,6 +11,10 @@ description: >-
 
 Search serves two audiences at once: people who know exactly what they want (it's a navigation shortcut that bypasses the IA) and people who are lost (it's a safety net). Well-designed search has a well-documented conversion impact; hiding or under-sizing it is one of the most common, costly mistakes. Grounded in NN/g and Baymard research.
 
+Static fundraising-site default: do not add search to a short brochure/fundraising site. Strong
+navigation, headings, and footer links are lighter and clearer. Add search only when there is enough
+content to search, such as a large event archive, article library, or resources hub.
+
 ---
 
 ## A. Make it a visible field, not a hidden icon

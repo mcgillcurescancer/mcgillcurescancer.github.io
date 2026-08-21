@@ -28,6 +28,17 @@ One idea sits underneath everything here: **hierarchy is clarity, and design is 
 Every visual choice either helps the eye know where to look and what relates to what — or it adds
 noise. Your job is to decide what matters most and make the design *say so* visually.
 
+For a static fundraising or sponsor-facing site, visual polish must serve trust and comprehension
+before novelty. Make the mission, the proof of impact, and the next action visually obvious before
+adding decorative complexity. Mature static homepages from organizations such as charity: water,
+St. Jude, American Cancer Society, Stand Up To Cancer, Apple, and Stripe lean on the same pattern:
+clear first-screen identity, real imagery or product/cause proof, concise sections, and restrained
+CTA hierarchy. Pair this skill with `ux-principles` for donor/sponsor/student jobs, content order,
+credibility, accessibility, and performance.
+
+*Source: NN/g homepage principles (https://www.nngroup.com/articles/homepage-design-principles/);
+Stanford Web Credibility Guidelines (https://credibility.stanford.edu/guidelines/index.html)*
+
 ## How to use this skill
 
 1. **Decide the hierarchy first — what is most important on this screen?** Rank elements by

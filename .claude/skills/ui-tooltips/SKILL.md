@@ -11,6 +11,11 @@ description: >-
 
 A tooltip is a small, supplemental hint shown on hover or focus. Its golden rule is restraint: tooltips are for **non-essential, supplementary** text only. Anything a user *needs* to complete a task must live in the persistent UI, not hidden behind a hover. Most tooltip bugs are accessibility failures, so the WCAG and ARIA rules below are not optional.
 
+Static fundraising-site default: do not hide essential explanation in tooltips. Donation use,
+sponsor benefits, event dates, research affiliations, and student commitments should be visible in
+the page content. Tooltips are acceptable only for tiny supplemental clarifications on icons or
+abbreviations.
+
 ---
 
 ## A. What belongs in a tooltip (and what never does)

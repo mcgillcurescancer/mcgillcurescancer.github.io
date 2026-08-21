@@ -11,6 +11,11 @@ description: >-
 
 Two secondary navigation patterns that orient users in a hierarchy (breadcrumbs) and move them through long result sets (pagination / infinite scroll / load-more).
 
+Static fundraising-site default: a single-page or shallow static site should not need breadcrumbs,
+pagination, or infinite scroll. Use section anchors, active nav states, and a complete footer
+instead. Use breadcrumbs only after the site gains a real multi-level hierarchy such as
+`Resources -> Research Grants -> 2026`.
+
 ---
 
 ## Part 1 — Breadcrumbs

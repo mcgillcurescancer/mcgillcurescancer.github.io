@@ -10,6 +10,11 @@ description: >-
 
 Tabs let users view one panel of related content at a time from a set of parallel options, all within the same context and page. (This is about *in-UI* tabs, not browser tabs.)
 
+Static fundraising-site default: prefer visible sections over tabs for mission, impact, sponsors,
+events, and student involvement. Tabs hide content from scanners and can reduce discoverability.
+Use tabs only for true peer content where showing all panels would be repetitive, such as compact
+year-by-year results.
+
 ---
 
 ## A. When tabs are the right pattern

@@ -11,6 +11,14 @@ description: >-
 
 Buttons trigger actions. Their design is mostly about **hierarchy** (making the right action obvious), **clarity** (saying what they do), and **feedback** (showing state). Links navigate; buttons act — don't blur the two (see foundations E4).
 
+Static fundraising-site default: each viewport or section should have one clear primary action.
+Use specific labels tied to supporter intent: `Sponsor Research`, `Donate to Research`, `Join the
+Club`, `View Sponsorship Package`, `Contact Partnerships`. Avoid generic `Learn More` clusters; if
+secondary links are needed, make the destination explicit in the link text.
+
+*Source: NN/g homepage principles on clear CTAs and link labels
+(https://www.nngroup.com/articles/homepage-design-principles/)*
+
 ---
 
 ## A. Hierarchy & emphasis
