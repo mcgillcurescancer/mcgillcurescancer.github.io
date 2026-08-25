@@ -1,0 +1,68 @@
+---
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Social-share image, root-absolute. Falls back to the club logo. */
+  image?: string;
+}
+
+const {
+  title,
+  description,
+  image = '/assets/images/logos/mcc/full-mcc.PNG',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Favicons: drop the generated files into public/assets/icons/ -->
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png" />
+
+    <!-- Link previews for Facebook / LinkedIn / iMessage / Slack -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="McGill Cure Cancer" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+
+  <body class="flex min-h-screen flex-col bg-white text-slate-800 antialiased">
+    <Nav />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      // Mobile nav toggle. Deliberately hand-rolled: importing all of Flowbite
+      // costs ~128KB of JS for this one interaction. If a page later needs a
+      // real Flowbite component, import it in that page only.
+      const button = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+      const menu = document.querySelector<HTMLElement>('#nav-links');
+
+      button?.addEventListener('click', () => {
+        const open = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!open));
+        menu?.classList.toggle('hidden', open);
+      });
+    </script>
+  </body>
+</html>

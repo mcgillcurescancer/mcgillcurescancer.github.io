@@ -1,0 +1,38 @@
+---
+// One alternating image/text row. `flip` swaps the sides so a list of these
+// zig-zags down the page, matching the events-page outline.
+interface Props {
+  title: string;
+  blurb: string;
+  images: string[];
+  alt: string;
+  flip?: boolean;
+}
+const { title, blurb, images, alt, flip = false } = Astro.props;
+---
+
+<section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-2">
+  <!-- Stacked, overlapping photos -->
+  <div class:list={['relative h-72 sm:h-96', flip && 'md:order-2']}>
+    {images.slice(0, 3).map((src, i) => (
+      <img
+        src={src}
+        alt={i === 0 ? alt : ''}
+        aria-hidden={i === 0 ? undefined : 'true'}
+        loading="lazy"
+        decoding="async"
+        class:list={[
+          'absolute w-3/4 rounded-xl object-cover shadow-lg ring-4 ring-white',
+          i === 0 && 'left-0 top-0 z-30 rotate-[-4deg]',
+          i === 1 && 'left-12 top-10 z-20 rotate-[3deg]',
+          i === 2 && 'left-24 top-20 z-10 rotate-[-2deg]',
+        ]}
+      />
+    ))}
+  </div>
+
+  <div class:list={[flip && 'md:order-1']}>
+    <h3 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h3>
+    <p class="mt-4 text-lg text-slate-600">{blurb}</p>
+  </div>
+</section>

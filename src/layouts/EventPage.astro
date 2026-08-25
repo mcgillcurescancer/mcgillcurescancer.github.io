@@ -1,0 +1,64 @@
+---
+/*
+  Shared shell for our two flagship events. Both pages need the same four
+  blocks — outline, expected turnout, structure, fundraising goal — so the
+  shape lives here and each page supplies only its own content.
+*/
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  tagline: string;
+  heroImage: string;
+  expectedTurnout: string;
+  fundraisingGoal: string;
+  structure: string[];
+}
+
+const {
+  title, description, tagline, heroImage,
+  expectedTurnout, fundraisingGoal, structure,
+} = Astro.props;
+---
+
+<Layout title={`${title} | McGill Cure Cancer`} description={description} image={heroImage}>
+  <section class="mx-auto max-w-6xl px-4 py-16">
+    <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
+    <p class="mt-4 max-w-2xl text-lg text-slate-600">{tagline}</p>
+    <img src={heroImage} alt={title} width="1200" height="600"
+         class="mt-10 h-80 w-full rounded-2xl object-cover shadow-sm" />
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4">
+    <dl class="grid gap-6 sm:grid-cols-2">
+      <div class="rounded-2xl border border-slate-200 p-6">
+        <dt class="text-sm font-medium text-slate-500">Expected turnout</dt>
+        <dd class="mt-1 text-2xl font-bold text-slate-900">{expectedTurnout}</dd>
+      </div>
+      <div class="rounded-2xl border border-slate-200 p-6">
+        <dt class="text-sm font-medium text-slate-500">Fundraising goal</dt>
+        <dd class="mt-1 text-2xl font-bold text-mcc-600">{fundraisingGoal}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900">Event structure</h2>
+    <ol class="mt-6 space-y-3">
+      {structure.map((item, i) => (
+        <li class="flex gap-4">
+          <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mcc-100 text-sm font-bold text-mcc-700">
+            {i + 1}
+          </span>
+          <p class="text-slate-700">{item}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- Page-specific detail goes here. -->
+  <div class="mx-auto max-w-6xl px-4">
+    <slot />
+  </div>
+</Layout>

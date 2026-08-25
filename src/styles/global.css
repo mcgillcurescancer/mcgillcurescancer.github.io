@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+/* Club palette — adjust these to the official MCC brand colours. */
+@theme {
+  --color-mcc-50: #fff1f2;
+  --color-mcc-100: #ffe4e6;
+  --color-mcc-500: #e11d48;
+  --color-mcc-600: #be123c;
+  --color-mcc-700: #9f1239;
+}

@@ -1,0 +1,75 @@
+---
+/*
+  The Landing page — moves top to bottom, one image paired with a blurb of text.
+
+  1. Hero .......... full-mcc logo + what we do
+  2. Meet Our Team . team photo
+  3. CCS ........... partnership / where the money goes
+  4. Sponsorships .. pitch + rotating sponsor logos
+*/
+import Layout from '../layouts/Layout.astro';
+import SponsorWall from '../components/SponsorWall.astro';
+---
+
+<Layout
+  title="McGill Cure Cancer"
+  description="We fundraise for cancer research through organized sporting events at McGill University. Join us in the fight against cancer."
+>
+  <!-- 1. Hero -->
+  <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 md:grid-cols-2">
+    <img src="/assets/images/logos/mcc/full-mcc.PNG" alt="McGill Cure Cancer"
+         width="480" height="480" class="mx-auto w-full max-w-sm" />
+    <div>
+      <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+        Join us in the fight against cancer.
+      </h1>
+      <p class="mt-5 text-lg text-slate-600">
+        We fundraise for cancer research through organized sporting events at
+        McGill University.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/events/" class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white hover:bg-mcc-700">
+          See our events
+        </a>
+        <a href="#sponsorships" class="rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 hover:border-mcc-600 hover:text-mcc-600">
+          Sponsor us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Meet Our Team -->
+  <section id="about" class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-2">
+    <div>
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Meet our team</h2>
+      <p class="mt-4 text-slate-600">
+        <!-- TODO: a few lines about the exec team and how to get involved. -->
+      </p>
+    </div>
+    <img src="/assets/images/team/team-pic.JPG" alt="The McGill Cure Cancer team"
+         loading="lazy" decoding="async" width="800" height="600"
+         class="w-full rounded-2xl object-cover shadow-sm" />
+  </section>
+
+  <!-- 3. Canadian Cancer Society -->
+  <section class="bg-slate-50 py-16">
+    <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 md:grid-cols-2">
+      <img src="/assets/images/logos/ccs/css-logo.png" alt="Canadian Cancer Society"
+           loading="lazy" width="360" height="200" class="mx-auto w-full max-w-xs" />
+      <p class="text-lg text-slate-700">
+        We're fully partnered with the <strong>Canadian Cancer Society</strong>.
+        All funds we generate are donated to the CCS.
+      </p>
+    </div>
+  </section>
+
+  <!-- 4. Sponsorships -->
+  <section id="sponsorships" class="mx-auto max-w-6xl px-4 pt-16 text-center">
+    <h2 class="text-3xl font-bold tracking-tight text-slate-900">Interested in sponsoring us?</h2>
+    <p class="mx-auto mt-4 max-w-2xl text-slate-600">
+      Check out <a href="/events/" class="font-medium text-mcc-600 underline">a few of our events</a>.
+      We love partnering with local Montreal companies.
+    </p>
+  </section>
+  <SponsorWall heading="Some of our sponsors" />
+</Layout>

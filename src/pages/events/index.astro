@@ -1,0 +1,75 @@
+---
+/*
+  A general events page explaining what we do and how it works.
+
+  This file covers our goal, our process, and our sponsors — it is distinct
+  from the eng-vs-management and mcgill-classic pages, which are our two
+  biggest events and get their own detailed pages.
+*/
+import Layout from '../../layouts/Layout.astro';
+import EventShowcase from '../../components/EventShowcase.astro';
+import SponsorWall from '../../components/SponsorWall.astro';
+
+const steps = [
+  { n: 1, title: 'Team sports', text: 'We organize tournaments across McGill.' },
+  { n: 2, title: 'Fundraise', text: 'Teams pay to enter, and every dollar is tracked.' },
+  { n: 3, title: 'Get sponsorship prizes', text: 'Local Montreal partners back the winners.' },
+  { n: 4, title: 'Show the events!!', text: 'We run the day and share it with the community.' },
+];
+
+const showcases = [
+  {
+    title: 'Live music at Ye Olde Orchard',
+    blurb: 'Our bar night brings the McGill community together for a night of live music.',
+    alt: 'Bar night at Ye Olde Orchard',
+    images: [1, 2, 3].map((i) => `/assets/images/events/bar-night/bar-night-${i}.JPG`),
+  },
+  {
+    title: '10-team dodgeball tournament',
+    blurb: 'Ten teams, one bracket, and a full day of dodgeball raising money for the CCS.',
+    alt: 'Dodgeball tournament',
+    images: [1, 2, 3].map((i) => `/assets/images/events/dodgeball-tournament/dodgeball-${i}.JPG`),
+    flip: true,
+  },
+  {
+    title: 'A 3v3 March Madness basketball tournament',
+    blurb: 'Our March Madness bracket runs 3v3 games straight through to the final.',
+    alt: '3v3 basketball tournament',
+    images: [1, 2, 3].map((i) => `/assets/images/events/3v3-tournament/3v3-${i}.JPG`),
+  },
+];
+---
+
+<Layout
+  title="Events | McGill Cure Cancer"
+  description="Team sports, fundraising, and sponsorship prizes — here are a few of the events McGill Cure Cancer ran last year."
+>
+  <section class="mx-auto max-w-6xl px-4 py-16 text-center">
+    <h1 class="text-4xl font-bold tracking-tight text-slate-900">Our events</h1>
+    <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+      Here's how a McGill Cure Cancer event comes together, start to finish.
+    </p>
+
+    <ol class="mt-12 grid gap-6 text-left sm:grid-cols-2 lg:grid-cols-4">
+      {steps.map((step) => (
+        <li class="rounded-2xl border border-slate-200 p-6">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-mcc-100 text-sm font-bold text-mcc-700">
+            {step.n}
+          </span>
+          <h2 class="mt-4 font-semibold text-slate-900">{step.title}</h2>
+          <p class="mt-2 text-sm text-slate-600">{step.text}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+      Here are a few events we ran last year:
+    </h2>
+  </section>
+
+  {showcases.map((showcase) => <EventShowcase {...showcase} />)}
+
+  <SponsorWall heading="We couldn't put these events together without our sponsors" />
+</Layout>
