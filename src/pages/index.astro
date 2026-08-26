@@ -18,10 +18,6 @@ import SponsorWall from '../components/SponsorWall.astro';
   them as the headline acts. The rest link to their section on the events
   page, so these anchors have to match the `id`s in src/pages/events/index.astro.
 
-  `clipTone` paints the peg holding each frame. They run red / yellow / ink
-  down the line so the row carries a little colour without anything tinting
-  the photos themselves.
-
   TODO: eng-vs-management and mcgill-classic use stock placeholder photos
   (`*-placeholder.jpg`) until the real event photos land. Swap the `src` and
   drop the placeholder files when they do.
@@ -43,7 +39,6 @@ const events = [
     caption: 'Eng vs. Management',
     href: '/events/eng-vs-management/',
     tone: 'gold' as const,
-    clipTone: 'red' as const,
     tilt: '-2deg',
   },
   {
@@ -52,7 +47,6 @@ const events = [
     caption: 'The McGill Classic',
     href: '/events/mcgill-classic/',
     tone: 'gold' as const,
-    clipTone: 'yellow' as const,
     tilt: '1.5deg',
   },
   {
@@ -60,7 +54,6 @@ const events = [
     alt: '3v3 basketball tournament',
     caption: '3v3 tournament',
     href: '/events/#3v3-tournament',
-    clipTone: 'ink' as const,
     tilt: '-1deg',
   },
   {
@@ -68,7 +61,6 @@ const events = [
     alt: 'Dodgeball tournament',
     caption: 'Dodgeball',
     href: '/events/#dodgeball-tournament',
-    clipTone: 'red' as const,
     tilt: '2deg',
   },
   {
@@ -76,7 +68,6 @@ const events = [
     alt: 'Bar night at Ye Olde Orchard',
     caption: 'Bar night',
     href: '/events/#bar-night',
-    clipTone: 'yellow' as const,
     tilt: '-1.5deg',
   },
 ];

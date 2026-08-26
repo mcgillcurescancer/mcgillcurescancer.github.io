@@ -9,11 +9,12 @@
   and no stroke starts where its neighbour does. A perfectly regular wave
   reads as a border, which is the one thing these must not look like.
 
-  `variant` picks the mark. Alternate them down a page — the same doodle three
-  times in a row starts to read as a rule again.
+  `variant` picks the mark: `wave` and `loop` are single pen lines, `triple`
+  is a heavier band of three marker strokes. Alternate them down a page — the
+  same doodle three times in a row starts to read as a rule again.
 */
 interface Props {
-  variant?: 'wave' | 'stitch' | 'loop';
+  variant?: 'wave' | 'triple' | 'loop';
   /** Extra spacing classes from the parent. */
   class?: string;
 }
@@ -35,16 +36,14 @@ const { variant = 'wave', class: className } = Astro.props;
       </>
     )}
 
-    {variant === 'stitch' && (
+    {variant === 'triple' && (
       <>
-        {/* Long and shallow, and the arch flips every other stroke, so the row
-            reads as a running stitch rather than a fence of croquet hoops. */}
-        <path class="ink-red"    stroke-width="2.2" d="M10 20C20 16 30 16 40 19" />
-        <path class="ink-yellow" stroke-width="2.6" d="M52 19C62 23 72 23 82 20" />
-        <path class="ink-dark"   stroke-width="1.6" d="M96 20C104 17 112 17 120 19" />
-        <path class="ink-red"    stroke-width="2.2" d="M132 19C142 15 152 15 162 18" />
-        <path class="ink-yellow" stroke-width="2.6" d="M174 18C184 22 194 22 204 19" />
-        <path class="ink-dark"   stroke-width="1.6" d="M218 19C226 16 234 16 242 18" />
+        {/* Three heavy marker strokes stacked with clear air between them. No
+            two start or finish at the same x, and each one bows a different
+            way, which is what stops the set from reading as a ruled border. */}
+        <path class="ink-red"    stroke-width="4.4" d="M10 6C74 2 148 9 250 5" />
+        <path class="ink-dark"   stroke-width="4.2" d="M30 17C96 13 156 20 240 15" />
+        <path class="ink-yellow" stroke-width="4.4" d="M16 28C82 25 148 31 228 27" />
       </>
     )}
 
@@ -82,7 +81,7 @@ const { variant = 'wave', class: className } = Astro.props;
   /* Nothing is pinned down straight. A degree either way is enough for the eye
      to read the mark as placed by hand rather than laid out. */
   .doodle-wave svg   { transform: rotate(-0.6deg); }
-  .doodle-stitch svg { transform: rotate(0.5deg); }
+  .doodle-triple svg { transform: rotate(0.5deg); }
   .doodle-loop svg   { transform: rotate(-0.4deg); }
 
   .doodle path {
