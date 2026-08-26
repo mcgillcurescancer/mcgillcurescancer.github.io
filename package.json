@@ -9,7 +9,7 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "McGill Cure Cancer — club website",
+  "description": "McGill Cures Cancer — club website",
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@tailwindcss/postcss": "^4.3.3",
