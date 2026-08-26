@@ -6,6 +6,9 @@
 
 /* Club palette — adjust these to the official MCC brand colours. */
 @theme {
+  /* Handwritten captions (polaroid frames). Loaded in Layout.astro. */
+  --font-hand: "Caveat", "Bradley Hand", "Segoe Script", cursive;
+
   --color-mcc-50: #fff1f2;
   --color-mcc-100: #ffe4e6;
   --color-mcc-500: #e11d48;

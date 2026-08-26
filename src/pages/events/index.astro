@@ -17,25 +17,33 @@ const steps = [
   { n: 4, title: 'Show the events!!', text: 'We run the day and share it with the community.' },
 ];
 
+/*
+  `captions` are the handwritten lines under each polaroid, in the same order
+  as `images`. Swap these for the real event dates ("March 24th, 2026") — the
+  frame is sized for a short single line.
+*/
 const showcases = [
   {
     title: 'Live music at Ye Olde Orchard',
     blurb: 'Our bar night brings the McGill community together for a night of live music.',
     alt: 'Bar night at Ye Olde Orchard',
-    images: [1, 2, 3].map((i) => `/assets/images/events/bar-night/bar-night-${i}.JPG`),
+    captions: ['Bar night', 'Ye Olde Orchard', 'Live music'],
+    images: [1, 2, 3].map((i) => `/assets/images/events/bar-night/bar-night-${i}.webp`),
   },
   {
     title: '10-team dodgeball tournament',
     blurb: 'Ten teams, one bracket, and a full day of dodgeball raising money for the CCS.',
     alt: 'Dodgeball tournament',
-    images: [1, 2, 3].map((i) => `/assets/images/events/dodgeball-tournament/dodgeball-${i}.JPG`),
+    captions: ['Dodgeball', 'Ten teams', 'The final'],
+    images: [1, 2, 3].map((i) => `/assets/images/events/dodgeball-tournament/dodgeball-${i}.webp`),
     flip: true,
   },
   {
     title: 'A 3v3 March Madness basketball tournament',
     blurb: 'Our March Madness bracket runs 3v3 games straight through to the final.',
     alt: '3v3 basketball tournament',
-    images: [1, 2, 3].map((i) => `/assets/images/events/3v3-tournament/3v3-${i}.JPG`),
+    captions: ['March Madness', '3v3 bracket', 'Championship'],
+    images: [1, 2, 3].map((i) => `/assets/images/events/3v3-tournament/3v3-${i}.webp`),
   },
 ];
 ---

@@ -1,0 +1,71 @@
+---
+/*
+  A single photo in a polaroid frame: thin white border on three sides, a deep
+  bottom margin, and a handwritten caption. Built in CSS rather than a PNG
+  frame so it scales at any width and the caption stays editable text.
+
+  Sizing is driven entirely by the frame's own width (percentage padding and
+  `cqw` units), so a parent only has to set a width — the height, border, and
+  caption type size all follow.
+*/
+interface Props {
+  src: string;
+  alt: string;
+  /** Handwritten line under the photo — a date, in the classic polaroid style. */
+  caption?: string;
+  /** Extra positioning/rotation classes from the parent. */
+  class?: string;
+}
+const { src, alt, caption, class: className } = Astro.props;
+---
+
+<figure class:list={['polaroid', className]}>
+  <img
+    src={src}
+    alt={alt}
+    loading="lazy"
+    decoding="async"
+    class="polaroid-photo"
+  />
+  {caption && <figcaption class="polaroid-caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .polaroid {
+    /* Lets the caption size itself against the frame, not the viewport. */
+    container-type: inline-size;
+    background: #fdfcf8;
+    padding: 5.5% 5.5% 0;
+    border-radius: 2px;
+    box-shadow:
+      0 12px 28px -10px rgb(15 23 42 / 0.4),
+      0 2px 5px rgb(15 23 42 / 0.14);
+  }
+
+  .polaroid-photo {
+    display: block;
+    width: 100%;
+    /* Square crop is what makes a stack of mixed photos read as polaroids. */
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: #e2e8f0;
+  }
+
+  .polaroid-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 22cqw;
+    font-family: var(--font-hand);
+    font-size: 10cqw;
+    line-height: 1;
+    color: #334155;
+    /* Nobody writes perfectly level on a polaroid. */
+    transform: rotate(-1.5deg);
+  }
+
+  /* Keep the frame's own height stable when there is no caption. */
+  .polaroid:not(:has(.polaroid-caption)) {
+    padding-bottom: 5.5%;
+  }
+</style>

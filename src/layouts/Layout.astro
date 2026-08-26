@@ -29,6 +29,14 @@ const socialImage = new URL(image, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
+    <!-- Handwriting face for the polaroid captions. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap"
+    />
+
     <!-- Favicons: drop the generated files into public/assets/icons/ -->
     <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg" />
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png" />

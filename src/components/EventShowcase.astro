@@ -1,31 +1,42 @@
 ---
-// One alternating image/text row. `flip` swaps the sides so a list of these
+// One alternating photos/text row. `flip` swaps the sides so a list of these
 // zig-zags down the page, matching the events-page outline.
+import Polaroid from './Polaroid.astro';
+
 interface Props {
   title: string;
   blurb: string;
   images: string[];
+  /** Handwritten line under each photo, in the same order as `images`. */
+  captions?: string[];
   alt: string;
   flip?: boolean;
 }
-const { title, blurb, images, alt, flip = false } = Astro.props;
+const { title, blurb, images, captions = [], alt, flip = false } = Astro.props;
+
+/*
+  Where each polaroid sits inside the stack. The frame is 58% of the stack's
+  width and ~76% of its height, so these offsets keep all three inside the
+  `aspect-[9/8]` box while still overlapping.
+*/
+const positions = [
+  'left-[1%] top-0 z-30 rotate-[-4deg]',
+  'left-[19%] top-[12%] z-20 rotate-[5deg]',
+  'left-[35%] top-[24%] z-10 rotate-[-2deg]',
+];
 ---
 
 <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-2">
-  <!-- Stacked, overlapping photos -->
-  <div class:list={['relative h-72 sm:h-96', flip && 'md:order-2']}>
+  <!-- Overlapping stack of polaroids -->
+  <div class:list={['relative aspect-[9/8]', flip && 'md:order-2']}>
     {images.slice(0, 3).map((src, i) => (
-      <img
+      <Polaroid
         src={src}
         alt={i === 0 ? alt : ''}
-        aria-hidden={i === 0 ? undefined : 'true'}
-        loading="lazy"
-        decoding="async"
+        caption={captions[i]}
         class:list={[
-          'absolute w-3/4 rounded-xl object-cover shadow-lg ring-4 ring-white',
-          i === 0 && 'left-0 top-0 z-30 rotate-[-4deg]',
-          i === 1 && 'left-12 top-10 z-20 rotate-[3deg]',
-          i === 2 && 'left-24 top-20 z-10 rotate-[-2deg]',
+          'absolute w-[58%] transition-transform duration-200 hover:z-40 hover:scale-[1.04]',
+          positions[i],
         ]}
       />
     ))}
