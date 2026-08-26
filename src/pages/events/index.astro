@@ -9,6 +9,20 @@
 import Layout from '../../layouts/Layout.astro';
 import EventShowcase from '../../components/EventShowcase.astro';
 import SponsorWall from '../../components/SponsorWall.astro';
+import Doodle from '../../components/Doodle.astro';
+
+/*
+  The numbered badges cycle through the club's accent inks rather than all
+  sitting in club red. Four identical red discs read as a progress bar; four
+  different ones read as something written out by hand, which is the point.
+  Each pairing is a wash of the ink behind text dark enough to clear AA on it.
+*/
+const STEP_TONES = [
+  'bg-mcc-100 text-mcc-700',
+  'bg-doodle-yellow/20 text-amber-800',
+  'bg-doodle-ink/10 text-stone-700',
+  'bg-mcc-100 text-mcc-700',
+];
 
 const steps = [
   { n: 1, title: 'Team sports', text: 'We organize tournaments across McGill.' },
@@ -60,7 +74,9 @@ const showcases = [
 >
   <section class="section-shell pt-10">
     <div class="section-card text-center">
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">Our events</h1>
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">
+        <span class="hand-underline">Our events</span>
+      </h1>
       <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
         Here's how a McGill Cures Cancer event comes together, start to finish.
       </p>
@@ -68,7 +84,10 @@ const showcases = [
       <ol class="mt-12 grid gap-6 text-left sm:grid-cols-2 lg:grid-cols-4">
         {steps.map((step) => (
           <li class="rounded-2xl border border-stone-200 bg-stone-50/70 p-6">
-            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-mcc-100 text-sm font-bold text-mcc-700">
+            <span class:list={[
+              'inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold',
+              STEP_TONES[(step.n - 1) % STEP_TONES.length],
+            ]}>
               {step.n}
             </span>
             <h2 class="mt-4 font-semibold text-slate-900">{step.title}</h2>
@@ -79,6 +98,10 @@ const showcases = [
     </div>
   </section>
 
+  <!-- A pen mark in the gap between the cards. Decorative only — see
+       Doodle.astro. -->
+  <Doodle variant="wave" />
+
   <!-- Lead-in for the showcase cards below, so it stays off the paper itself
        and reads as a title for the run of cards rather than a section. -->
   <div class="section-shell pt-8">
@@ -87,7 +110,16 @@ const showcases = [
     </h2>
   </div>
 
-  {showcases.map((showcase) => <EventShowcase {...showcase} />)}
+  {showcases.map((showcase, i) => (
+    <>
+      {/* No mark above the first card — the lead-in heading already sits in
+          that gap. */}
+      {i > 0 && <Doodle variant={i % 2 ? 'loop' : 'stitch'} />}
+      <EventShowcase {...showcase} />
+    </>
+  ))}
+
+  <Doodle variant="wave" />
 
   <SponsorWall heading="We couldn't put these events together without our sponsors" />
 </Layout>

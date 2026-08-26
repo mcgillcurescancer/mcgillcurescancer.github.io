@@ -9,6 +9,7 @@
 */
 import Layout from '../layouts/Layout.astro';
 import Polaroid from '../components/Polaroid.astro';
+import Doodle from '../components/Doodle.astro';
 import SponsorWall from '../components/SponsorWall.astro';
 
 /*
@@ -16,6 +17,10 @@ import SponsorWall from '../components/SponsorWall.astro';
   capstone events: they get their own pages and a gold card so sponsors read
   them as the headline acts. The rest link to their section on the events
   page, so these anchors have to match the `id`s in src/pages/events/index.astro.
+
+  `clipTone` paints the peg holding each frame. They run red / yellow / ink
+  down the line so the row carries a little colour without anything tinting
+  the photos themselves.
 
   TODO: eng-vs-management and mcgill-classic use stock placeholder photos
   (`*-placeholder.jpg`) until the real event photos land. Swap the `src` and
@@ -38,6 +43,7 @@ const events = [
     caption: 'Eng vs. Management',
     href: '/events/eng-vs-management/',
     tone: 'gold' as const,
+    clipTone: 'red' as const,
     tilt: '-2deg',
   },
   {
@@ -46,6 +52,7 @@ const events = [
     caption: 'The McGill Classic',
     href: '/events/mcgill-classic/',
     tone: 'gold' as const,
+    clipTone: 'yellow' as const,
     tilt: '1.5deg',
   },
   {
@@ -53,6 +60,7 @@ const events = [
     alt: '3v3 basketball tournament',
     caption: '3v3 tournament',
     href: '/events/#3v3-tournament',
+    clipTone: 'ink' as const,
     tilt: '-1deg',
   },
   {
@@ -60,6 +68,7 @@ const events = [
     alt: 'Dodgeball tournament',
     caption: 'Dodgeball',
     href: '/events/#dodgeball-tournament',
+    clipTone: 'red' as const,
     tilt: '2deg',
   },
   {
@@ -67,6 +76,7 @@ const events = [
     alt: 'Bar night at Ye Olde Orchard',
     caption: 'Bar night',
     href: '/events/#bar-night',
+    clipTone: 'yellow' as const,
     tilt: '-1.5deg',
   },
 ];
@@ -130,7 +140,9 @@ const events = [
            class="h-32 w-32 shrink-0 md:h-40 md:w-40 lg:h-48 lg:w-48" />
 
       <div class="max-w-lg text-center">
-        <h2 class="text-3xl font-bold tracking-tight text-slate-900">Who we are</h2>
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+          <span class="hand-underline">Who we are</span>
+        </h2>
         <p class="mt-4 text-lg text-slate-700">
           McGill Cures Cancer is a student-run club that turns sport into
           funding for cancer research. We put on tournaments, bar nights and
@@ -149,6 +161,12 @@ const events = [
     </div>
   </section>
 
+  <!-- Pen marks in the gap between two cards. They carry no meaning; they are
+       there so the run of white cards reads as a scrapbook rather than a
+       stack of panels. Alternate the variants — the same one twice in a row
+       starts to look like a border again. -->
+  <Doodle variant="wave" />
+
   <!-- 3. Events — every event pegged to a washing line. The two capstone
        events lead the line on gold cards; the rest are plain white. Each frame
        is a link into the events page. -->
@@ -156,7 +174,7 @@ const events = [
     <div class="section-card">
       <div class="text-center">
         <h2 class="text-3xl font-bold tracking-tight text-slate-900">
-          A glimpse into our events
+          A glimpse into <span class="hand-underline">our events</span>
         </h2>
         <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
           Tap any photo to see how that event runs.
@@ -190,10 +208,14 @@ const events = [
     </div>
   </section>
 
+  <Doodle variant="loop" />
+
   <!-- 4. Sponsorships -->
   <section id="sponsorships" class="section-shell scroll-mt-24">
     <div class="section-card text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Interested in sponsoring us?</h2>
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+        Interested in <span class="hand-underline">sponsoring us</span>?
+      </h2>
       <p class="mx-auto mt-4 max-w-2xl text-slate-600">
         Check out <a href="/events/" class="font-medium text-mcc-600 underline">a few of our events</a>.
         We love partnering with local Montreal companies.

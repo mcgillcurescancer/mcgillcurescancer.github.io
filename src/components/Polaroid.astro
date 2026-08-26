@@ -19,8 +19,14 @@ interface Props {
   href?: string;
   /** `gold` swaps the white card for foil — used to single out our capstone events. */
   tone?: 'white' | 'gold';
-  /** Clips the frame to a line with a wooden clothespin at its top edge. */
+  /** Clips the frame to a line with a clothespin at its top edge. */
   clip?: boolean;
+  /**
+   * What the clothespin is painted. `wood` is the plain peg; the other three
+   * are the club's accent inks, so a line of frames can carry a little colour
+   * without anything on the page itself being tinted.
+   */
+  clipTone?: 'wood' | 'red' | 'yellow' | 'ink';
   /**
    * How far the frame hangs off-square, e.g. `-2deg`. It pivots on its top
    * centre — the point the clothespin grips — so the frame swings under the
@@ -30,7 +36,25 @@ interface Props {
   /** Extra positioning/rotation classes from the parent. */
   class?: string;
 }
-const { src, alt, caption, href, tone = 'white', clip = false, tilt, class: className } = Astro.props;
+const {
+  src, alt, caption, href, tone = 'white',
+  clip = false, clipTone = 'wood', tilt, class: className,
+} = Astro.props;
+
+/*
+  Three tones per peg — the lit face, the shaded face, and the darker edge
+  where the two halves meet. Painted pegs keep the same three-step shading as
+  the wooden one so a mixed line still reads as one set of pegs in different
+  colours rather than as flat stickers next to a drawn object.
+*/
+const CLIP_PAINT = {
+  wood:   { light: '#dcb37c', dark: '#caa066', edge: '#a97f4a' },
+  red:    { light: '#e0596a', dark: '#c9203a', edge: '#7f1425' },
+  yellow: { light: '#f5cd68', dark: '#e0a520', edge: '#9c6f12' },
+  ink:    { light: '#4e4a44', dark: '#332f2a', edge: '#17130e' },
+} as const;
+
+const paint = CLIP_PAINT[clipTone];
 ---
 
 <figure
@@ -56,16 +80,16 @@ const { src, alt, caption, href, tone = 'white', clip = false, tilt, class: clas
 
   {clip && (
     /*
-      A wooden clothespin, gripping the top border of the frame with the line
+      A clothespin, gripping the top border of the frame with the line
       running behind its spring. Drawn at a fixed size rather than in `cqw`:
       a real peg is the same peg whatever it is holding up, and a constant
       height is what keeps every peg sitting on the line at the same place.
     */
     <svg class="polaroid-clip" viewBox="0 0 26 46" aria-hidden="true">
-      <path d="M4 3.2 L11 2.6 L12.2 44.4 L5.3 44.4 Z" fill="#dcb37c" />
-      <path d="M22 3.2 L15 2.6 L13.8 44.4 L20.7 44.4 Z" fill="#caa066" />
-      <path d="M11 2.6 L12.2 44.4 L11.2 44.4 L10 2.7 Z" fill="#a97f4a" opacity="0.45" />
-      <path d="M15 2.6 L13.8 44.4 L14.8 44.4 L16 2.7 Z" fill="#a97f4a" opacity="0.3" />
+      <path d="M4 3.2 L11 2.6 L12.2 44.4 L5.3 44.4 Z" fill={paint.light} />
+      <path d="M22 3.2 L15 2.6 L13.8 44.4 L20.7 44.4 Z" fill={paint.dark} />
+      <path d="M11 2.6 L12.2 44.4 L11.2 44.4 L10 2.7 Z" fill={paint.edge} opacity="0.45" />
+      <path d="M15 2.6 L13.8 44.4 L14.8 44.4 L16 2.7 Z" fill={paint.edge} opacity="0.3" />
       <rect x="3.2" y="18" width="19.6" height="3.6" rx="1.8" fill="#c2cad3" />
       <rect x="3.2" y="18" width="19.6" height="1.4" rx="0.7" fill="#eef1f4" opacity="0.8" />
       <circle cx="13" cy="19.8" r="3" fill="#aeb7c1" />

@@ -1,10 +1,17 @@
 ---
+import Doodle from './Doodle.astro';
+
 // TODO(placeholder): replace the email and Instagram handle below with the
 // club's real contact details before this goes live — these are invented.
 const year = new Date().getFullYear();
 ---
 
-<footer id="contact" class="mt-20 border-t border-stone-200 bg-white">
+<!-- One last pen mark on the page before it hands over to the footer's white.
+     It lives here rather than on each page so every page signs off the same
+     way. -->
+<Doodle variant="stitch" class="mt-16" />
+
+<footer id="contact" class="mt-8 border-t border-stone-200 bg-white">
   <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2">
     <div>
       <img src="/assets/images/logos/mcc/full-mcc.svg" alt="McGill Cures Cancer"
@@ -31,7 +38,16 @@ const year = new Date().getFullYear();
     </div>
   </div>
 
-  <div class="border-t border-stone-200 px-4 py-4 text-center text-xs text-slate-500">
-    &copy; {year} McGill Cures Cancer
+  <!-- Three ticks of the accent inks against the closing rule, so the page
+       signs off in the club's colours instead of on plain grey. -->
+  <div class="border-t border-stone-200">
+    <div class="mx-auto flex max-w-6xl items-center justify-center gap-1.5 pt-3" aria-hidden="true">
+      <span class="h-1 w-6 rounded-full bg-doodle-red"></span>
+      <span class="h-1 w-4 rounded-full bg-doodle-yellow"></span>
+      <span class="h-1 w-2 rounded-full bg-doodle-ink/70"></span>
+    </div>
+    <p class="px-4 pt-2 pb-4 text-center text-xs text-slate-500">
+      &copy; {year} McGill Cures Cancer
+    </p>
   </div>
 </footer>

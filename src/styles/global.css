@@ -17,6 +17,16 @@
   --color-mcc-600: #be123c;
   --color-mcc-700: #9f1239;
 
+  /* Accent inks. These are never structural — they only ever show up as the
+     hand-drawn marks between cards, the marker swipe under a heading and the
+     odd coloured clothespin, so they are tuned to read as pen and highlighter
+     on the off-white page rather than as UI colour. The red sits a shade
+     deeper and duller than `mcc-500` so it looks like ink rather than a
+     button that wandered out of place. */
+  --color-doodle-red: #c9203a;
+  --color-doodle-yellow: #f0b429;
+  --color-doodle-ink: #231b12;
+
   /* Off-white page background. The header and footer sit on plain white so
      they read as separate surfaces from the page. `canvas-alt` used to give
      the alternating full-bleed sections a deeper tone; it is pinned to the
@@ -113,5 +123,42 @@
     .section-lead {
       padding-inline: 3rem;
     }
+  }
+
+  /*
+    A yellow marker swipe under a word or two of a heading — the line someone
+    draws on a printout when they want you to look here. It wraps the words
+    rather than the heading element, so the swipe is as long as the phrase and
+    stops where the phrase does. Keep the phrase short enough to stay on one
+    line: the band is one box across the whole span, so a phrase that wraps
+    gets a single swipe stretched under the last line only.
+
+    `multiply` is what makes it a highlighter instead of a strike-through: the
+    band is painted over the letterforms, but multiplied against them the dark
+    type stays dark and only the white around it turns yellow. Sending it
+    behind with `z-index: -1` would not work — it would land behind the section
+    card's white background and vanish.
+
+    The colour is baked into the data URI; if `--color-doodle-yellow` above
+    changes, change the `%23f0b429` below with it.
+  */
+  .hand-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hand-underline::after {
+    content: '';
+    position: absolute;
+    /* Overshoots the phrase slightly at both ends — nobody stops a marker
+       exactly on the last letter. */
+    inset-inline: -0.16em;
+    bottom: -0.02em;
+    height: 0.34em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M4 8C42 3 80 10 120 5c26-3 50 2 76-1' fill='none' stroke='%23f0b429' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    mix-blend-mode: multiply;
+    pointer-events: none;
   }
 }

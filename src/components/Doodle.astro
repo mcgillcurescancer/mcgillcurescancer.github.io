@@ -1,0 +1,98 @@
+---
+/*
+  A small hand-drawn mark in the club's red / yellow / ink, dropped into the
+  gap between two section cards. Nothing here carries meaning — it is warmth,
+  the pen marks someone leaves in the margin of a page, so every one of these
+  is `aria-hidden` and skipped by the reader.
+
+  The paths are drawn deliberately off-true: no two crests are the same height
+  and no stroke starts where its neighbour does. A perfectly regular wave
+  reads as a border, which is the one thing these must not look like.
+
+  `variant` picks the mark. Alternate them down a page — the same doodle three
+  times in a row starts to read as a rule again.
+*/
+interface Props {
+  variant?: 'wave' | 'stitch' | 'loop';
+  /** Extra spacing classes from the parent. */
+  class?: string;
+}
+const { variant = 'wave', class: className } = Astro.props;
+---
+
+<div class:list={['doodle', `doodle-${variant}`, className]} aria-hidden="true">
+  <svg viewBox="0 0 260 32" fill="none" preserveAspectRatio="xMidYMid meet">
+    {variant === 'wave' && (
+      <>
+        <path class="ink-red" stroke-width="2.2"
+              d="M6 14C30 6 52 21 78 14 104 7 126 22 152 15 178 8 202 20 228 13c10-2.5 18-2 26 0" />
+        <path class="ink-yellow" stroke-width="2.6"
+              d="M18 23C42 16 62 29 88 22 114 15 136 28 162 22 186 17 208 26 232 20" />
+        {/* Three pen taps trailing off the end of the yellow line. */}
+        <circle class="ink-dot" cx="52" cy="28" r="1.2" />
+        <circle class="ink-dot" cx="128" cy="5" r="1.1" />
+        <circle class="ink-dot" cx="206" cy="28" r="1.3" />
+      </>
+    )}
+
+    {variant === 'stitch' && (
+      <>
+        {/* Long and shallow, and the arch flips every other stroke, so the row
+            reads as a running stitch rather than a fence of croquet hoops. */}
+        <path class="ink-red"    stroke-width="2.2" d="M10 20C20 16 30 16 40 19" />
+        <path class="ink-yellow" stroke-width="2.6" d="M52 19C62 23 72 23 82 20" />
+        <path class="ink-dark"   stroke-width="1.6" d="M96 20C104 17 112 17 120 19" />
+        <path class="ink-red"    stroke-width="2.2" d="M132 19C142 15 152 15 162 18" />
+        <path class="ink-yellow" stroke-width="2.6" d="M174 18C184 22 194 22 204 19" />
+        <path class="ink-dark"   stroke-width="1.6" d="M218 19C226 16 234 16 242 18" />
+      </>
+    )}
+
+    {variant === 'loop' && (
+      <>
+        {/* Runs in flat, curls over once, runs back out — the doodle you make
+            while the pen is still in your hand. */}
+        <path class="ink-red" stroke-width="2.2"
+              d="M6 19C38 13 62 17 84 18c20 1 28-9 38-11 10-2 18 4 14 11-4 7-16 5-18-3-2-8 10-12 30-8 22 4 44 14 66 9 18-4 26-3 38 0" />
+        <path class="ink-yellow" stroke-width="2.6"
+              d="M32 27C62 22 92 29 122 26 152 23 182 29 218 25" />
+        {/* Kept clear of the curl — a dot inside it reads as a mistake. */}
+        <circle class="ink-dot" cx="72" cy="29" r="1.2" />
+        <circle class="ink-dot" cx="196" cy="30" r="1.1" />
+      </>
+    )}
+  </svg>
+</div>
+
+<style>
+  .doodle {
+    display: flex;
+    justify-content: center;
+    /* Pulled tight into the gap the two `section-shell`s already leave, so a
+       divider adds the drawing and not a second helping of whitespace. */
+    margin-block: -0.5rem;
+  }
+
+  .doodle svg {
+    width: min(17rem, 62%);
+    height: 2.25rem;
+    overflow: visible;
+  }
+
+  /* Nothing is pinned down straight. A degree either way is enough for the eye
+     to read the mark as placed by hand rather than laid out. */
+  .doodle-wave svg   { transform: rotate(-0.6deg); }
+  .doodle-stitch svg { transform: rotate(0.5deg); }
+  .doodle-loop svg   { transform: rotate(-0.4deg); }
+
+  .doodle path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ink-red    { stroke: var(--color-doodle-red); }
+  .ink-yellow { stroke: var(--color-doodle-yellow); }
+  .ink-dark   { stroke: var(--color-doodle-ink); }
+  .ink-dot    { fill: var(--color-doodle-ink); opacity: 0.55; }
+</style>
