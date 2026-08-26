@@ -24,11 +24,20 @@ interface Props {
   href: string;
   /** Swaps the photo to the right-hand side, so a pair of these alternates. */
   flip?: boolean;
+  /**
+   * Set while the event's own page has nothing on it yet: the card drops its
+   * link and shows a "coming soon" note in its place, so nobody is sent
+   * through to an empty page.
+   */
+  comingSoon?: boolean;
 }
-const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.props;
+const {
+  title, blurb, image, alt, turnout, target, href,
+  flip = false, comingSoon = false,
+} = Astro.props;
 ---
 
-<article class:list={['capstone', flip && 'capstone-flip']}>
+<article class:list={['capstone', flip && 'capstone-flip', comingSoon && 'capstone-static']}>
   {/*
     The photo runs edge to edge in its half of the card rather than sitting
     inset with its own radius — at this size a second rounded rectangle
@@ -75,17 +84,26 @@ const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.
 
     {/* The card's one action. Its ::after covers the whole card, so the
         photo and the figures are clickable too, and the visible focus ring
-        is drawn on the card rather than on the link. */}
-    <p class="capstone-more">
-      Want to learn more?
-      <a href={href} class="capstone-cta">
-        Click here
-        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
-             fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-             stroke-linejoin="round" /></svg>
-        <span class="sr-only">about {title}</span>
-      </a>
-    </p>
+        is drawn on the card rather than on the link.
+
+        With no page to send anyone to, the link is gone entirely rather than
+        disabled — a badge in its place says the detail is still on its way. */}
+    {comingSoon ? (
+      <p class="capstone-more">
+        <span class="capstone-soon">Full details coming soon</span>
+      </p>
+    ) : (
+      <p class="capstone-more">
+        Want to learn more?
+        <a href={href} class="capstone-cta">
+          Click here
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
+               fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+               stroke-linejoin="round" /></svg>
+          <span class="sr-only">about {title}</span>
+        </a>
+      </p>
+    )}
   </div>
 </article>
 
@@ -133,6 +151,15 @@ const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.
     box-shadow:
       0 1px 2px rgb(120 82 10 / 0.16),
       0 30px 54px -28px rgb(120 82 10 / 0.7);
+  }
+
+  /* Nothing to click, so nothing lifts — the lift is what tells you a card
+     is a target. */
+  .capstone-static:hover {
+    transform: none;
+    box-shadow:
+      0 1px 2px rgb(120 82 10 / 0.14),
+      0 22px 46px -28px rgb(120 82 10 / 0.6);
   }
 
   .capstone:has(.capstone-cta:focus-visible) {
@@ -274,6 +301,31 @@ const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.
     margin-top: 1.5rem;
     font-size: 1rem;
     color: #5a3f0a;
+  }
+
+  /* Sits where the link would, at the same weight, so the run of cards keeps
+     its shape — but in the muted ink rather than the red, since it is a note
+     and not an action. */
+  .capstone-soon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid rgb(155 112 18 / 0.32);
+    border-radius: 999px;
+    background: rgb(255 253 246 / 0.82);
+    padding: 0.35rem 0.85rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #6b4c10;
+  }
+
+  /* The dot is the only thing carrying "not yet" at a glance. */
+  .capstone-soon::before {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: #b4820f;
   }
 
   .capstone-cta {

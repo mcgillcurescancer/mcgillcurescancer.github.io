@@ -1,31 +1,24 @@
 ---
 /*
-  One of our two flagship events. TODO: the turnout, goal and structure
-  values below are placeholders — replace with the real numbers.
+  Placeholder. The write-up for this event was pulled until the real details
+  are settled — the events page links here as "coming soon" rather than as a
+  card you can click through, so nothing on the site currently points at this
+  route. When the content lands, rebuild it on EventPage.astro the way
+  eng-vs-management.astro does.
 */
-import EventPage from '../../layouts/EventPage.astro';
-import heroImage from '../../assets/images/events/dodgeball-tournament/dodgeball-1.webp';
+import Layout from '../../layouts/Layout.astro';
 ---
 
-<EventPage
-  title="The McGill Classic"
-  tagline="Our biggest tournament of the year, bringing teams from across campus together for one day of sport."
+<Layout
+  title="The McGill Classic | McGill Cures Cancer"
   description="The McGill Classic — McGill Cures Cancer's flagship tournament raising money for the Canadian Cancer Society."
-  heroImage={heroImage}
-  expectedTurnout="TBD"
-  fundraisingGoal="TBD"
-  structure={[
-    'TODO: describe how teams register and the entry fee.',
-    'TODO: describe the format — pool play into a knockout bracket.',
-    'TODO: describe prizes and sponsor involvement.',
-  ]}
 >
-  <section class="section-shell pb-16">
-    <div class="section-card">
-      <h2 class="text-2xl font-bold tracking-tight text-slate-900">Event outline</h2>
-      <p class="mt-4 text-slate-600">
-        <!-- TODO: full write-up of the day — venue, schedule, how to sign up. -->
-      </p>
+  <section class="section-shell pt-10 pb-16">
+    <div class="section-card text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+        The McGill Classic
+      </h1>
+      <p class="mt-4 text-lg text-slate-600">Details coming soon.</p>
     </div>
   </section>
-</EventPage>
+</Layout>
