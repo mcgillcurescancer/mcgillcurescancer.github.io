@@ -72,31 +72,59 @@ const socialImage = new URL(image, Astro.site);
       const header = document.querySelector<HTMLElement>('[data-site-header]');
       const button = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
       const menu = document.querySelector<HTMLElement>('#nav-links');
+      const toggleLabel = document.querySelector<HTMLElement>('[data-nav-toggle-label]');
 
       // Overlay pages ship without `data-solid`; every other page has it baked
       // into the markup, which is also the signal to leave the header alone.
       const isOverlay = header !== null && !header.hasAttribute('data-solid');
 
-      const menuIsOpen = () => button?.getAttribute('aria-expanded') === 'true';
+      const menuIsOpen = () => header?.hasAttribute('data-menu-open') ?? false;
 
-      // Go solid once the hero has scrolled off, and while the mobile menu is
-      // open — an open menu over the photo would otherwise have no backdrop.
+      // Go solid once the hero has scrolled off. Opening the menu no longer
+      // forces it: the dropdown is a self-contained card, so the bar can stay
+      // transparent and let the card float over the photo.
       const syncHeader = () => {
         if (!isOverlay || !header) return;
-        const solid = menuIsOpen() || window.scrollY > window.innerHeight * 0.6;
-        header.toggleAttribute('data-solid', solid);
+        header.toggleAttribute('data-solid', window.scrollY > window.innerHeight * 0.6);
       };
 
-      button?.addEventListener('click', () => {
-        const open = menuIsOpen();
-        button.setAttribute('aria-expanded', String(!open));
-        menu?.classList.toggle('hidden', open);
+      const setMenu = (open: boolean) => {
+        header?.toggleAttribute('data-menu-open', open);
+        button?.setAttribute('aria-expanded', String(open));
+        if (toggleLabel) {
+          toggleLabel.textContent = open ? 'Close main menu' : 'Open main menu';
+        }
         syncHeader();
+      };
+
+      button?.addEventListener('click', () => setMenu(!menuIsOpen()));
+
+      // In-page anchors do not reload, so without this the panel would sit
+      // open over the section the visitor just asked to see.
+      menu?.addEventListener('click', (event) => {
+        if ((event.target as HTMLElement).closest('a')) setMenu(false);
       });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menuIsOpen()) {
+          setMenu(false);
+          button?.focus();
+        }
+      });
+
+      window.addEventListener(
+        'resize',
+        () => {
+          // The panel is mobile-only; left open across the breakpoint it would
+          // strand `data-menu-open` on the desktop layout.
+          if (window.innerWidth >= 768 && menuIsOpen()) setMenu(false);
+          syncHeader();
+        },
+        { passive: true },
+      );
 
       if (isOverlay) {
         window.addEventListener('scroll', syncHeader, { passive: true });
-        window.addEventListener('resize', syncHeader, { passive: true });
         syncHeader();
       }
     </script>

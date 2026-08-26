@@ -3,9 +3,8 @@
   The Landing page — moves top to bottom, one image paired with a blurb of text.
 
   1. Hero .......... team photo, full viewport, scrolls away on first scroll
-  2. About ......... full-mcc logo + who we are
-  3. CCS ........... partnership / where the money goes
-  4. Sponsorships .. pitch + rotating sponsor logos
+  2. CCS ........... partnership / where the money goes
+  3. Sponsorships .. pitch + rotating sponsor logos
 */
 import Layout from '../layouts/Layout.astro';
 import SponsorWall from '../components/SponsorWall.astro';
@@ -56,20 +55,7 @@ import SponsorWall from '../components/SponsorWall.astro';
     </div>
   </section>
 
-  <!-- 2. About -->
-  <section id="about" class="mx-auto grid max-w-6xl scroll-mt-24 items-center gap-10 px-4 py-20 md:grid-cols-2">
-    <img src="/assets/images/logos/mcc/full-mcc.PNG" alt="McGill Cures Cancer"
-         loading="lazy" decoding="async" width="480" height="480"
-         class="mx-auto w-full max-w-sm" />
-    <div>
-      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Meet our team</h2>
-      <p class="mt-4 text-slate-600">
-        <!-- TODO: a few lines about the exec team and how to get involved. -->
-      </p>
-    </div>
-  </section>
-
-  <!-- 3. Canadian Cancer Society -->
+  <!-- 2. Canadian Cancer Society -->
   <section class="bg-canvas-alt py-16">
     <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 md:grid-cols-2">
       <img src="/assets/images/logos/ccs/css-logo.png" alt="Canadian Cancer Society"
@@ -81,7 +67,7 @@ import SponsorWall from '../components/SponsorWall.astro';
     </div>
   </section>
 
-  <!-- 4. Sponsorships -->
+  <!-- 3. Sponsorships -->
   <section id="sponsorships" class="mx-auto max-w-6xl scroll-mt-24 px-4 pt-16 text-center">
     <h2 class="text-3xl font-bold tracking-tight text-slate-900">Interested in sponsoring us?</h2>
     <p class="mx-auto mt-4 max-w-2xl text-slate-600">

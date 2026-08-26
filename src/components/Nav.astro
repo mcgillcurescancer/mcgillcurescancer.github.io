@@ -24,7 +24,7 @@ const isCurrent = (href: string) =>
 
 <!-- `data-solid` drives the opaque look. Pages without an overlay hero get it
      baked in so the header never renders knocked-out white on the cream page;
-     overlay pages let the scroll listener below toggle it. -->
+     overlay pages let the scroll listener in Layout.astro toggle it. -->
 <header
   data-site-header
   data-solid={overlay ? undefined : ''}
@@ -46,27 +46,35 @@ const isCurrent = (href: string) =>
 
     <button type="button" data-nav-toggle aria-controls="nav-links"
             aria-expanded="false"
-            class="header-link inline-flex items-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden">
-      <span class="sr-only">Open main menu</span>
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16" />
-      </svg>
+            class="header-link -mr-2 inline-flex items-center justify-center rounded-lg p-2 text-slate-600 md:hidden">
+      <span class="sr-only" data-nav-toggle-label>Open main menu</span>
+      <!-- Three bars rather than a pair of swapped icons, so the top and bottom
+           can rotate into the X while the middle one drops out. -->
+      <span class="menu-bars" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
     </button>
 
-    <div id="nav-links" class="hidden w-full md:block md:w-auto">
-      <ul class="mt-3 flex flex-col gap-1 md:mt-0 md:flex-row md:items-center md:gap-6">
+    <!-- One list, two layouts: an inline row from `md` up, and below that a
+         card that hangs off `top-full` under the toggle. Taking it out of the
+         flex row is what stops opening it from shoving the logo around. -->
+    <div id="nav-links"
+         class="site-menu absolute top-full right-4 mt-2 w-56 max-h-[calc(100svh-5rem)] overflow-y-auto md:static md:mt-0 md:max-h-none md:w-auto md:overflow-visible">
+      <ul class="flex flex-col gap-0.5 p-2 md:flex-row md:items-center md:gap-6 md:p-0">
         {links.map((link) => (
           <li>
             <a href={link.href}
                aria-current={isCurrent(link.href) ? 'page' : undefined}
-               class="header-link block rounded px-3 py-2 text-sm font-medium text-slate-700 hover:text-mcc-600 aria-[current=page]:text-mcc-600 md:px-0">
+               class="header-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:text-mcc-600 aria-[current=page]:text-mcc-600 md:px-0 md:py-2">
               {link.label}
             </a>
           </li>
         ))}
-        <li class="md:ml-2">
+        <li class="mt-1 md:mt-0 md:ml-2">
           <a href="/#sponsorships"
-             class="block rounded-lg bg-mcc-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-mcc-700">
+             class="block rounded-lg bg-mcc-600 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-mcc-700 md:py-2">
             Sponsor Us
           </a>
         </li>
@@ -77,6 +85,12 @@ const isCurrent = (href: string) =>
 
 <style>
   .site-header {
+    /* Shared by the bar and the mobile panel so the two read as one sheet of
+       glass rather than two slightly different creams stacked on each other. */
+    --header-surface: color-mix(in srgb, var(--color-canvas) 82%, transparent);
+    --header-blur: blur(14px) saturate(140%);
+    --header-hairline: #e7e5e4; /* stone-200 */
+
     border-bottom: 1px solid transparent;
     transition:
       background-color 0.3s ease,
@@ -85,9 +99,9 @@ const isCurrent = (href: string) =>
   }
 
   .site-header[data-solid] {
-    background-color: color-mix(in srgb, var(--color-canvas) 90%, transparent);
-    border-bottom-color: #e7e5e4; /* stone-200 */
-    backdrop-filter: blur(8px);
+    background-color: var(--header-surface);
+    border-bottom-color: var(--header-hairline);
+    backdrop-filter: var(--header-blur);
   }
 
   /* Over the photo the black-and-red lockup vanishes into the image, so knock
@@ -103,6 +117,95 @@ const isCurrent = (href: string) =>
 
   .site-header:not([data-solid]) .header-link:hover {
     color: var(--color-mcc-100);
-    background-color: transparent;
+  }
+
+  .menu-bars {
+    position: relative;
+    display: block;
+    width: 1.375rem;
+    height: 0.875rem;
+  }
+
+  .menu-bars > span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background-color: currentColor;
+    transition:
+      transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.18s ease;
+  }
+
+  .menu-bars > span:nth-child(1) { top: 0; }
+  .menu-bars > span:nth-child(2) { top: 6px; }
+  .menu-bars > span:nth-child(3) { top: 12px; }
+
+  /* Both outer bars travel to the 7px centre line and cross. */
+  .site-header[data-menu-open] .menu-bars > span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .site-header[data-menu-open] .menu-bars > span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0.2);
+  }
+
+  .site-header[data-menu-open] .menu-bars > span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* The bars are boxes, so the `.header-link` text-shadow does nothing for
+     them; they need their own lift to read against the photo. */
+  .site-header:not([data-solid]) .menu-bars {
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.45));
+  }
+
+  @media (max-width: 767px) {
+    .site-menu {
+      border-radius: 1rem;
+      background-color: var(--header-surface);
+      backdrop-filter: var(--header-blur);
+      border: 1px solid var(--header-hairline);
+      box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.45);
+
+      /* Faded out rather than `display: none` so it can animate, and scaled
+         from the top right so it reads as growing out of the toggle.
+         `visibility` keeps it off the tab order while closed. */
+      transform-origin: top right;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-0.375rem) scale(0.96);
+      transition:
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        visibility 0s linear 0.18s;
+    }
+
+    /* The card is its own light surface, so its links must stay dark even
+       while the bar above them is still transparent over the photo. */
+    .site-header .site-menu .header-link {
+      color: var(--color-slate-700);
+      text-shadow: none;
+    }
+
+    .site-header[data-menu-open] .site-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition:
+        opacity 0.18s ease,
+        transform 0.24s cubic-bezier(0.34, 1.28, 0.64, 1),
+        visibility 0s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header,
+    .site-menu,
+    .menu-bars > span {
+      transition-duration: 0.01ms;
+    }
   }
 </style>
