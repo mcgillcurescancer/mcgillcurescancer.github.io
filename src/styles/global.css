@@ -17,10 +17,13 @@
   --color-mcc-600: #be123c;
   --color-mcc-700: #9f1239;
 
-  /* Off-white page background, plus a slightly deeper tone for the
-     alternating full-bleed sections and the footer. */
-  --color-canvas: #faf8f4;
-  --color-canvas-alt: #f2ede5;
+  /* Off-white page background. The header and footer sit on plain white so
+     they read as separate surfaces from the page. `canvas-alt` used to give
+     the alternating full-bleed sections a deeper tone; it is pinned to the
+     same value for now so the whole page is one flat shade. Give it its own
+     colour again to bring the banding back. */
+  --color-canvas: #f1ede6;
+  --color-canvas-alt: #f1ede6;
 }
 
 @layer base {
