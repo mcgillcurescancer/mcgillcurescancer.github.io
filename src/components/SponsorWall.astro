@@ -54,6 +54,15 @@ const { heading = 'Our sponsors', bare = false, class: className } = Astro.props
       snapping back, so the join is invisible and the belt never appears to
       end. The second run is decoration for the eye only — `aria-hidden` keeps
       a screen reader from reading every sponsor twice.
+
+      The logos load eagerly on purpose. Only the first few sit inside the
+      card's `overflow: hidden` at load, so `loading="lazy"` left the rest
+      unfetched: the animation slides on the compositor and never nudges the
+      lazy-loader to look again, so a logo would arrive as a blank gap and only
+      pop in once something forced a fresh check — hovering the card, which
+      pauses the belt, did exactly that. All eight together are ~135KB, and the
+      second run reuses the same URLs, so there is nothing to save by deferring
+      them; `fetchpriority="low"` keeps them behind the above-the-fold work.
     -->
     <div class="marquee mt-10">
       <div class="marquee-track">
@@ -63,7 +72,7 @@ const { heading = 'Our sponsors', bare = false, class: className } = Astro.props
               <li class="marquee-item">
                 <img src={sponsor.src} alt={run === 1 ? '' : sponsor.name}
                      width={sponsor.w} height={sponsor.h}
-                     loading="lazy" decoding="async"
+                     decoding="async" fetchpriority="low"
                      class="max-h-20 w-auto max-w-full object-contain opacity-80 transition hover:opacity-100 sm:max-h-24" />
               </li>
             ))}
