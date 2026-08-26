@@ -6,8 +6,11 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
-  /** Social-share image, root-absolute. Falls back to the club logo. */
-  image?: string;
+  /**
+   * Social-share image: either an imported asset or a root-absolute path for
+   * anything still served straight out of `public/`. Falls back to the logo.
+   */
+  image?: ImageMetadata | string;
   /**
    * Set on pages that open with a full-bleed hero: the header floats over it
    * transparently and only picks up its background once the hero scrolls away.
@@ -23,7 +26,7 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const socialImage = new URL(image, Astro.site);
+const socialImage = new URL(typeof image === 'string' ? image : image.src, Astro.site);
 ---
 
 <!doctype html>

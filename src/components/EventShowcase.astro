@@ -8,7 +8,7 @@ interface Props {
   id?: string;
   title: string;
   blurb: string;
-  images: string[];
+  images: ImageMetadata[];
   /** Handwritten line under each photo, in the same order as `images`. */
   captions?: string[];
   alt: string;
@@ -51,10 +51,15 @@ const positions = [
     <!-- Scattered, lightly overlapping polaroids -->
     <div class:list={['relative aspect-[4/7] sm:aspect-[5/4]', flip && 'md:order-2']}>
       {images.slice(0, 6).map((src, i) => (
+        /* `sizes` describes the photo inside the frame, not the frame: the
+           mount eats 11% of the width. Card content is the viewport less the
+           shell's 2rem and the card's own padding (3rem a side from `sm`,
+           1.5rem below), and a frame is 35%/52% of that per the scatter above. */
         <Polaroid
           src={src}
           alt={i === 0 ? alt : ''}
           caption={captions[i]}
+          sizes="(min-width: 768px) 210px, (min-width: 640px) calc((100vw - 128px) * 0.31), calc((100vw - 80px) * 0.46)"
           class:list={[
             'absolute transition-transform duration-200 hover:z-40 hover:scale-[1.06]',
             positions[i],

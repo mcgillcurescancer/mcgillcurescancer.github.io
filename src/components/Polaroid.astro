@@ -10,8 +10,10 @@
   border lives on an inner element: percentages would resolve against whatever
   the parent happens to be, and an element cannot query itself.
 */
+import { Image } from 'astro:assets';
+
 interface Props {
-  src: string;
+  src: ImageMetadata;
   alt: string;
   /** Handwritten line under the photo — a date, in the classic polaroid style. */
   caption?: string;
@@ -29,8 +31,18 @@ interface Props {
   tilt?: string;
   /** Extra positioning/rotation classes from the parent. */
   class?: string;
+  /**
+   * What the frame's width works out to at each breakpoint, for picking a
+   * candidate off `widths`. The default covers the two layouts we have: a
+   * scattered frame on the events page and a pegged one on the clothesline,
+   * neither of which gets past ~250px.
+   */
+  sizes?: string;
 }
-const { src, alt, caption, href, tone = 'white', clip = false, tilt, class: className } = Astro.props;
+const {
+  src, alt, caption, href, tone = 'white', clip = false, tilt,
+  class: className, sizes = '(min-width: 640px) 250px, 50vw',
+} = Astro.props;
 ---
 
 <figure
@@ -44,9 +56,14 @@ const { src, alt, caption, href, tone = 'white', clip = false, tilt, class: clas
   style={tilt ? `--polaroid-tilt: ${tilt}` : undefined}
 >
   <div class="polaroid-frame">
-    <img
+    {/* The frame is small and never grows past a few hundred pixels, so the
+        candidates stop well short of the source file's full size — see `sizes`
+        above. CSS does the square crop, so no height is set here. */}
+    <Image
       src={src}
       alt={alt}
+      widths={[200, 300, 400, 600]}
+      sizes={sizes}
       loading="lazy"
       decoding="async"
       class="polaroid-photo"

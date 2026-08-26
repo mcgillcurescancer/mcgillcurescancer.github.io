@@ -4,6 +4,7 @@
   blocks — outline, expected turnout, structure, fundraising goal — so the
   shape lives here and each page supplies only its own content.
 */
+import { Image } from 'astro:assets';
 import Layout from './Layout.astro';
 import Doodle from '../components/Doodle.astro';
 
@@ -11,7 +12,7 @@ interface Props {
   title: string;
   description: string;
   tagline: string;
-  heroImage: string;
+  heroImage: ImageMetadata;
   expectedTurnout: string;
   fundraisingGoal: string;
   structure: string[];
@@ -30,8 +31,13 @@ const {
           wrap, and the swipe is sized for a phrase that stays on one line. */}
       <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
       <p class="mt-4 max-w-2xl text-lg text-slate-600">{tagline}</p>
-      <img src={heroImage} alt={title} width="1200" height="600"
-           class="mt-10 h-80 w-full rounded-2xl object-cover shadow-sm" />
+      {/* This is the page's LCP, so it loads eagerly rather than lazily. The
+          card caps out at 1088px, so there is nothing to gain above 1200. */}
+      <Image src={heroImage} alt={title}
+             widths={[600, 900, 1200]}
+             sizes="(min-width: 1152px) 1088px, 100vw"
+             loading="eager" fetchpriority="high" decoding="async"
+             class="mt-10 h-80 w-full rounded-2xl object-cover shadow-sm" />
     </div>
   </section>
 

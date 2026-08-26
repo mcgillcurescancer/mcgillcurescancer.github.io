@@ -4,13 +4,14 @@
   values below are placeholders — replace with the real numbers.
 */
 import EventPage from '../../layouts/EventPage.astro';
+import heroImage from '../../assets/images/events/3v3-tournament/3v3-1.webp';
 ---
 
 <EventPage
   title="Engineering vs. Management"
   tagline="The annual faculty showdown — Engineering and Management go head to head to raise money for cancer research."
   description="McGill's annual Engineering vs. Management charity showdown, raising money for the Canadian Cancer Society."
-  heroImage="/assets/images/events/3v3-tournament/3v3-1.webp"
+  heroImage={heroImage}
   expectedTurnout="TBD"
   fundraisingGoal="TBD"
   structure={[

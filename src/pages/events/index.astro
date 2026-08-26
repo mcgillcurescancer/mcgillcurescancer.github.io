@@ -12,6 +12,21 @@ import SponsorWall from '../../components/SponsorWall.astro';
 import Doodle from '../../components/Doodle.astro';
 
 /*
+  The showcase photos are numbered runs of six, so they are pulled in by glob
+  rather than named one by one. `eager` matters: it hands back the resolved
+  `ImageMetadata` at build time, which is what `<Image>` needs — a lazy glob
+  would only give back a loader function.
+*/
+const eventPhotos = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/images/events/**/*.webp',
+  { eager: true },
+);
+const photos = (folder: string, stem: string) =>
+  [1, 2, 3, 4, 5, 6].map(
+    (i) => eventPhotos[`/src/assets/images/events/${folder}/${stem}-${i}.webp`].default,
+  );
+
+/*
   The numbered badges cycle through the club's accent inks rather than all
   sitting in club red. Four identical red discs read as a progress bar; four
   different ones read as something written out by hand, which is the point.
@@ -46,7 +61,7 @@ const showcases = [
     blurb: 'Our bar night brings the McGill community together for a night of live music.',
     alt: 'Bar night at Ye Olde Orchard',
     captions: ['Bar night', 'Ye Olde Orchard', 'Live music', 'The band', 'Full house', 'Last call'],
-    images: [1, 2, 3, 4, 5, 6].map((i) => `/assets/images/events/bar-night/bar-night-${i}.webp`),
+    images: photos('bar-night', 'bar-night'),
   },
   {
     id: 'dodgeball-tournament',
@@ -54,7 +69,7 @@ const showcases = [
     blurb: 'Ten teams, one bracket, and a full day of dodgeball raising money for the CCS.',
     alt: 'Dodgeball tournament',
     captions: ['Dodgeball', 'Ten teams', 'Warm-ups', 'Bracket day', 'Semi-final', 'The final'],
-    images: [1, 2, 3, 4, 5, 6].map((i) => `/assets/images/events/dodgeball-tournament/dodgeball-${i}.webp`),
+    images: photos('dodgeball-tournament', 'dodgeball'),
     flip: true,
   },
   {
@@ -63,7 +78,7 @@ const showcases = [
     blurb: 'Our March Madness bracket runs 3v3 games straight through to the final.',
     alt: '3v3 basketball tournament',
     captions: ['March Madness', '3v3 bracket', 'Tip-off', 'Game day', 'Semi-final', 'Championship'],
-    images: [1, 2, 3, 4, 5, 6].map((i) => `/assets/images/events/3v3-tournament/3v3-${i}.webp`),
+    images: photos('3v3-tournament', '3v3'),
   },
 ];
 ---

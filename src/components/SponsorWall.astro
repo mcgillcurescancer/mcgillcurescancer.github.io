@@ -1,14 +1,24 @@
 ---
-// Sponsor logos, shared between the landing page and the events page.
+/*
+  Sponsor logos, shared between the landing page and the events page.
+
+  These are rasterised from the sponsors' vector artwork at 256px tall — 4x the
+  64px the wall actually renders them at. They were SVGs, but every one had been
+  auto-traced from a bitmap rather than exported from real vector source, so the
+  files carried thousands of near-identical colour patches (poppi alone was
+  6.4MB across 21,376 paths). At this display size WebP is both smaller and
+  faster to paint. Re-run the conversion from the original artwork if a logo
+  ever needs to appear larger.
+*/
 const sponsors = [
-  { src: '/assets/images/logos/sponsors/cafe-logo.svg', name: 'Café Campus' },
-  { src: '/assets/images/logos/sponsors/ye-old-logo.svg', name: "Ye Olde Orchard" },
-  { src: '/assets/images/logos/sponsors/redbull-logo.svg', name: 'Red Bull' },
-  { src: '/assets/images/logos/sponsors/chef-on-call-logo.svg', name: 'Chef On Call' },
-  { src: '/assets/images/logos/sponsors/easy-mondays-logo.svg', name: 'Easy Mondays' },
-  { src: '/assets/images/logos/sponsors/enso-yoga-logo.svg', name: 'Enso Yoga' },
-  { src: '/assets/images/logos/sponsors/poppi-logo.svg', name: 'Poppi' },
-  { src: '/assets/images/logos/sponsors/celsius-logo.svg', name: 'Celsius' },
+  { src: '/assets/images/logos/sponsors/cafe-logo.webp', name: 'Café Campus', w: 417, h: 256 },
+  { src: '/assets/images/logos/sponsors/ye-old-logo.webp', name: "Ye Olde Orchard", w: 256, h: 256 },
+  { src: '/assets/images/logos/sponsors/redbull-logo.webp', name: 'Red Bull', w: 441, h: 256 },
+  { src: '/assets/images/logos/sponsors/chef-on-call-logo.webp', name: 'Chef On Call', w: 256, h: 256 },
+  { src: '/assets/images/logos/sponsors/easy-mondays-logo.webp', name: 'Easy Mondays', w: 256, h: 256 },
+  { src: '/assets/images/logos/sponsors/enso-yoga-logo.webp', name: 'Enso Yoga', w: 256, h: 256 },
+  { src: '/assets/images/logos/sponsors/poppi-logo.webp', name: 'Poppi', w: 256, h: 256 },
+  { src: '/assets/images/logos/sponsors/celsius-logo.webp', name: 'Celsius', w: 455, h: 256 },
 ];
 
 interface Props {
@@ -30,7 +40,8 @@ const { heading = 'Our sponsors', bare = false, class: className } = Astro.props
     <ul class="mt-10 grid grid-cols-2 items-center gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
       {sponsors.map((sponsor) => (
         <li class="flex items-center justify-center">
-          <img src={sponsor.src} alt={sponsor.name} loading="lazy" decoding="async"
+          <img src={sponsor.src} alt={sponsor.name} width={sponsor.w} height={sponsor.h}
+               loading="lazy" decoding="async"
                class="max-h-16 w-auto object-contain opacity-80 transition hover:opacity-100" />
         </li>
       ))}
