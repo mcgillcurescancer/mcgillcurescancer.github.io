@@ -15,27 +15,35 @@ interface Props {
 const { title, blurb, images, captions = [], alt, flip = false } = Astro.props;
 
 /*
-  Where each polaroid sits inside the stack. The frame is 58% of the stack's
-  width and ~76% of its height, so these offsets keep all three inside the
-  `aspect-[9/8]` box while still overlapping.
+  Scatter positions for the six polaroids. Two arrangements: 2 columns x 3 rows
+  on phones (frame 52% of the stack width), 3 columns x 2 rows from `sm` up
+  (frame 34%). The offsets leave every frame overlapping its neighbour by only
+  a sliver — roughly the width of the white border — and the stack's
+  aspect-ratio box is sized so the bottom row still lands inside it.
+
+  A frame is 1.165x as tall as it is wide, so at 52% of a 4/7 box it is ~35% of
+  the height, and at 34% of a 5/4 box it is ~50%.
 */
 const positions = [
-  'left-[1%] top-0 z-30 rotate-[-4deg]',
-  'left-[19%] top-[12%] z-20 rotate-[5deg]',
-  'left-[35%] top-[24%] z-10 rotate-[-2deg]',
+  'w-[52%] left-0      top-0      sm:w-[34%] sm:left-0      sm:top-0    z-30    rotate-[-5deg]',
+  'w-[52%] left-[47%]  top-[1%]   sm:w-[34%] sm:left-[31%]  sm:top-[2%] z-[26]  rotate-[4deg]',
+  'w-[52%] left-[1%]   top-[32%]  sm:w-[34%] sm:left-[62%]  sm:top-0    z-[22]  rotate-[-2deg]',
+  'w-[52%] left-[48%]  top-[33%]  sm:w-[34%] sm:left-[1%]   sm:top-[47%] z-[18] rotate-[3deg]',
+  'w-[52%] left-0      top-[64%]  sm:w-[34%] sm:left-[32%]  sm:top-[49%] z-[14] rotate-[-4deg]',
+  'w-[52%] left-[47%]  top-[65%]  sm:w-[34%] sm:left-[63%]  sm:top-[47%] z-10   rotate-[5deg]',
 ];
 ---
 
 <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-2">
-  <!-- Overlapping stack of polaroids -->
-  <div class:list={['relative aspect-[9/8]', flip && 'md:order-2']}>
-    {images.slice(0, 3).map((src, i) => (
+  <!-- Scattered, lightly overlapping polaroids -->
+  <div class:list={['relative aspect-[4/7] sm:aspect-[5/4]', flip && 'md:order-2']}>
+    {images.slice(0, 6).map((src, i) => (
       <Polaroid
         src={src}
         alt={i === 0 ? alt : ''}
         caption={captions[i]}
         class:list={[
-          'absolute w-[58%] transition-transform duration-200 hover:z-40 hover:scale-[1.04]',
+          'absolute transition-transform duration-200 hover:z-40 hover:scale-[1.06]',
           positions[i],
         ]}
       />
