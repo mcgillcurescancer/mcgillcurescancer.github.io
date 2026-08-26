@@ -112,41 +112,35 @@ const showcases = [
   description="Our two capstone events — the McGill Classic and Engineering vs. Management — plus the tournaments and bar nights McGill Cures Cancer ran last year."
 >
   <!-- Page title. It sits on the weave rather than on a card of its own: the
-       first thing on the page should be a capstone event, not a header panel. -->
-  <header class="section-shell pt-10 text-center">
+       first thing on the page should be a capstone event, not a header panel.
+       Nothing labels the two runs of cards — the gold cards say "Capstone
+       event" on their face, and the white polaroid cards below read as the
+       archive by contrast. -->
+  <header class="section-shell pt-10 pb-2 text-center">
     <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">
       <span class="hand-underline">Our events</span>
     </h1>
-    <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-      Two capstone events a year, and a full calendar of tournaments around them.
-    </p>
   </header>
 
-  <!-- 1. Capstone events -->
-  <div class="section-shell pt-6">
-    <h2 class="section-lead text-2xl font-bold tracking-tight text-slate-900">
-      Capstone Events
-    </h2>
-  </div>
+  <!-- 1. Capstone events. The pair shares one grid instead of taking a
+       section each: `1fr` rows come out the height of the taller card, so
+       neither event looks like the smaller of the two when they stack on a
+       phone and the shorter blurb would otherwise cut its card short. -->
+  <section class="capstones">
+    {capstones.map((capstone, i) => (
+      <>
+        {/* A pen mark in the gap between the cards. Decorative only — see
+            Doodle.astro. No mark above the first card: the page title is
+            already in that gap. */}
+        {i > 0 && <Doodle variant="triple" />}
+        <CapstoneCard {...capstone} />
+      </>
+    ))}
+  </section>
 
-  {capstones.map((capstone, i) => (
-    <>
-      {/* A pen mark in the gap between the cards. Decorative only — see
-          Doodle.astro. No mark above the first card: the heading is already
-          in that gap. */}
-      {i > 0 && <Doodle variant="triple" />}
-      <CapstoneCard {...capstone} />
-    </>
-  ))}
-
+  <!-- 2. Past events. The wave is the only break between the gold run and the
+       white one, so it stays even though the headings are gone. -->
   <Doodle variant="wave" />
-
-  <!-- 2. Past events -->
-  <div class="section-shell">
-    <h2 class="section-lead text-2xl font-bold tracking-tight text-slate-900">
-      Past Events
-    </h2>
-  </div>
 
   {showcases.map((showcase, i) => (
     <>
@@ -159,3 +153,22 @@ const showcases = [
 
   <SponsorWall heading="We couldn't put these events together without our sponsors" />
 </Layout>
+
+<style>
+  /*
+    Rows read card / doodle / card, and the two card rows are tied to each
+    other at `1fr` — the template assumes the two capstones above, and a third
+    would simply size itself.
+
+    The padding is `section-shell`'s, since the cards no longer bring their
+    own, and the 1.25rem gap plus the doodle's negative margins land the two
+    cards the same distance apart as two neighbouring sections.
+  */
+  .capstones {
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    gap: 1.25rem;
+    padding-inline: 1rem;
+    padding-block: 1.25rem;
+  }
+</style>

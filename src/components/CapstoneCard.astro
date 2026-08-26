@@ -28,17 +28,22 @@ interface Props {
 const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.props;
 ---
 
-<section class="section-shell">
-  <article class:list={['capstone', flip && 'capstone-flip']}>
-    {/*
-      The photo runs edge to edge in its half of the card rather than sitting
-      inset with its own radius — at this size a second rounded rectangle
-      inside the first only muddies the silhouette. The card clips it, so the
-      photo picks up the card's own corners on the outer side.
+<article class:list={['capstone', flip && 'capstone-flip']}>
+  {/*
+    The photo runs edge to edge in its half of the card rather than sitting
+    inset with its own radius — at this size a second rounded rectangle
+    inside the first only muddies the silhouette. The card clips it, so the
+    photo picks up the card's own corners on the outer side.
 
-      Column is half of the 72rem card, so nothing above 600 is ever used on a
-      desktop; the extra candidates cover a phone, where it goes full width.
-    */}
+    The frame exists so the picture can be lifted out of the flow beside the
+    text (see the stylesheet) — a square photo in a 36rem column would
+    otherwise make the card 36rem tall and leave the text floating in a sea
+    of foil.
+
+    Column is half of the 72rem card, so nothing above 600 is ever used on a
+    desktop; the extra candidates cover a phone, where it goes full width.
+  */}
+  <div class="capstone-photo-frame">
     <Image
       src={image}
       alt={alt}
@@ -48,52 +53,62 @@ const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.
       decoding="async"
       class="capstone-photo"
     />
+  </div>
 
-    <div class="capstone-body">
-      <p class="capstone-eyebrow">Capstone event</p>
-      <h3 class="capstone-title">{title}</h3>
-      <p class="capstone-blurb">{blurb}</p>
+  <div class="capstone-body">
+    <p class="capstone-eyebrow">Capstone event</p>
+    <h3 class="capstone-title">{title}</h3>
+    <p class="capstone-blurb">{blurb}</p>
 
-      {/* The two figures a sponsor scans for, given the most weight on the
-          card after the title. */}
-      <dl class="capstone-metrics">
-        <div class="capstone-metric">
-          <dt>Expected turnout</dt>
-          <dd>{turnout}</dd>
-        </div>
-        <div class="capstone-metric">
-          <dt>Fundraising target</dt>
-          <dd>{target}</dd>
-        </div>
-      </dl>
+    {/* The two figures a sponsor scans for, given the most weight on the
+        card after the title. */}
+    <dl class="capstone-metrics">
+      <div class="capstone-metric">
+        <dt>Expected turnout</dt>
+        <dd>{turnout}</dd>
+      </div>
+      <div class="capstone-metric">
+        <dt>Fundraising target</dt>
+        <dd>{target}</dd>
+      </div>
+    </dl>
 
-      {/* The card's one action. Its ::after covers the whole card, so the
-          photo and the figures are clickable too, and the visible focus ring
-          is drawn on the card rather than on the link. */}
-      <p class="capstone-more">
-        Want to learn more?
-        <a href={href} class="capstone-cta">
-          Click here
-          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
-               fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-               stroke-linejoin="round" /></svg>
-          <span class="sr-only">about {title}</span>
-        </a>
-      </p>
-    </div>
-  </article>
-</section>
+    {/* The card's one action. Its ::after covers the whole card, so the
+        photo and the figures are clickable too, and the visible focus ring
+        is drawn on the card rather than on the link. */}
+    <p class="capstone-more">
+      Want to learn more?
+      <a href={href} class="capstone-cta">
+        Click here
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
+             fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+             stroke-linejoin="round" /></svg>
+        <span class="sr-only">about {title}</span>
+      </a>
+    </p>
+  </div>
+</article>
 
 <style>
   /*
     Same geometry as `.section-card` — the run of cards down the page has to
-    line up — but foil instead of paper.
+    line up — but foil instead of paper. The gutter and the gap to the card
+    above come from the `.capstones` grid on the events page, which is also
+    what stretches this card to match its neighbour.
   */
   .capstone {
     position: relative;
+    /* `width` is not redundant next to `max-width`: as a grid item with auto
+       margins the card would otherwise be sized to fit its own text, and the
+       two cards would come out different widths. */
+    width: 100%;
     margin-inline: auto;
     max-width: 72rem;
     display: grid;
+    /* Stacked, the photo keeps its own height and the body takes whatever
+       height the card was stretched to — see `.capstone-body` for where that
+       height goes. */
+    grid-template-rows: auto 1fr;
     border: 1px solid rgb(155 112 18 / 0.4);
     border-radius: 1.75rem;
     background: linear-gradient(150deg, #fdf3d6 0%, #f7e3a6 44%, #eccd76 100%);
@@ -108,6 +123,8 @@ const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.
   @media (min-width: 768px) {
     .capstone {
       grid-template-columns: 1fr 1fr;
+      /* Side by side there is only one row, and it fills the card. */
+      grid-template-rows: auto;
     }
   }
 
@@ -133,20 +150,34 @@ const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.
     }
   }
 
+  /* Stacked, the photo sets its own height off the card's full width: tall
+     enough to still read as the headline image and not a strip, with a
+     ceiling so it doesn't swallow the screen on a wide phone. */
+  .capstone-photo-frame {
+    position: relative;
+    min-height: 15rem;
+  }
+
   .capstone-photo {
     display: block;
     width: 100%;
     height: 100%;
-    /* Tall enough on a phone to still read as the headline image, not a strip;
-       on two columns it stretches to whatever the text beside it needs. */
-    min-height: 15rem;
     max-height: 26rem;
     object-fit: cover;
     background: #e7d7ae;
   }
 
   @media (min-width: 768px) {
-    .capstone-flip .capstone-photo {
+    /* Beside the text, the text is what says how tall the card is. Taking the
+       picture out of the flow means its own proportions can't stretch the
+       card — it simply covers the column, however deep that turns out to be. */
+    .capstone-photo {
+      position: absolute;
+      inset: 0;
+      max-height: none;
+    }
+
+    .capstone-flip .capstone-photo-frame {
       order: 2;
     }
   }
@@ -155,6 +186,11 @@ const { title, blurb, image, alt, turnout, target, href, flip = false } = Astro.
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    /* The card is as tall as its neighbour, so this side is usually holding a
+       little more height than its own text needs. Spreading that through the
+       gaps opens the lines a hair; pooling it would leave a band of bare foil
+       under the last line. */
+    justify-content: space-between;
     padding: 1.75rem 1.5rem 2rem;
   }
 
