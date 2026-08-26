@@ -49,6 +49,8 @@ const { src, alt, caption, class: className } = Astro.props;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     background: #e2e8f0;
+    /* Slight lift off the white frame so the photo reads as a separate layer. */
+    box-shadow: 0 1px 4px rgb(15 23 42 / 0.18);
   }
 
   .polaroid-caption {
