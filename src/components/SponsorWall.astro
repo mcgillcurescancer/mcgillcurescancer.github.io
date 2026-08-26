@@ -10,14 +10,23 @@
   this display size WebP is both smaller and faster to paint. Re-run the
   conversion from the original artwork if a logo ever needs to appear larger
   than it does here.
+
+  Every logo is cut out to the mark itself, with nothing behind it — three of
+  them arrived as social-media avatars with a tile baked in and had it taken
+  off. Poppi keeps its pink badge, which is the logo, and lost only the black
+  square it was sitting on. Enso Yoga and Easy Mondays were both white artwork
+  on a dark tile, so removing the tile alone would have left them invisible on
+  the white card; they are redrawn from their own silhouettes in the site's ink
+  instead. If either sends through a proper light-background lockup, drop it in
+  over these.
 */
 const sponsors = [
   { src: '/assets/images/logos/sponsors/cafe-logo.webp', name: 'Café Campus', w: 417, h: 256 },
   { src: '/assets/images/logos/sponsors/ye-old-logo.webp', name: "Ye Olde Orchard", w: 256, h: 256 },
   { src: '/assets/images/logos/sponsors/redbull-logo.webp', name: 'Red Bull', w: 441, h: 256 },
   { src: '/assets/images/logos/sponsors/chef-on-call-logo.webp', name: 'Chef On Call', w: 256, h: 256 },
-  { src: '/assets/images/logos/sponsors/easy-mondays-logo.webp', name: 'Easy Mondays', w: 256, h: 256 },
-  { src: '/assets/images/logos/sponsors/enso-yoga-logo.webp', name: 'Enso Yoga', w: 256, h: 256 },
+  { src: '/assets/images/logos/sponsors/easy-mondays-logo.webp', name: 'Easy Mondays', w: 580, h: 256 },
+  { src: '/assets/images/logos/sponsors/enso-yoga-logo.webp', name: 'Enso Yoga', w: 275, h: 256 },
   { src: '/assets/images/logos/sponsors/poppi-logo.webp', name: 'Poppi', w: 256, h: 256 },
   { src: '/assets/images/logos/sponsors/celsius-logo.webp', name: 'Celsius', w: 455, h: 256 },
 ];
@@ -71,7 +80,7 @@ const { heading = 'Our sponsors', bare = false, class: className } = Astro.props
        The gap is carried as padding on the items rather than as a flex `gap`
        so the spacing across the seam between the two runs matches the spacing
        inside them — a `gap` on the track would make that one join wider. */
-    --item: clamp(8rem, 18vw, 12rem);
+    --item: clamp(9.5rem, 21vw, 15rem);
     --gap: 2.5rem;
 
     overflow: hidden;
