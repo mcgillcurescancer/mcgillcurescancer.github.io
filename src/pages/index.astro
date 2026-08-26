@@ -2,8 +2,8 @@
 /*
   The Landing page — moves top to bottom, one image paired with a blurb of text.
 
-  1. Hero .......... full-mcc logo + what we do
-  2. Meet Our Team . team photo
+  1. Hero .......... team photo, full viewport, scrolls away on first scroll
+  2. About ......... full-mcc logo + who we are
   3. CCS ........... partnership / where the money goes
   4. Sponsorships .. pitch + rotating sponsor logos
 */
@@ -14,41 +14,59 @@ import SponsorWall from '../components/SponsorWall.astro';
 <Layout
   title="McGill Cures Cancer"
   description="We fundraise for cancer research through organized sporting events at McGill University. Join us in the fight against cancer."
+  image="/assets/images/team/team-pic.webp"
+  overlayNav
 >
-  <!-- 1. Hero -->
-  <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 md:grid-cols-2">
-    <img src="/assets/images/logos/mcc/full-mcc.PNG" alt="McGill Cures Cancer"
-         width="480" height="480" class="mx-auto w-full max-w-sm" />
-    <div>
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+  <!-- 1. Hero — the team photo owns the whole first screen. It sits in normal
+       flow (not fixed), so the moment you scroll it leaves with everything
+       else rather than lingering as a backdrop behind the sections below. -->
+  <section class="relative flex h-svh min-h-[32rem] flex-col justify-end overflow-hidden">
+    <img
+      src="/assets/images/team/team-pic.webp"
+      alt="The McGill Cures Cancer team at one of our tournaments"
+      width="2048" height="1536"
+      fetchpriority="high" decoding="async"
+      class="absolute inset-0 h-full w-full object-cover object-[50%_70%]"
+    />
+
+    <!-- Two scrims in one gradient: enough shade at the top for the floating
+         header, enough at the bottom for the headline. The middle stays clear
+         so the faces are not muddied. -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 via-40% to-black/80"
+         aria-hidden="true"></div>
+
+    <div class="relative mx-auto w-full max-w-6xl px-4 pb-20 sm:pb-24">
+      <h1 class="max-w-3xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
         Join us in the fight against cancer.
       </h1>
-      <p class="mt-5 text-lg text-slate-600">
+      <p class="mt-5 max-w-xl text-lg text-white/90">
         We fundraise for cancer research through organized sporting events at
         McGill University.
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a href="/events/" class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white hover:bg-mcc-700">
+        <a href="/events/"
+           class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-mcc-700">
           See our events
         </a>
-        <a href="#sponsorships" class="rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 hover:border-mcc-600 hover:text-mcc-600">
+        <a href="#sponsorships"
+           class="rounded-lg border border-white/60 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur hover:bg-white/20">
           Sponsor us
         </a>
       </div>
     </div>
   </section>
 
-  <!-- 2. Meet Our Team -->
-  <section id="about" class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-2">
+  <!-- 2. About -->
+  <section id="about" class="mx-auto grid max-w-6xl scroll-mt-24 items-center gap-10 px-4 py-20 md:grid-cols-2">
+    <img src="/assets/images/logos/mcc/full-mcc.PNG" alt="McGill Cures Cancer"
+         loading="lazy" decoding="async" width="480" height="480"
+         class="mx-auto w-full max-w-sm" />
     <div>
       <h2 class="text-3xl font-bold tracking-tight text-slate-900">Meet our team</h2>
       <p class="mt-4 text-slate-600">
         <!-- TODO: a few lines about the exec team and how to get involved. -->
       </p>
     </div>
-    <img src="/assets/images/team/team-pic.webp" alt="The McGill Cures Cancer team"
-         loading="lazy" decoding="async" width="800" height="600"
-         class="w-full rounded-2xl object-cover shadow-sm" />
   </section>
 
   <!-- 3. Canadian Cancer Society -->
@@ -64,7 +82,7 @@ import SponsorWall from '../components/SponsorWall.astro';
   </section>
 
   <!-- 4. Sponsorships -->
-  <section id="sponsorships" class="mx-auto max-w-6xl px-4 pt-16 text-center">
+  <section id="sponsorships" class="mx-auto max-w-6xl scroll-mt-24 px-4 pt-16 text-center">
     <h2 class="text-3xl font-bold tracking-tight text-slate-900">Interested in sponsoring us?</h2>
     <p class="mx-auto mt-4 max-w-2xl text-slate-600">
       Check out <a href="/events/" class="font-medium text-mcc-600 underline">a few of our events</a>.

@@ -8,26 +8,45 @@ const links = [
   { href: '/#contact', label: 'Contact Us' },
 ];
 
+interface Props {
+  /**
+   * Float the header over a full-bleed hero instead of sitting above it. The
+   * bar stays transparent until the hero has scrolled past, then fades in.
+   */
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+
 const path = Astro.url.pathname;
 const isCurrent = (href: string) =>
   href.startsWith('/events') && path.startsWith('/events');
 ---
 
-<header class="sticky top-0 z-40 border-b border-stone-200 bg-canvas/90 backdrop-blur">
+<!-- `data-solid` drives the opaque look. Pages without an overlay hero get it
+     baked in so the header never renders knocked-out white on the cream page;
+     overlay pages let the scroll listener below toggle it. -->
+<header
+  data-site-header
+  data-solid={overlay ? undefined : ''}
+  class:list={[
+    'site-header top-0 z-40',
+    overlay ? 'fixed inset-x-0' : 'sticky',
+  ]}
+>
   <nav class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
        aria-label="Primary">
     <a href="/" class="flex items-center gap-2 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mcc-600">
       <!-- Ribbon and wordmark are split out of the full logo so the ribbon can be
            scaled down to the wordmark's height; the stock lockup has it much taller. -->
       <img src="/assets/images/logos/mcc/mcc-ribbon-mark.png" alt=""
-           width="504" height="820" class="h-8 w-auto" />
+           width="504" height="820" class="header-logo h-8 w-auto" />
       <img src="/assets/images/logos/mcc/mcc-wordmark.png" alt="McGill Cures Cancer"
-           width="799" height="338" class="h-8 w-auto" />
+           width="799" height="338" class="header-logo h-8 w-auto" />
     </a>
 
     <button type="button" data-nav-toggle aria-controls="nav-links"
             aria-expanded="false"
-            class="inline-flex items-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden">
+            class="header-link inline-flex items-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden">
       <span class="sr-only">Open main menu</span>
       <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16" />
@@ -40,7 +59,7 @@ const isCurrent = (href: string) =>
           <li>
             <a href={link.href}
                aria-current={isCurrent(link.href) ? 'page' : undefined}
-               class="block rounded px-3 py-2 text-sm font-medium text-slate-700 hover:text-mcc-600 aria-[current=page]:text-mcc-600 md:px-0">
+               class="header-link block rounded px-3 py-2 text-sm font-medium text-slate-700 hover:text-mcc-600 aria-[current=page]:text-mcc-600 md:px-0">
               {link.label}
             </a>
           </li>
@@ -55,3 +74,35 @@ const isCurrent = (href: string) =>
     </div>
   </nav>
 </header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      backdrop-filter 0.3s ease;
+  }
+
+  .site-header[data-solid] {
+    background-color: color-mix(in srgb, var(--color-canvas) 90%, transparent);
+    border-bottom-color: #e7e5e4; /* stone-200 */
+    backdrop-filter: blur(8px);
+  }
+
+  /* Over the photo the black-and-red lockup vanishes into the image, so knock
+     it out to white and lift the links until the bar goes solid. */
+  .site-header:not([data-solid]) .header-logo {
+    filter: brightness(0) invert(1) drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
+  }
+
+  .site-header:not([data-solid]) .header-link {
+    color: #fff;
+    text-shadow: 0 1px 3px rgb(0 0 0 / 0.5);
+  }
+
+  .site-header:not([data-solid]) .header-link:hover {
+    color: var(--color-mcc-100);
+    background-color: transparent;
+  }
+</style>

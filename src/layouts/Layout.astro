@@ -8,12 +8,18 @@ interface Props {
   description: string;
   /** Social-share image, root-absolute. Falls back to the club logo. */
   image?: string;
+  /**
+   * Set on pages that open with a full-bleed hero: the header floats over it
+   * transparently and only picks up its background once the hero scrolls away.
+   */
+  overlayNav?: boolean;
 }
 
 const {
   title,
   description,
   image = '/assets/images/logos/mcc/full-mcc.PNG',
+  overlayNav = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -54,7 +60,7 @@ const socialImage = new URL(image, Astro.site);
   </head>
 
   <body class="flex min-h-screen flex-col bg-canvas text-slate-800 antialiased">
-    <Nav />
+    <Nav overlay={overlayNav} />
     <main id="main" class="flex-1">
       <slot />
     </main>
@@ -63,14 +69,36 @@ const socialImage = new URL(image, Astro.site);
       // Mobile nav toggle. Deliberately hand-rolled: importing all of Flowbite
       // costs ~128KB of JS for this one interaction. If a page later needs a
       // real Flowbite component, import it in that page only.
+      const header = document.querySelector<HTMLElement>('[data-site-header]');
       const button = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
       const menu = document.querySelector<HTMLElement>('#nav-links');
 
+      // Overlay pages ship without `data-solid`; every other page has it baked
+      // into the markup, which is also the signal to leave the header alone.
+      const isOverlay = header !== null && !header.hasAttribute('data-solid');
+
+      const menuIsOpen = () => button?.getAttribute('aria-expanded') === 'true';
+
+      // Go solid once the hero has scrolled off, and while the mobile menu is
+      // open — an open menu over the photo would otherwise have no backdrop.
+      const syncHeader = () => {
+        if (!isOverlay || !header) return;
+        const solid = menuIsOpen() || window.scrollY > window.innerHeight * 0.6;
+        header.toggleAttribute('data-solid', solid);
+      };
+
       button?.addEventListener('click', () => {
-        const open = button.getAttribute('aria-expanded') === 'true';
+        const open = menuIsOpen();
         button.setAttribute('aria-expanded', String(!open));
         menu?.classList.toggle('hidden', open);
+        syncHeader();
       });
+
+      if (isOverlay) {
+        window.addEventListener('scroll', syncHeader, { passive: true });
+        window.addEventListener('resize', syncHeader, { passive: true });
+        syncHeader();
+      }
     </script>
   </body>
 </html>
