@@ -28,7 +28,10 @@ const events = [
     caption: 'Eng vs. Management',
     href: '/events/eng-vs-management/',
     tone: 'gold' as const,
-    tilt: '-rotate-2',
+    tilt: '-2deg',
+    /* Where the frame hangs on the line. These have to track the sag in the
+       string path below: each one is the y the path reaches at that peg. */
+    hang: 'mt-[19px]',
   },
   {
     src: '/assets/images/events/mcgill-classic/classic-placeholder.jpg',
@@ -36,28 +39,32 @@ const events = [
     caption: 'The McGill Classic',
     href: '/events/mcgill-classic/',
     tone: 'gold' as const,
-    tilt: 'rotate-2',
+    tilt: '1.5deg',
+    hang: 'mt-[36px]',
   },
   {
     src: '/assets/images/events/3v3-tournament/3v3-1.webp',
     alt: '3v3 basketball tournament',
     caption: '3v3 tournament',
     href: '/events/#3v3-tournament',
-    tilt: '-rotate-1',
+    tilt: '-1deg',
+    hang: 'mt-[43px]',
   },
   {
     src: '/assets/images/events/dodgeball-tournament/dodgeball-1.webp',
     alt: 'Dodgeball tournament',
     caption: 'Dodgeball',
     href: '/events/#dodgeball-tournament',
-    tilt: 'rotate-2',
+    tilt: '2deg',
+    hang: 'mt-[39px]',
   },
   {
     src: '/assets/images/events/bar-night/bar-night-1.webp',
     alt: 'Bar night at Ye Olde Orchard',
     caption: 'Bar night',
     href: '/events/#bar-night',
-    tilt: '-rotate-2',
+    tilt: '-1.5deg',
+    hang: 'mt-[23px]',
   },
 ];
 ---
@@ -111,7 +118,7 @@ const events = [
        first thing under the hero. The two marks bracket the copy: the Canadian
        Cancer Society daffodil on one side, our ribbon on the other, with the
        partnership spelled out between them. Placeholder copy for now. -->
-  <section id="about" class="scroll-mt-24 bg-canvas-alt py-20">
+  <section id="about" class="scroll-mt-24 py-20">
     <div class="mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 md:flex-row md:justify-between md:gap-10">
       <!-- Flower only, no wordmark — the lockup's type would out-shout the
            heading at this size. Cropped out of ccs-logo.svg. -->
@@ -139,9 +146,9 @@ const events = [
     </div>
   </section>
 
-  <!-- 3. Events — every event pinned up in one row on the club noticeboard.
-       The two capstone events lead the row on gold cards; the rest are plain
-       white. Each frame is a link into the events page. -->
+  <!-- 3. Events — every event pegged to one washing line. The two capstone
+       events lead the line on gold cards; the rest are plain white. Each frame
+       is a link into the events page. -->
   <section id="events" class="scroll-mt-24 py-20">
     <div class="mx-auto max-w-6xl px-4 text-center">
       <h2 class="text-3xl font-bold tracking-tight text-slate-900">
@@ -152,24 +159,38 @@ const events = [
       </p>
     </div>
 
-    <div class="mx-auto mt-12 max-w-7xl px-4">
-      <div class="pinboard">
-        <div class="pinboard-cork">
-          <!-- Five across from `lg`; below that the row wraps rather than
-               shrinking the frames past the point the captions can be read. -->
-          <div class="flex flex-wrap justify-center gap-x-6 gap-y-12 sm:gap-x-8">
-            {events.map(({ tilt, ...event }) => (
-              <Polaroid
-                {...event}
-                pin
-                class:list={[
-                  'w-[42%] max-w-[15rem] transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.04] sm:w-[27%] lg:w-[17%]',
-                  tilt,
-                ]}
-              />
-            ))}
-          </div>
-        </div>
+    <!--
+      The line is one continuous piece, so the row never wraps: the frames are
+      sized off the viewport and the whole line slides sideways once five of
+      them stop fitting. Every horizontal position below — the peg spacing and
+      the x of each dip in the string — comes out of the same card-to-gap
+      ratio, which is why the gap is expressed as a fraction of the card.
+    -->
+    <div class="clothesline mt-14">
+      <div class="clothesline-track">
+        <svg class="clothesline-string" viewBox="0 0 1000 56"
+             preserveAspectRatio="none" aria-hidden="true">
+          <!-- Drawn twice: a dark cord with a lighter twist on top, so it
+               reads as string rather than a ruled line. Both dip through the
+               five peg positions (85, 292.5, 500, 707.5, 915). -->
+          <path class="clothesline-cord"
+                d="M0 9 C 30 12.8, 55 16, 85 19 C 140 25, 228 32, 292 36.5
+                   C 372 41.3, 448 43, 500 43.1 C 574 43, 652 41.4, 708 38.6
+                   C 792 34.2, 866 27.8, 915 23.4 C 946 20.4, 976 16.8, 1000 14" />
+          <path class="clothesline-twist"
+                d="M0 9 C 30 12.8, 55 16, 85 19 C 140 25, 228 32, 292 36.5
+                   C 372 41.3, 448 43, 500 43.1 C 574 43, 652 41.4, 708 38.6
+                   C 792 34.2, 866 27.8, 915 23.4 C 946 20.4, 976 16.8, 1000 14" />
+        </svg>
+        <span class="clothesline-tack clothesline-tack-start" aria-hidden="true"></span>
+        <span class="clothesline-tack clothesline-tack-end" aria-hidden="true"></span>
+
+        <!-- Width and snapping ride on utility classes rather than this page's
+             scoped CSS: the class lands on a child component's root element,
+             which this page's scope attribute does not reach. -->
+        {events.map(({ hang, ...event }) => (
+          <Polaroid {...event} clip class:list={['w-[var(--card)] shrink-0 snap-center', hang]} />
+        ))}
       </div>
     </div>
   </section>
@@ -187,38 +208,82 @@ const events = [
 
 <style>
   /*
-    The noticeboard the row is pinned to: a wooden surround wrapped around a
-    cork panel. The cork is drawn rather than photographed — a warm base with
-    a few offset speckle layers on co-prime tile sizes, so the grain does not
-    visibly repeat across the width of the board.
+    Card and gap are locked to one ratio (gap = 0.22 x card), which fixes the
+    peg positions as fractions of the line no matter how wide the cards get:
+    centres land at 8.5%, 29.25%, 50%, 70.75% and 91.5%. Those are the x
+    values the string's dips are drawn at, and the `mt-[…px]` on each frame is
+    the depth the string has reached by then.
   */
-  .pinboard {
-    padding: clamp(0.6rem, 1.1vw, 1.1rem);
-    border-radius: 14px;
-    background: linear-gradient(160deg, #a9713d 0%, #82522c 45%, #6a411f 100%);
-    box-shadow:
-      0 22px 45px -20px rgb(43 25 8 / 0.55),
-      inset 0 1px 0 rgb(255 255 255 / 0.25);
+  .clothesline {
+    --card: clamp(8.5rem, 16vw, 13rem);
+    --gap: calc(var(--card) * 0.22);
+    /* Room for the pegs standing above the highest frame, and for the shadow
+       under the lowest. Both matter: a sideways scroller clips vertically. */
+    padding: 1.75rem 1rem 2.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
   }
 
-  .pinboard-cork {
-    padding: clamp(2.5rem, 4vw, 4rem) clamp(1rem, 3vw, 3rem);
-    border-radius: 5px;
-    /*
-      Cork, top to bottom: fractal-noise grain for the flecks, three soft
-      blotches for the tonal variation a real board has, then the base tan.
-      The grain tile is generated by the browser, so there is no texture image
-      to ship and it never tiles visibly at this frequency.
-    */
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23c)'/%3E%3C/svg%3E"),
-      radial-gradient(ellipse 60% 55% at 12% 20%, rgb(214 172 118 / 0.5), transparent 70%),
-      radial-gradient(ellipse 55% 60% at 78% 78%, rgb(139 92 44 / 0.35), transparent 70%),
-      radial-gradient(ellipse 45% 50% at 55% 12%, rgb(196 148 92 / 0.35), transparent 70%),
-      linear-gradient(150deg, #cfa066 0%, #bf8f4f 55%, #ad7c41 100%);
-    background-size: 220px 220px, auto, auto, auto, auto;
-    background-blend-mode: overlay, normal, normal, normal, normal;
-    box-shadow: inset 0 0 50px rgb(88 52 18 / 0.4);
+  .clothesline-track {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap);
+    /* Sized by its contents, so the string spans the whole line rather than
+       the slice of it currently on screen. */
+    width: max-content;
+    margin-inline: auto;
   }
 
+  .clothesline-string {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    /* Vertical scale stays 1:1 with the viewBox, so the sag is the same few
+       pixels on every screen and the frames' offsets keep matching it. */
+    height: 56px;
+    width: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .clothesline-cord,
+  .clothesline-twist {
+    fill: none;
+    stroke-linecap: round;
+    /* Without this the stroke would stretch with the line's width. */
+    vector-effect: non-scaling-stroke;
+  }
+
+  .clothesline-cord {
+    stroke: #8c0d2c;
+    stroke-width: 2.6;
+  }
+
+  .clothesline-twist {
+    stroke: #dc2648;
+    stroke-width: 1.1;
+  }
+
+  /* The nails the line is tied off to, sitting on the ends of the path. */
+  .clothesline-tack {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%, #7c8894, #3f4954 70%);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.4);
+  }
+
+  .clothesline-tack-start {
+    left: -4px;
+    top: 5px;
+  }
+
+  .clothesline-tack-end {
+    right: -4px;
+    top: 10px;
+  }
 </style>

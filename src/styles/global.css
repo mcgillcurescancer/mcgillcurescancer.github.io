@@ -24,9 +24,27 @@
      colour again to bring the banding back. */
   --color-canvas: #f1ede6;
   --color-canvas-alt: #f1ede6;
+
+  /* The dot in the page's background weave. Warm and very low contrast: it
+     should register as texture in the paper, never as a visible grid. */
+  --color-canvas-weave: rgb(122 92 56 / 0.11);
 }
 
 @layer base {
+  /*
+    Light patterning across the whole site. Two dot grids on co-prime tiles —
+    one on the diagonal — so the repeat never lines up into rows the eye can
+    follow. It sits under every section, which is why the full-bleed sections
+    no longer paint a background of their own.
+  */
+  body {
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--color-canvas-weave) 1px, transparent 0),
+      radial-gradient(circle at 1px 1px, var(--color-canvas-weave) 1px, transparent 0);
+    background-size: 26px 26px, 38px 38px;
+    background-position: 0 0, 13px 19px;
+  }
+
   /* Every heading picks up the display face without touching each element.
      Body copy stays on the default sans for readability. */
   h1,
