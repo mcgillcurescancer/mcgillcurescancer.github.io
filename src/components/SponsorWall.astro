@@ -2,13 +2,14 @@
 /*
   Sponsor logos, shared between the landing page and the events page.
 
-  These are rasterised from the sponsors' vector artwork at 256px tall — 4x the
-  64px the wall actually renders them at. They were SVGs, but every one had been
-  auto-traced from a bitmap rather than exported from real vector source, so the
-  files carried thousands of near-identical colour patches (poppi alone was
-  6.4MB across 21,376 paths). At this display size WebP is both smaller and
-  faster to paint. Re-run the conversion from the original artwork if a logo
-  ever needs to appear larger.
+  These are rasterised from the sponsors' vector artwork at 256px tall — still
+  comfortably over 2x the 96px the marquee renders them at on a wide screen.
+  They were SVGs, but every one had been auto-traced from a bitmap rather than
+  exported from real vector source, so the files carried thousands of
+  near-identical colour patches (poppi alone was 6.4MB across 21,376 paths). At
+  this display size WebP is both smaller and faster to paint. Re-run the
+  conversion from the original artwork if a logo ever needs to appear larger
+  than it does here.
 */
 const sponsors = [
   { src: '/assets/images/logos/sponsors/cafe-logo.webp', name: 'Café Campus', w: 417, h: 256 },
@@ -37,14 +38,101 @@ const { heading = 'Our sponsors', bare = false, class: className } = Astro.props
 <section class:list={[!bare && 'section-shell', className]}>
   <div class:list={[!bare && 'section-card']}>
     <h2 class="text-center text-2xl font-bold tracking-tight text-slate-900">{heading}</h2>
-    <ul class="mt-10 grid grid-cols-2 items-center gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
-      {sponsors.map((sponsor) => (
-        <li class="flex items-center justify-center">
-          <img src={sponsor.src} alt={sponsor.name} width={sponsor.w} height={sponsor.h}
-               loading="lazy" decoding="async"
-               class="max-h-16 w-auto object-contain opacity-80 transition hover:opacity-100" />
-        </li>
-      ))}
-    </ul>
+
+    <!--
+      The wall turns on a loop rather than sitting still: one run of logos is
+      printed twice, and the track slides left by exactly one run before
+      snapping back, so the join is invisible and the belt never appears to
+      end. The second run is decoration for the eye only — `aria-hidden` keeps
+      a screen reader from reading every sponsor twice.
+    -->
+    <div class="marquee mt-10">
+      <div class="marquee-track">
+        {[0, 1].map((run) => (
+          <ul class="marquee-run" aria-hidden={run === 1 ? 'true' : undefined}>
+            {sponsors.map((sponsor) => (
+              <li class="marquee-item">
+                <img src={sponsor.src} alt={run === 1 ? '' : sponsor.name}
+                     width={sponsor.w} height={sponsor.h}
+                     loading="lazy" decoding="async"
+                     class="max-h-20 w-auto max-w-full object-contain opacity-80 transition hover:opacity-100 sm:max-h-24" />
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  .marquee {
+    /* How much of the card each logo gets, and the air between neighbours.
+       The gap is carried as padding on the items rather than as a flex `gap`
+       so the spacing across the seam between the two runs matches the spacing
+       inside them — a `gap` on the track would make that one join wider. */
+    --item: clamp(8rem, 18vw, 12rem);
+    --gap: 2.5rem;
+
+    overflow: hidden;
+    /* Logos dissolve into the card instead of being sliced off at the edge,
+       so the run reads as continuing past the paper rather than stopping. */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-slide 45s linear infinite;
+  }
+
+  /* Let people stop the belt to look at a logo, by pointer or by tabbing in. */
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-run {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .marquee-item {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--item);
+    padding-inline: calc(var(--gap) / 2);
+  }
+
+  @keyframes marquee-slide {
+    /* One run exactly: at -50% the copy sits where the original started. */
+    to { transform: translateX(-50%); }
+  }
+
+  /*
+    Motion off: the belt stops and becomes an ordinary row the reader scrolls
+    themselves. The duplicate run would only be a second set of the same logos
+    to scroll past, so it goes.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      overflow-x: auto;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+
+    .marquee-track {
+      animation: none;
+    }
+
+    .marquee-run[aria-hidden='true'] {
+      display: none;
+    }
+  }
+</style>
