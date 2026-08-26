@@ -58,30 +58,34 @@ const showcases = [
   title="Events | McGill Cures Cancer"
   description="Team sports, fundraising, and sponsorship prizes — here are a few of the events McGill Cures Cancer ran last year."
 >
-  <section class="mx-auto max-w-6xl px-4 py-16 text-center">
-    <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">Our events</h1>
-    <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-      Here's how a McGill Cures Cancer event comes together, start to finish.
-    </p>
+  <section class="section-shell pt-10">
+    <div class="section-card text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">Our events</h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+        Here's how a McGill Cures Cancer event comes together, start to finish.
+      </p>
 
-    <ol class="mt-12 grid gap-6 text-left sm:grid-cols-2 lg:grid-cols-4">
-      {steps.map((step) => (
-        <li class="rounded-2xl border border-stone-200 p-6">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-mcc-100 text-sm font-bold text-mcc-700">
-            {step.n}
-          </span>
-          <h2 class="mt-4 font-semibold text-slate-900">{step.title}</h2>
-          <p class="mt-2 text-sm text-slate-600">{step.text}</p>
-        </li>
-      ))}
-    </ol>
+      <ol class="mt-12 grid gap-6 text-left sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map((step) => (
+          <li class="rounded-2xl border border-stone-200 bg-stone-50/70 p-6">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-mcc-100 text-sm font-bold text-mcc-700">
+              {step.n}
+            </span>
+            <h2 class="mt-4 font-semibold text-slate-900">{step.title}</h2>
+            <p class="mt-2 text-sm text-slate-600">{step.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-4">
-    <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+  <!-- Lead-in for the showcase cards below, so it stays off the paper itself
+       and reads as a title for the run of cards rather than a section. -->
+  <div class="section-shell pt-8">
+    <h2 class="section-lead text-2xl font-bold tracking-tight text-slate-900">
       Here are a few events we ran last year:
     </h2>
-  </section>
+  </div>
 
   {showcases.map((showcase) => <EventShowcase {...showcase} />)}
 

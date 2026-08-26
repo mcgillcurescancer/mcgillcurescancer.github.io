@@ -13,18 +13,27 @@ const sponsors = [
 
 interface Props {
   heading?: string;
+  /**
+   * Drops the section card, for when the caller is placing the wall inside a
+   * card of its own — on the landing page it shares the sponsorship pitch's.
+   */
+  bare?: boolean;
+  /** Extra spacing classes from the parent, mainly for `bare`. */
+  class?: string;
 }
-const { heading = 'Our sponsors' } = Astro.props;
+const { heading = 'Our sponsors', bare = false, class: className } = Astro.props;
 ---
 
-<section class="mx-auto max-w-6xl px-4 py-16">
-  <h2 class="text-center text-2xl font-bold tracking-tight text-slate-900">{heading}</h2>
-  <ul class="mt-10 grid grid-cols-2 items-center gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
-    {sponsors.map((sponsor) => (
-      <li class="flex items-center justify-center">
-        <img src={sponsor.src} alt={sponsor.name} loading="lazy" decoding="async"
-             class="max-h-16 w-auto object-contain opacity-80 transition hover:opacity-100" />
-      </li>
-    ))}
-  </ul>
+<section class:list={[!bare && 'section-shell', className]}>
+  <div class:list={[!bare && 'section-card']}>
+    <h2 class="text-center text-2xl font-bold tracking-tight text-slate-900">{heading}</h2>
+    <ul class="mt-10 grid grid-cols-2 items-center gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
+      {sponsors.map((sponsor) => (
+        <li class="flex items-center justify-center">
+          <img src={sponsor.src} alt={sponsor.name} loading="lazy" decoding="async"
+               class="max-h-16 w-auto object-contain opacity-80 transition hover:opacity-100" />
+        </li>
+      ))}
+    </ul>
+  </div>
 </section>

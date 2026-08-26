@@ -41,30 +41,31 @@ const positions = [
 ];
 ---
 
-<section
-  id={id}
-  class:list={[
-    'mx-auto grid max-w-6xl scroll-mt-24 items-center gap-10 px-4 py-14',
-    flip ? 'md:grid-cols-[1fr_2fr]' : 'md:grid-cols-[2fr_1fr]',
-  ]}
->
-  <!-- Scattered, lightly overlapping polaroids -->
-  <div class:list={['relative aspect-[4/7] sm:aspect-[5/4]', flip && 'md:order-2']}>
-    {images.slice(0, 6).map((src, i) => (
-      <Polaroid
-        src={src}
-        alt={i === 0 ? alt : ''}
-        caption={captions[i]}
-        class:list={[
-          'absolute transition-transform duration-200 hover:z-40 hover:scale-[1.06]',
-          positions[i],
-        ]}
-      />
-    ))}
-  </div>
+<section id={id} class="section-shell scroll-mt-24">
+  <div
+    class:list={[
+      'section-card grid items-center gap-10',
+      flip ? 'md:grid-cols-[1fr_2fr]' : 'md:grid-cols-[2fr_1fr]',
+    ]}
+  >
+    <!-- Scattered, lightly overlapping polaroids -->
+    <div class:list={['relative aspect-[4/7] sm:aspect-[5/4]', flip && 'md:order-2']}>
+      {images.slice(0, 6).map((src, i) => (
+        <Polaroid
+          src={src}
+          alt={i === 0 ? alt : ''}
+          caption={captions[i]}
+          class:list={[
+            'absolute transition-transform duration-200 hover:z-40 hover:scale-[1.06]',
+            positions[i],
+          ]}
+        />
+      ))}
+    </div>
 
-  <div class:list={[flip && 'md:order-1']}>
-    <h3 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h3>
-    <p class="mt-4 text-lg text-slate-600">{blurb}</p>
+    <div class:list={[flip && 'md:order-1']}>
+      <h3 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h3>
+      <p class="mt-4 text-lg text-slate-600">{blurb}</p>
+    </div>
   </div>
 </section>

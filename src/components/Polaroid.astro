@@ -133,11 +133,16 @@ const { src, alt, caption, href, tone = 'white', clip = false, tilt, class: clas
   /* Half the peg stands above the frame, so the line crossing the frame's top
      edge passes behind the spring. */
   .polaroid-clip {
+    /* Scales with the frame where the parent sets a card width, within limits
+       either side — a peg is a real object, not a drawing that grows without
+       bound. `top` stays at the same fraction of the height, which is what
+       keeps the spring on the line at every size. */
+    --clip-h: clamp(2rem, var(--card, 11rem) * 0.21, 2.75rem);
     position: absolute;
-    top: -1.2rem;
+    top: calc(var(--clip-h) * -0.4364);
     left: 50%;
     z-index: 2;
-    height: 2.75rem;
+    height: var(--clip-h);
     width: auto;
     transform: translateX(-50%);
     filter: drop-shadow(0 3px 3px rgb(60 32 8 / 0.35));

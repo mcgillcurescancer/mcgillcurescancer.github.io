@@ -56,3 +56,62 @@
     letter-spacing: -0.02em;
   }
 }
+
+@layer components {
+  /*
+    Every independent section rides on its own white card floating over the
+    page's off-white weave, so the sections read as separate pieces of paper
+    pinned to the board rather than one continuous run of text.
+
+    The two pieces are split on purpose: `section-shell` is the full-width
+    strip that holds one card and owns the page gutter and the gap between
+    neighbouring cards, while `section-card` owns only the paper itself. That
+    way a section can widen its own padding without changing how far it sits
+    from the card above it.
+  */
+  .section-shell {
+    padding-inline: 1rem;
+    padding-block: 1.25rem;
+  }
+
+  .section-card {
+    margin-inline: auto;
+    max-width: 72rem;
+    border: 1px solid rgb(28 20 8 / 0.07);
+    border-radius: 1.75rem;
+    background: #ffffff;
+    padding: 2.5rem 1.5rem;
+    /* A hairline of contact shadow plus a wide, very soft drop so the card
+       lifts off the weave without casting a hard edge onto it. */
+    box-shadow:
+      0 1px 2px rgb(28 20 8 / 0.05),
+      0 18px 40px -28px rgb(28 20 8 / 0.35);
+    /* `clip` rather than `hidden`: it rounds off anything that runs past the
+       card (the clothesline does) without turning the card into a scroll
+       container. */
+    overflow: clip;
+  }
+
+  @media (min-width: 640px) {
+    .section-card {
+      padding: 3.5rem 3rem;
+    }
+  }
+
+  /*
+    A heading that introduces the cards below it and so stays off the paper
+    itself. Its inline geometry matches `section-card`'s content box, so the
+    text still lines up with the cards it leads.
+  */
+  .section-lead {
+    margin-inline: auto;
+    max-width: 72rem;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .section-lead {
+      padding-inline: 3rem;
+    }
+  }
+}

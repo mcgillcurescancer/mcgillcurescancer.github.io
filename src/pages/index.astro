@@ -21,6 +21,16 @@ import SponsorWall from '../components/SponsorWall.astro';
   (`*-placeholder.jpg`) until the real event photos land. Swap the `src` and
   drop the placeholder files when they do.
 */
+/*
+  One period of the line, drawn three times across: crests at 0 / 122 / 244 /
+  366 and dips at 61 / 183 / 305, in a viewBox 366 units wide by 14 tall where
+  100 units is one card. Every horizontal number here is a multiple of the
+  column pitch (1.22 cards), which is what lets neighbouring copies coincide.
+*/
+const CORD = `M0 3 C18 3.6 40 8.4 61 10 C84 9.6 104 5.2 122 3
+              C140 3.6 162 8.4 183 10 C206 9.6 226 5.2 244 3
+              C262 3.6 284 8.4 305 10 C328 9.6 348 5.2 366 3`;
+
 const events = [
   {
     src: '/assets/images/events/eng-vs-management/evm-placeholder.jpg',
@@ -29,9 +39,6 @@ const events = [
     href: '/events/eng-vs-management/',
     tone: 'gold' as const,
     tilt: '-2deg',
-    /* Where the frame hangs on the line. These have to track the sag in the
-       string path below: each one is the y the path reaches at that peg. */
-    hang: 'mt-[19px]',
   },
   {
     src: '/assets/images/events/mcgill-classic/classic-placeholder.jpg',
@@ -40,7 +47,6 @@ const events = [
     href: '/events/mcgill-classic/',
     tone: 'gold' as const,
     tilt: '1.5deg',
-    hang: 'mt-[36px]',
   },
   {
     src: '/assets/images/events/3v3-tournament/3v3-1.webp',
@@ -48,7 +54,6 @@ const events = [
     caption: '3v3 tournament',
     href: '/events/#3v3-tournament',
     tilt: '-1deg',
-    hang: 'mt-[43px]',
   },
   {
     src: '/assets/images/events/dodgeball-tournament/dodgeball-1.webp',
@@ -56,7 +61,6 @@ const events = [
     caption: 'Dodgeball',
     href: '/events/#dodgeball-tournament',
     tilt: '2deg',
-    hang: 'mt-[39px]',
   },
   {
     src: '/assets/images/events/bar-night/bar-night-1.webp',
@@ -64,7 +68,6 @@ const events = [
     caption: 'Bar night',
     href: '/events/#bar-night',
     tilt: '-1.5deg',
-    hang: 'mt-[23px]',
   },
 ];
 ---
@@ -118,8 +121,8 @@ const events = [
        first thing under the hero. The two marks bracket the copy: the Canadian
        Cancer Society daffodil on one side, our ribbon on the other, with the
        partnership spelled out between them. Placeholder copy for now. -->
-  <section id="about" class="scroll-mt-24 py-20">
-    <div class="mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 md:flex-row md:justify-between md:gap-10">
+  <section id="about" class="section-shell scroll-mt-24 pt-8 sm:pt-12">
+    <div class="section-card flex flex-col items-center gap-10 md:flex-row md:justify-between md:gap-10">
       <!-- Flower only, no wordmark — the lockup's type would out-shout the
            heading at this size. Cropped out of ccs-logo.svg. -->
       <img src="/assets/images/logos/ccs/ccs-flower.svg" alt="Canadian Cancer Society"
@@ -146,144 +149,162 @@ const events = [
     </div>
   </section>
 
-  <!-- 3. Events — every event pegged to one washing line. The two capstone
+  <!-- 3. Events — every event pegged to a washing line. The two capstone
        events lead the line on gold cards; the rest are plain white. Each frame
        is a link into the events page. -->
-  <section id="events" class="scroll-mt-24 py-20">
-    <div class="mx-auto max-w-6xl px-4 text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-slate-900">
-        A glimpse into our events
-      </h2>
-      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-        Tap any photo to see how that event runs.
-      </p>
-    </div>
+  <section id="events" class="section-shell scroll-mt-24">
+    <div class="section-card">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+          A glimpse into our events
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+          Tap any photo to see how that event runs.
+        </p>
+      </div>
 
-    <!--
-      The line is one continuous piece, so the row never wraps: the frames are
-      sized off the viewport and the whole line slides sideways once five of
-      them stop fitting. Every horizontal position below — the peg spacing and
-      the x of each dip in the string — comes out of the same card-to-gap
-      ratio, which is why the gap is expressed as a fraction of the card.
-    -->
-    <div class="clothesline mt-14">
-      <div class="clothesline-track">
-        <svg class="clothesline-string" viewBox="0 0 1000 56"
-             preserveAspectRatio="none" aria-hidden="true">
-          <!-- Drawn twice: a dark cord with a lighter twist on top, so it
-               reads as string rather than a ruled line. Both dip through the
-               five peg positions (85, 292.5, 500, 707.5, 915). -->
-          <path class="clothesline-cord"
-                d="M0 9 C 30 12.8, 55 16, 85 19 C 140 25, 228 32, 292 36.5
-                   C 372 41.3, 448 43, 500 43.1 C 574 43, 652 41.4, 708 38.6
-                   C 792 34.2, 866 27.8, 915 23.4 C 946 20.4, 976 16.8, 1000 14" />
-          <path class="clothesline-twist"
-                d="M0 9 C 30 12.8, 55 16, 85 19 C 140 25, 228 32, 292 36.5
-                   C 372 41.3, 448 43, 500 43.1 C 574 43, 652 41.4, 708 38.6
-                   C 792 34.2, 866 27.8, 915 23.4 C 946 20.4, 976 16.8, 1000 14" />
-        </svg>
-        <span class="clothesline-tack clothesline-tack-start" aria-hidden="true"></span>
-        <span class="clothesline-tack clothesline-tack-end" aria-hidden="true"></span>
-
-        <!-- Width and snapping ride on utility classes rather than this page's
-             scoped CSS: the class lands on a child component's root element,
-             which this page's scope attribute does not reach. -->
-        {events.map(({ hang, ...event }) => (
-          <Polaroid {...event} clip class:list={['w-[var(--card)] shrink-0 snap-center', hang]} />
-        ))}
+      <!--
+        Five across on a wide screen, three-then-two on a phone — every event on
+        screen at once, no sideways scrolling. The line is not one long drawing
+        spanning the row: each frame carries its own three-span piece of cord,
+        phase-locked to the column pitch so a piece traces exactly the same curve
+        as its neighbours over the stretch they share. Overlapping copies land on
+        top of each other and read as one continuous line, and because the pieces
+        travel with the frames, a row that wraps gets a whole line of its own.
+      -->
+      <div class="clothesline mt-14">
+        <div class="clothesline-grid">
+          {events.map((event) => (
+            <div class="peg">
+              <svg class="peg-string" viewBox="0 0 366 14" preserveAspectRatio="none" aria-hidden="true">
+                {/* Three dips: the middle one (x=183) is this frame's, the outer
+                    two sit under whatever is pegged up on either side. */}
+                <path class="peg-cord" d={CORD} />
+                <path class="peg-twist" d={CORD} />
+              </svg>
+              <Polaroid {...event} clip class="w-full" />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </section>
 
   <!-- 4. Sponsorships -->
-  <section id="sponsorships" class="mx-auto max-w-6xl scroll-mt-24 px-4 pt-16 text-center">
-    <h2 class="text-3xl font-bold tracking-tight text-slate-900">Interested in sponsoring us?</h2>
-    <p class="mx-auto mt-4 max-w-2xl text-slate-600">
-      Check out <a href="/events/" class="font-medium text-mcc-600 underline">a few of our events</a>.
-      We love partnering with local Montreal companies.
-    </p>
+  <section id="sponsorships" class="section-shell scroll-mt-24">
+    <div class="section-card text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Interested in sponsoring us?</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-slate-600">
+        Check out <a href="/events/" class="font-medium text-mcc-600 underline">a few of our events</a>.
+        We love partnering with local Montreal companies.
+      </p>
+
+      <!-- The wall is part of the same pitch, so it shares the card rather
+           than starting a new one. -->
+      <SponsorWall heading="Some of our sponsors" bare class="mt-16" />
+    </div>
   </section>
-  <SponsorWall heading="Some of our sponsors" />
 </Layout>
 
 <style>
   /*
-    Card and gap are locked to one ratio (gap = 0.22 x card), which fixes the
-    peg positions as fractions of the line no matter how wide the cards get:
-    centres land at 8.5%, 29.25%, 50%, 70.75% and 91.5%. Those are the x
-    values the string's dips are drawn at, and the `mt-[…px]` on each frame is
-    the depth the string has reached by then.
+    Everything on the line is a multiple of the card width, so the whole
+    arrangement — gaps, how deep the frames hang, the size of each piece of
+    cord — stays in proportion at any size. `--card` is solved from the column
+    count so the row fills the container exactly: n cards plus n-1 gaps of
+    0.22 cards is (1.22n - 0.22) cards wide.
   */
   .clothesline {
-    --card: clamp(8.5rem, 16vw, 13rem);
+    container-type: inline-size;
+    padding-inline: 1rem;
+    /* The cord runs a column-and-a-half past the frames at each end of a row,
+       so it is left to run right off the section card and be cut by the card's
+       own `overflow: clip` — the line reads as strung across the paper and
+       disappearing behind its edge.
+
+       `isolation` is what keeps it visible at all: each piece of cord sits at
+       `z-index: -1` so it passes behind the pegs, and without a stacking
+       context of its own here that would drop it behind the card's white
+       background instead. */
+    isolation: isolate;
+  }
+
+  .clothesline-grid {
+    --cols: 3;
+    --card: min(13rem, calc(100cqw / (var(--cols) * 1.22 - 0.22)));
     --gap: calc(var(--card) * 0.22);
-    /* Room for the pegs standing above the highest frame, and for the shadow
-       under the lowest. Both matter: a sideways scroller clips vertically. */
-    padding: 1.75rem 1rem 2.5rem;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scrollbar-width: thin;
+    /* How far below the crests the frames hang — the depth of a dip. */
+    --dip: calc(var(--card) * 0.1);
+    /* Half a column, to centre a short last row. Zeroed once everything fits
+       on one line. */
+    --nudge: calc((var(--card) + var(--gap)) / 2);
+    display: grid;
+    grid-template-columns: repeat(var(--cols), var(--card));
+    justify-content: center;
+    column-gap: var(--gap);
+    row-gap: calc(var(--card) * 0.3);
   }
 
-  .clothesline-track {
+  /* Five fit comfortably from here up. There is no four-column step: it would
+     leave a single frame stranded on a line of its own. */
+  @container (min-width: 40rem) {
+    .clothesline-grid {
+      --cols: 5;
+      --nudge: 0px;
+    }
+  }
+
+  .peg {
     position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: var(--gap);
-    /* Sized by its contents, so the string spans the whole line rather than
-       the slice of it currently on screen. */
-    width: max-content;
-    margin-inline: auto;
+    padding-top: var(--dip);
   }
 
-  .clothesline-string {
+  /* On three columns the five frames fall 3 + 2, leaving the last two in
+     columns one and two so the second line reads as left-aligned. `--nudge`
+     slides the pair half a column over to centre it. A relative offset rather
+     than a transform on purpose: a transform would box each frame's cord into
+     its own stacking context, and the copy that runs past a neighbour would
+     then cross over its peg instead of behind it. */
+  .peg:nth-child(4),
+  .peg:nth-child(5) {
+    left: var(--nudge);
+  }
+
+  /*
+    Three column-pitches wide, centred on the frame, and sitting behind every
+    frame on the line — including its neighbours', so the copies that run past
+    them pass behind their pegs rather than over their faces.
+  */
+  .peg-string {
     position: absolute;
-    inset-inline: 0;
     top: 0;
-    /* Vertical scale stays 1:1 with the viewBox, so the sag is the same few
-       pixels on every screen and the frames' offsets keep matching it. */
-    height: 56px;
-    width: 100%;
-    overflow: visible;
+    left: 50%;
+    z-index: -1;
+    width: calc(var(--card) * 3.66);
+    height: calc(var(--card) * 0.14);
+    transform: translateX(-50%);
     pointer-events: none;
+    /* Solid across the middle span, fading out over the two either side. On an
+       inner frame the faded stretch is covered by a neighbour's solid one; on
+       the frame that ends a row there is nothing to cover it, so the line
+       trails off instead of stopping dead. */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 33.33%, #000 66.67%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 33.33%, #000 66.67%, transparent);
   }
 
-  .clothesline-cord,
-  .clothesline-twist {
+  .peg-cord,
+  .peg-twist {
     fill: none;
     stroke-linecap: round;
-    /* Without this the stroke would stretch with the line's width. */
-    vector-effect: non-scaling-stroke;
   }
 
-  .clothesline-cord {
+  .peg-cord {
     stroke: #8c0d2c;
-    stroke-width: 2.6;
+    stroke-width: 1.3;
   }
 
-  .clothesline-twist {
+  .peg-twist {
     stroke: #dc2648;
-    stroke-width: 1.1;
-  }
-
-  /* The nails the line is tied off to, sitting on the ends of the path. */
-  .clothesline-tack {
-    position: absolute;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 32% 30%, #7c8894, #3f4954 70%);
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.4);
-  }
-
-  .clothesline-tack-start {
-    left: -4px;
-    top: 5px;
-  }
-
-  .clothesline-tack-end {
-    right: -4px;
-    top: 10px;
+    stroke-width: 0.55;
   }
 </style>
