@@ -93,7 +93,15 @@ const events = [
   <!-- 1. Hero — the team photo owns the whole first screen. It sits in normal
        flow (not fixed), so the moment you scroll it leaves with everything
        else rather than lingering as a backdrop behind the sections below. -->
-  <section class="relative flex h-svh min-h-[32rem] flex-col justify-end overflow-hidden">
+  <!-- `bg-hero-backdrop` is never seen as a colour: the photo covers it. It is
+       there because the photo's own edges are anti-aliased, and on a screen
+       whose device pixel ratio is not a whole number they land mid-pixel and
+       blend with whatever is behind — which used to be the off-white page, and
+       showed up as a pale sliver down the right of the hero and across its
+       bottom. Blending into near-black instead, the edge reads as shadow. The
+       page background carries the matching half of this fix; see
+       `html[data-hero]` in src/styles/global.css. -->
+  <section class="relative flex h-svh min-h-[32rem] flex-col justify-end overflow-hidden bg-hero-backdrop">
     {/* The page's LCP. It stays eager and high-priority — `<Image>` would
         otherwise lazy-load it — while `widths` keeps a phone off the 2048px
         original it was being served before. */}

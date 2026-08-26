@@ -38,6 +38,15 @@
   /* The dot in the page's background weave. Warm and very low contrast: it
      should register as texture in the paper, never as a visible grid. */
   --color-canvas-weave: rgb(122 92 56 / 0.11);
+
+  /*
+     What sits *behind* a full-bleed hero photo — the `bg-hero-backdrop` on the
+     hero section, and the band at the top of the page painted by the
+     `html[data-hero]` rule below. Never seen as a colour of its own: the photo
+     covers it. It exists only to be what the photo's edges blend into, so it
+     is a near-black warm tone rather than a colour anyone picked to look at.
+  */
+  --color-hero-backdrop: #0f0d0c;
 }
 
 @layer base {
@@ -46,13 +55,57 @@
     one on the diagonal — so the repeat never lines up into rows the eye can
     follow. It sits under every section, which is why the full-bleed sections
     no longer paint a background of their own.
+
+    This lives on `html`, not on `body`, and `body` is left transparent on
+    purpose. A background on the root element is painted across the whole
+    canvas rather than only across its own box, and that is what closes the
+    sliver: on a phone whose device pixel ratio is not a whole number (2.625 on
+    most Android, or any browser zoom level) the viewport is a fractional
+    number of device pixels wide, so the last half pixel down the right edge —
+    and along the bottom — falls outside every element's box, `body` included.
+    Whatever paints the canvas fills it; anything painted per-element stops
+    short and leaves that half pixel to be blended in from behind.
   */
-  body {
+  html {
+    background-color: var(--color-canvas);
     background-image:
       radial-gradient(circle at 1px 1px, var(--color-canvas-weave) 1px, transparent 0),
       radial-gradient(circle at 1px 1px, var(--color-canvas-weave) 1px, transparent 0);
     background-size: 26px 26px, 38px 38px;
     background-position: 0 0, 13px 19px;
+  }
+
+  /*
+    Set by Layout.astro on the pages that open with a full-bleed hero photo.
+
+    Those pages are the one place the fractional edge above is visible: against
+    a dark photo, half a pixel of off-white canvas reads as a white sliver down
+    the right of the hero and across its bottom. So the canvas is painted dark
+    for exactly the height of the hero and off-white below it, which leaves
+    that half pixel blending the photo into shadow instead of into paper. The
+    band is behind the hero the whole way, so it is never seen on its own.
+
+    The height mirrors `h-svh min-h-[32rem]` on the hero section in
+    src/pages/index.astro — if that changes, change this with it.
+  */
+  html[data-hero] {
+    --hero-extent: max(100svh, 32rem);
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--color-canvas-weave) 1px, transparent 0),
+      radial-gradient(circle at 1px 1px, var(--color-canvas-weave) 1px, transparent 0),
+      linear-gradient(
+        to bottom,
+        var(--color-hero-backdrop) 0 var(--hero-extent),
+        transparent var(--hero-extent)
+      );
+    background-size: 26px 26px, 38px 38px, 100% 100%;
+    background-position: 0 0, 13px 19px, 0 0;
+    /* `repeat-x`, not `no-repeat`: a root background image is painted across
+       the whole canvas but only *tiled* out past its positioning area, and
+       that area stops at the same fractional edge as everything else. The
+       band runs top-to-bottom, so tiling it sideways changes nothing about how
+       it looks and leaves no column of canvas showing through. */
+    background-repeat: repeat, repeat, repeat-x;
   }
 
   /* Every heading picks up the display face without touching each element.
