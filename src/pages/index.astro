@@ -4,10 +4,62 @@
 
   1. Hero .......... team photo, full viewport, scrolls away on first scroll
   2. About ......... who we are, flanked by the CCS and MCC marks (#about)
-  3. Sponsorships .. pitch + rotating sponsor logos
+  3. Events ........ one polaroid per event, each linking into the events page
+  4. Sponsorships .. pitch + rotating sponsor logos
 */
 import Layout from '../layouts/Layout.astro';
+import Polaroid from '../components/Polaroid.astro';
 import SponsorWall from '../components/SponsorWall.astro';
+
+/*
+  One polaroid per event, pinned up in a single row. The first two are our
+  capstone events: they get their own pages and a gold card so sponsors read
+  them as the headline acts. The rest link to their section on the events
+  page, so these anchors have to match the `id`s in src/pages/events/index.astro.
+
+  TODO: eng-vs-management and mcgill-classic use stock placeholder photos
+  (`*-placeholder.jpg`) until the real event photos land. Swap the `src` and
+  drop the placeholder files when they do.
+*/
+const events = [
+  {
+    src: '/assets/images/events/eng-vs-management/evm-placeholder.jpg',
+    alt: 'Engineering vs. Management',
+    caption: 'Eng vs. Management',
+    href: '/events/eng-vs-management/',
+    tone: 'gold' as const,
+    tilt: '-rotate-2',
+  },
+  {
+    src: '/assets/images/events/mcgill-classic/classic-placeholder.jpg',
+    alt: 'The McGill Classic',
+    caption: 'The McGill Classic',
+    href: '/events/mcgill-classic/',
+    tone: 'gold' as const,
+    tilt: 'rotate-2',
+  },
+  {
+    src: '/assets/images/events/3v3-tournament/3v3-1.webp',
+    alt: '3v3 basketball tournament',
+    caption: '3v3 tournament',
+    href: '/events/#3v3-tournament',
+    tilt: '-rotate-1',
+  },
+  {
+    src: '/assets/images/events/dodgeball-tournament/dodgeball-1.webp',
+    alt: 'Dodgeball tournament',
+    caption: 'Dodgeball',
+    href: '/events/#dodgeball-tournament',
+    tilt: 'rotate-2',
+  },
+  {
+    src: '/assets/images/events/bar-night/bar-night-1.webp',
+    alt: 'Bar night at Ye Olde Orchard',
+    caption: 'Bar night',
+    href: '/events/#bar-night',
+    tilt: '-rotate-2',
+  },
+];
 ---
 
 <Layout
@@ -87,7 +139,42 @@ import SponsorWall from '../components/SponsorWall.astro';
     </div>
   </section>
 
-  <!-- 3. Sponsorships -->
+  <!-- 3. Events — every event pinned up in one row on the club noticeboard.
+       The two capstone events lead the row on gold cards; the rest are plain
+       white. Each frame is a link into the events page. -->
+  <section id="events" class="scroll-mt-24 py-20">
+    <div class="mx-auto max-w-6xl px-4 text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+        A glimpse into our events
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+        Tap any photo to see how that event runs.
+      </p>
+    </div>
+
+    <div class="mx-auto mt-12 max-w-7xl px-4">
+      <div class="pinboard">
+        <div class="pinboard-cork">
+          <!-- Five across from `lg`; below that the row wraps rather than
+               shrinking the frames past the point the captions can be read. -->
+          <div class="flex flex-wrap justify-center gap-x-6 gap-y-12 sm:gap-x-8">
+            {events.map(({ tilt, ...event }) => (
+              <Polaroid
+                {...event}
+                pin
+                class:list={[
+                  'w-[42%] max-w-[15rem] transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.04] sm:w-[27%] lg:w-[17%]',
+                  tilt,
+                ]}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Sponsorships -->
   <section id="sponsorships" class="mx-auto max-w-6xl scroll-mt-24 px-4 pt-16 text-center">
     <h2 class="text-3xl font-bold tracking-tight text-slate-900">Interested in sponsoring us?</h2>
     <p class="mx-auto mt-4 max-w-2xl text-slate-600">
@@ -97,3 +184,41 @@ import SponsorWall from '../components/SponsorWall.astro';
   </section>
   <SponsorWall heading="Some of our sponsors" />
 </Layout>
+
+<style>
+  /*
+    The noticeboard the row is pinned to: a wooden surround wrapped around a
+    cork panel. The cork is drawn rather than photographed — a warm base with
+    a few offset speckle layers on co-prime tile sizes, so the grain does not
+    visibly repeat across the width of the board.
+  */
+  .pinboard {
+    padding: clamp(0.6rem, 1.1vw, 1.1rem);
+    border-radius: 14px;
+    background: linear-gradient(160deg, #a9713d 0%, #82522c 45%, #6a411f 100%);
+    box-shadow:
+      0 22px 45px -20px rgb(43 25 8 / 0.55),
+      inset 0 1px 0 rgb(255 255 255 / 0.25);
+  }
+
+  .pinboard-cork {
+    padding: clamp(2.5rem, 4vw, 4rem) clamp(1rem, 3vw, 3rem);
+    border-radius: 5px;
+    /*
+      Cork, top to bottom: fractal-noise grain for the flecks, three soft
+      blotches for the tonal variation a real board has, then the base tan.
+      The grain tile is generated by the browser, so there is no texture image
+      to ship and it never tiles visibly at this frequency.
+    */
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23c)'/%3E%3C/svg%3E"),
+      radial-gradient(ellipse 60% 55% at 12% 20%, rgb(214 172 118 / 0.5), transparent 70%),
+      radial-gradient(ellipse 55% 60% at 78% 78%, rgb(139 92 44 / 0.35), transparent 70%),
+      radial-gradient(ellipse 45% 50% at 55% 12%, rgb(196 148 92 / 0.35), transparent 70%),
+      linear-gradient(150deg, #cfa066 0%, #bf8f4f 55%, #ad7c41 100%);
+    background-size: 220px 220px, auto, auto, auto, auto;
+    background-blend-mode: overlay, normal, normal, normal, normal;
+    box-shadow: inset 0 0 50px rgb(88 52 18 / 0.4);
+  }
+
+</style>

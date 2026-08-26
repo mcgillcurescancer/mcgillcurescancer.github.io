@@ -18,12 +18,16 @@ const steps = [
 ];
 
 /*
+  `id` is the anchor the landing page's "glimpse into our events" polaroids
+  link to, so keep them in step with the hrefs in index.astro.
+
   `captions` are the handwritten lines under each polaroid, in the same order
   as `images`. Swap these for the real event dates ("March 24th, 2026") — the
   frame is sized for a short single line.
 */
 const showcases = [
   {
+    id: 'bar-night',
     title: 'Live music at Ye Olde Orchard',
     blurb: 'Our bar night brings the McGill community together for a night of live music.',
     alt: 'Bar night at Ye Olde Orchard',
@@ -31,6 +35,7 @@ const showcases = [
     images: [1, 2, 3, 4, 5, 6].map((i) => `/assets/images/events/bar-night/bar-night-${i}.webp`),
   },
   {
+    id: 'dodgeball-tournament',
     title: '10-team dodgeball tournament',
     blurb: 'Ten teams, one bracket, and a full day of dodgeball raising money for the CCS.',
     alt: 'Dodgeball tournament',
@@ -39,6 +44,7 @@ const showcases = [
     flip: true,
   },
   {
+    id: '3v3-tournament',
     title: 'A 3v3 March Madness basketball tournament',
     blurb: 'Our March Madness bracket runs 3v3 games straight through to the final.',
     alt: '3v3 basketball tournament',

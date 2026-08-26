@@ -4,6 +4,8 @@
 import Polaroid from './Polaroid.astro';
 
 interface Props {
+  /** Anchor target, so the landing page can link straight to this row. */
+  id?: string;
   title: string;
   blurb: string;
   images: string[];
@@ -12,7 +14,7 @@ interface Props {
   alt: string;
   flip?: boolean;
 }
-const { title, blurb, images, captions = [], alt, flip = false } = Astro.props;
+const { id, title, blurb, images, captions = [], alt, flip = false } = Astro.props;
 
 /*
   Scatter positions for the six polaroids. Two arrangements: two columns x
@@ -40,8 +42,9 @@ const positions = [
 ---
 
 <section
+  id={id}
   class:list={[
-    'mx-auto grid max-w-6xl items-center gap-10 px-4 py-14',
+    'mx-auto grid max-w-6xl scroll-mt-24 items-center gap-10 px-4 py-14',
     flip ? 'md:grid-cols-[1fr_2fr]' : 'md:grid-cols-[2fr_1fr]',
   ]}
 >
