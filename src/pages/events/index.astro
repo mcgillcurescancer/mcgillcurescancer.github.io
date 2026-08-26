@@ -3,12 +3,13 @@
   The events page, read top to bottom:
 
   1. Capstone events .. the McGill Classic and Eng vs. Management, on gold,
-                        each with its numbers and a way through to its own page
+                        each with its numbers
   2. Past events ...... last year's smaller events, as scattered polaroids
   3. Sponsors ......... the wall
 
-  The two capstone events also have their own detail pages under this folder;
-  the cards here are the doorway to them.
+  Both capstone events have their own page under this folder, and the cards
+  here are the doorway to them — but the pages are placeholders at the moment,
+  so the doors are shut. See the `capstones` note below.
 */
 import Layout from '../../layouts/Layout.astro';
 import CapstoneCard from '../../components/CapstoneCard.astro';
@@ -42,9 +43,13 @@ const photos = (folder: string, stem: string) =>
 /*
   Our two flagship events, in the order they lead the page.
 
+  Both detail pages are bare placeholders for now, so both cards carry
+  `comingSoon` and show a note in place of the link through. Drop the flag on
+  an event once its write-up lands.
+
   TODO: `turnout` and `target` are the projections we quote to sponsors — keep
-  them in step with the figures on each event's own page (EventPage.astro),
-  which still read TBD.
+  them in step with the figures on each event's own page once those pages are
+  written.
 */
 const capstones = [
   {
@@ -56,9 +61,6 @@ const capstones = [
     turnout: '800 viewers',
     target: '$25,000',
     href: '/events/mcgill-classic/',
-    // Its page is a bare placeholder for now, so the card shows a "coming
-    // soon" note instead of linking through. Drop this when the write-up
-    // lands.
     comingSoon: true,
   },
   {
@@ -71,6 +73,7 @@ const capstones = [
     target: '$25,000',
     href: '/events/eng-vs-management/',
     flip: true,
+    comingSoon: true,
   },
 ];
 
