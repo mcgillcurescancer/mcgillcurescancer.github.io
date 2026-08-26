@@ -11,10 +11,26 @@ interface Props {
   images: ImageMetadata[];
   /** Handwritten line under each photo, in the same order as `images`. */
   captions?: string[];
+  /**
+   * A phrase inside `title` to run the yellow marker swipe under. It has to
+   * appear in the title verbatim, and short enough to stay on one line — see
+   * `.hand-underline` in global.css. Left out, the title is drawn plain.
+   */
+  highlight?: string;
   alt: string;
   flip?: boolean;
 }
-const { id, title, blurb, images, captions = [], alt, flip = false } = Astro.props;
+const { id, title, blurb, images, captions = [], highlight, alt, flip = false } = Astro.props;
+
+/*
+  Split the title around the highlighted phrase. `indexOf` rather than
+  `split` so a phrase that happens to occur twice only gets marked once —
+  two swipes in one heading reads as a mistake.
+*/
+const at = highlight ? title.indexOf(highlight) : -1;
+const marked = at >= 0
+  ? { before: title.slice(0, at), phrase: highlight!, after: title.slice(at + highlight!.length) }
+  : null;
 
 /*
   Scatter positions for the six polaroids. Two arrangements: two columns x
@@ -69,8 +85,99 @@ const positions = [
     </div>
 
     <div class:list={[flip && 'md:order-1']}>
-      <h3 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h3>
+      <h3 class="text-2xl font-bold tracking-tight text-slate-900">
+        {marked
+          ? <>{marked.before}<span class="hand-underline">{marked.phrase}</span>{marked.after}</>
+          : title}
+      </h3>
       <p class="mt-4 text-lg text-slate-600">{blurb}</p>
+
+      {/*
+        A pen arrow thrown at the pile of photos — red line, a yellow second
+        sweep under it and two ink taps, the same three inks as the doodles
+        between the cards. Decorative, so it is hidden from the reader.
+
+        It leans towards wherever the photos are: sideways at the two-column
+        widths, and swung up on a phone, where the pile sits above the text
+        instead of beside it.
+      */}
+      <div class:list={['showcase-arrow', flip && 'showcase-arrow-flip']} aria-hidden="true">
+        <svg viewBox="0 0 130 50" fill="none">
+          {/* The shaft comes in almost level so both barbs splay clear of it —
+              curve the line down into the tip and the lower barb disappears
+              into it, and the whole thing reads as a tick instead. */}
+          <path class="arrow-red" d="M126 14C104 27 62 19 16 30" />
+          <path class="arrow-red" d="M16 30C26 27 36 22 44 14" />
+          <path class="arrow-red" d="M16 30c9 4 19 8 28 13" />
+          {/* Stops short of the head — a second line through the barbs would
+              only thicken them. */}
+          <path class="arrow-yellow" d="M118 25C98 34 78 31 58 36" />
+          <circle class="arrow-dot" cx="94" cy="8" r="1.4" />
+          <circle class="arrow-dot" cx="74" cy="45" r="1.2" />
+        </svg>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /*
+    A transform doesn't move anything else on the page, so a rotated arrow
+    would swing down through the bottom of the card and get clipped — hence
+    the `margin-bottom`, which is the room the swing needs and nothing more.
+  */
+  .showcase-arrow {
+    width: 5.5rem;
+    margin-top: 1.25rem;
+    margin-bottom: 2rem;
+    /* Stacked, the photos are straight above the text, so the arrow tips up
+       at them. It pivots on the tip so the tail is what swings. */
+    transform: rotate(26deg);
+    transform-origin: left top;
+  }
+
+  @media (min-width: 768px) {
+    /*
+      Two columns now: the photos are beside the text and the arrow lies back
+      down, a degree or two off true like the doodles between the cards. `flip`
+      puts the photos on the right, so the arrow turns round and crosses to the
+      edge of the text column nearest them.
+
+      No mirroring below this width — reflected about its left edge the arrow
+      would end up outside the card.
+    */
+    .showcase-arrow {
+      width: 7rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0;
+      /* Back to the middle: `scaleX(-1)` below reflects about the origin, and
+         left over from the phone layout it would throw the flipped arrow a
+         full width out of its column. */
+      transform-origin: center;
+      transform: rotate(-3deg);
+    }
+
+    .showcase-arrow-flip {
+      margin-inline-start: auto;
+      transform: rotate(-3deg) scaleX(-1);
+    }
+  }
+
+  .showcase-arrow svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .showcase-arrow path {
+    fill: none;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .arrow-red    { stroke: var(--color-doodle-red); }
+  .arrow-yellow { stroke: var(--color-doodle-yellow); stroke-width: 2.6; }
+  .arrow-dot    { fill: var(--color-doodle-ink); opacity: 0.55; }
+</style>

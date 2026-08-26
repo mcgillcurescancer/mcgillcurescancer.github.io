@@ -77,11 +77,16 @@ const capstones = [
   `captions` are the handwritten lines under each polaroid, in the same order
   as `images`. Swap these for the real event dates ("March 24th, 2026") — the
   frame is sized for a short single line.
+
+  `highlight` is the phrase in the title the yellow marker swipe runs under.
+  It has to appear in `title` word for word, and stay short enough to hold one
+  line — a phrase that wraps gets the swipe under its last line only.
 */
 const showcases = [
   {
     id: 'bar-night',
     title: 'Live music at Ye Olde Orchard',
+    highlight: 'Live music',
     blurb: 'Our bar night brings the McGill community together for a night of live music.',
     alt: 'Bar night at Ye Olde Orchard',
     captions: ['Bar night', 'Ye Olde Orchard', 'Live music', 'The band', 'Full house', 'Last call'],
@@ -90,6 +95,7 @@ const showcases = [
   {
     id: 'dodgeball-tournament',
     title: '10-team dodgeball tournament',
+    highlight: 'dodgeball',
     blurb: 'Ten teams, one bracket, and a full day of dodgeball raising money for the CCS.',
     alt: 'Dodgeball tournament',
     captions: ['Dodgeball', 'Ten teams', 'Warm-ups', 'Bracket day', 'Semi-final', 'The final'],
@@ -99,6 +105,7 @@ const showcases = [
   {
     id: '3v3-tournament',
     title: 'A 3v3 March Madness basketball tournament',
+    highlight: 'March Madness',
     blurb: 'Our March Madness bracket runs 3v3 games straight through to the final.',
     alt: '3v3 basketball tournament',
     captions: ['March Madness', '3v3 bracket', 'Tip-off', 'Game day', 'Semi-final', 'Championship'],
