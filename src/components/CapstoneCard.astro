@@ -136,7 +136,9 @@ const positions = [
         <p class="capstone-soon">Full details coming soon</p>
       ) : (
         <a href={href} class="capstone-cta">
-          <span class="capstone-cta-label">Click here to learn more</span>
+          <span class="capstone-cta-label">
+            Click <span class="capstone-cta-mark">here</span> to learn more
+          </span>
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
                fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                stroke-linejoin="round" /></svg>
@@ -238,45 +240,60 @@ const positions = [
   .capstone-cta {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.5rem;
     margin-top: 1.5rem;
     padding-block: 0.7rem;
     /* No inline padding: the label's left edge lines up with the blurb above
        it, and the stroke below overshoots into the space instead. */
-    font-size: 1.0625rem;
-    font-weight: 600;
     color: #9f1239;
+    /*
+      Written by hand, like the eyebrow above it and the note it replaces — the
+      one piece of type on the card that is neither a heading nor body copy, so
+      it can be the script. 600 is the heavier of the two Caveat weights loaded
+      in Layout.astro; the lighter one goes thin and pale at this size against
+      the paper. `line-height: 1` because Caveat carries a lot of air above and
+      below its letters, which would otherwise make the button oddly tall.
+    */
+    font-family: var(--font-hand);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1;
   }
 
+  /* Sized against the script rather than in `em`, which is a third bigger here
+     than it would be on the body face. */
   .capstone-cta svg {
-    width: 1.05em;
-    height: 1.05em;
+    width: 0.8em;
+    height: 0.8em;
     transition: transform 200ms ease;
   }
 
   /*
-    A red pen stroke under the label — the line you draw under the thing you
-    want someone to do. Same idea as the yellow `.hand-underline` in
-    global.css, but pen rather than highlighter: it sits below the letterforms
-    instead of across them, so there is no blend mode involved.
+    A red pen stroke under the one word that says what to do. Same idea as the
+    yellow `.hand-underline` in global.css, but pen rather than highlighter: it
+    sits below the letterforms instead of across them, so there is no blend
+    mode involved.
 
     The colour is baked into the data URI; if `--color-doodle-red` changes,
     change the `%23c9203a` below with it.
   */
-  .capstone-cta-label {
+  .capstone-cta-mark {
     position: relative;
   }
 
-  .capstone-cta-label::after {
+  .capstone-cta-mark::after {
     content: '';
     position: absolute;
     /* Overshoots at both ends — nobody stops a pen on the last letter. */
-    inset-inline: -0.2em;
-    bottom: -0.2em;
+    inset-inline: -0.18em;
+    /* Positive, unlike the same stroke under body copy: Caveat sits high in
+       its em box, so the bottom of this span is a good way below the baseline
+       the line has to follow. */
+    bottom: 0.06em;
     /* `preserveAspectRatio: none` stretches the drawing into this box, so the
        stroke's weight on screen is its width in the viewBox scaled by
        height/10 — hence a number that looks far too heavy written down. */
-    height: 0.32em;
+    height: 0.24em;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M5 6C41 2.4 78 8 116 4.2c24-2.4 46 1.8 79-1.2' fill='none' stroke='%23c9203a' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -285,18 +302,19 @@ const positions = [
   }
 
   /* Hovering anywhere on the card moves the arrow on and drags the stroke a
-     little past the end of the word, the way a second pass of the pen would. */
+     little past either end of the word, the way a second pass of the pen
+     would. */
   .capstone:hover .capstone-cta svg {
     transform: translateX(3px);
   }
 
-  .capstone:hover .capstone-cta-label::after {
-    transform: scaleX(1.04);
+  .capstone:hover .capstone-cta-mark::after {
+    transform: scaleX(1.06);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .capstone-cta svg,
-    .capstone-cta-label::after {
+    .capstone-cta-mark::after {
       transition: none;
     }
   }
