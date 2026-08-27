@@ -2,8 +2,9 @@
 /*
   The events page, read top to bottom:
 
-  1. Capstone events .. the McGill Classic and Eng vs. Management, one
-                        gold-framed polaroid each, with their numbers
+  1. Capstone events .. the McGill Classic and Eng vs. Management, three
+                        gold-framed polaroids each, captioned with the name
+                        and the two numbers
   2. Past events ...... last year's smaller events, as scattered polaroids
   3. Sponsors ......... the wall
 
@@ -19,8 +20,11 @@ import Doodle from '../../components/Doodle.astro';
 
 /*
   TODO: eng-vs-management and mcgill-classic use stock placeholder photos
-  (`*-placeholder.jpg`) until the real event photos land. Swap the `image` and
-  drop the placeholder files when they do.
+  (`*-placeholder.jpg`) until the real event photos land. Each capstone card
+  shows a pile of three, and there is only one placeholder per event, so the
+  same picture is currently repeated three times — it will look repetitive
+  until three real photos per event replace it. Fill in `images` and drop the
+  placeholder files when they land.
 */
 import classicPlaceholder from '../../assets/images/events/mcgill-classic/classic-placeholder.jpg';
 import evmPlaceholder from '../../assets/images/events/eng-vs-management/evm-placeholder.jpg';
@@ -49,37 +53,34 @@ const photos = (folder: string, stem: string) =>
 
   TODO: `turnout` and `target` are the projections we quote to sponsors — keep
   them in step with the figures on each event's own page once those pages are
-  written.
+  written. They are written under the second and third photo on the card, so
+  keep them short: the caption strip holds one line.
 
-  `caption` is the handwritten line under the polaroid. Swap these for the real
-  event dates ("March 24th, 2026") once they are set, the same as the showcase
-  captions below — the frame is sized for a short single line.
+  `shortTitle` is what goes under the first photo, for a name too long to sit
+  on one line. Leave it off where `title` already fits.
 */
 const capstones = [
   {
     title: 'The McGill Classic',
     blurb:
       'Our biggest tournament of the year, bringing teams from across campus together for one day of sport.',
-    image: classicPlaceholder,
+    images: [classicPlaceholder, classicPlaceholder, classicPlaceholder],
     alt: 'The McGill Classic',
-    caption: 'The Classic',
     turnout: '800 viewers',
     target: '$25,000',
     href: '/events/mcgill-classic/',
-    tilt: '-2.5deg',
     comingSoon: true,
   },
   {
     title: 'Engineering vs. Management',
     blurb:
       'The annual faculty showdown — Engineering and Management go head to head to raise money for cancer research.',
-    image: evmPlaceholder,
+    images: [evmPlaceholder, evmPlaceholder, evmPlaceholder],
     alt: 'Engineering vs. Management',
-    caption: 'Eng vs. Management',
+    shortTitle: 'Eng vs. Management',
     turnout: '800 viewers',
     target: '$25,000',
     href: '/events/eng-vs-management/',
-    tilt: '2deg',
     flip: true,
     comingSoon: true,
   },

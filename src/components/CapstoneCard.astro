@@ -2,33 +2,41 @@
 /*
   A capstone event. The two flagship events lead the events page, so they have
   to read as a bigger deal than the showcases below them — but as the same kind
-  of thing, pinned to the same board. So this is the showcase row's layout with
-  one photo instead of six: a single polaroid beside the write-up, on paper.
+  of thing, pinned to the same board. So this is the showcase row: a pile of
+  polaroids beside the write-up, on paper.
 
-  What marks it as a capstone is the gold frame, which is the same signal the
+  What marks it as a capstone is the gold frames, which is the same signal the
   landing page's clothesline uses — foil for the two flagship events, white for
-  everything else. The card's own paper is warmed a shade to match, and the two
-  figures a sponsor asks about are written on it in pen rather than boxed up.
+  everything else. The card's own paper is warmed a shade to match.
+
+  Three frames rather than six, and the captions do a job here: the event's
+  name, the fundraising target and the expected turnout, one to a photo. That
+  is where the two figures a sponsor asks about live — written under a picture
+  in the same hand as every other caption on the site, rather than boxed up in
+  tiles of their own.
 */
 import Polaroid from './Polaroid.astro';
 
 interface Props {
   title: string;
   blurb: string;
-  image: ImageMetadata;
+  /** Three photos of the event. Anything past the third is ignored. */
+  images: ImageMetadata[];
   alt: string;
-  /** Handwritten line under the photo — a date, in the classic polaroid style. */
-  caption?: string;
-  /** e.g. `800 viewers` — written under "Expected turnout". */
+  /**
+   * The event's name as it is written under the first photo. Defaults to
+   * `title`, which is usually too long — the caption strip holds one short
+   * line, so give a shorter form here for anything past ~20 characters.
+   */
+  shortTitle?: string;
+  /** e.g. `800 viewers` — written under the third photo. */
   turnout: string;
-  /** e.g. `$25,000` — written under "Fundraising target". */
+  /** e.g. `$25,000` — written under the second photo. */
   target: string;
   /** The event's own page. The whole card links here. */
   href: string;
-  /** Swaps the photo to the right-hand side, so a pair of these alternates. */
+  /** Swaps the pile to the right-hand side, so a pair of these alternates. */
   flip?: boolean;
-  /** How far the frame hangs off-square, e.g. `-2deg`. */
-  tilt?: string;
   /**
    * Set while the event's own page has nothing on it yet: the card drops its
    * link and shows a handwritten note in its place, so nobody is sent through
@@ -37,37 +45,64 @@ interface Props {
   comingSoon?: boolean;
 }
 const {
-  title, blurb, image, alt, caption, turnout, target, href,
-  flip = false, tilt = '-2.5deg', comingSoon = false,
+  title, blurb, images, alt, shortTitle, turnout, target, href,
+  flip = false, comingSoon = false,
 } = Astro.props;
+
+/*
+  One caption per frame, in the order the frames are laid out below. The two
+  figures are composed here rather than written into the page's data so they
+  stay plain values there — the same numbers the event's own page quotes.
+*/
+const captions = [`${shortTitle ?? title}`, `${target} target`, `${turnout} expected`];
+
+/*
+  Scatter positions for the three polaroids, in the same idiom as the showcase
+  rows: three across from `sm` up (frame 37% of the stack width), and a
+  staggered column on a phone (58%), where three side by side would leave the
+  captions too small to read — and here the captions are the point.
+
+  A frame is 1.165x as tall as it is wide (5.5% border + square photo + 22%
+  caption strip), so it stands ~80% of the height of the `aspect-[9/5]` box and
+  ~41% of the `aspect-[3/5]` one, which is what the `top` offsets are checked
+  against. Either way a frame overlaps its neighbours by roughly the width of
+  the white border and no more.
+*/
+const positions = [
+  'w-[58%] left-0      top-0     sm:w-[37%] sm:left-0       sm:top-[4%]  z-30 rotate-[-5deg]',
+  'w-[58%] left-[40%]  top-[28%] sm:w-[37%] sm:left-[31.5%] sm:top-[13%] z-20 rotate-[4deg]',
+  'w-[58%] left-[4%]   top-[57%] sm:w-[37%] sm:left-[63%]   sm:top-0     z-10 rotate-[-3deg]',
+];
 ---
 
 <section class="section-shell">
   <div
     class:list={[
-      'section-card capstone grid items-center gap-10 md:grid-cols-2',
+      'section-card capstone grid items-center gap-10',
       comingSoon && 'capstone-static',
+      flip ? 'md:grid-cols-[1fr_2fr]' : 'md:grid-cols-[2fr_1fr]',
     ]}
   >
-    {/*
-      One frame, so it is given room to be big rather than scattered — 22rem is
-      about twice a showcase polaroid, which is what makes the pair at the top
-      of the page read as the headline acts.
-
-      `sizes` describes the photo inside the frame, not the frame: the mount
-      eats 11% of the width. Below 27rem the frame is narrower than its cap, at
-      the viewport less the shell's 2rem and the card's 3rem of padding.
-    */}
-    <div class:list={['capstone-photo', flip && 'md:order-2']}>
-      <Polaroid
-        src={image}
-        alt={alt}
-        caption={caption}
-        tone="gold"
-        tilt={tilt}
-        sizes="(min-width: 27rem) 313px, calc((100vw - 5rem) * 0.89)"
-        class="w-full transition-transform duration-200"
-      />
+    <!-- Scattered, lightly overlapping polaroids, on foil -->
+    <div class:list={['relative aspect-[3/5] sm:aspect-[9/5]', flip && 'md:order-2']}>
+      {images.slice(0, 3).map((src, i) => (
+        /* `sizes` describes the photo inside the frame, not the frame: the
+           mount eats 11% of the width. Card content is the viewport less the
+           shell's 2rem and the card's own padding (3rem a side from `sm`,
+           1.5rem below), two thirds of it once the text moves alongside, and a
+           frame is 37%/58% of that per the scatter above. */
+        <Polaroid
+          src={src}
+          alt={i === 0 ? alt : ''}
+          caption={captions[i]}
+          tone="gold"
+          sizes="(min-width: 768px) 223px, (min-width: 640px) calc((100vw - 128px) * 0.33), calc((100vw - 80px) * 0.52)"
+          class:list={[
+            'absolute transition-transform duration-200 hover:z-40 hover:scale-[1.06]',
+            positions[i],
+          ]}
+        />
+      ))}
     </div>
 
     <div class:list={[flip && 'md:order-1']}>
@@ -85,24 +120,9 @@ const {
       <h3 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h3>
       <p class="mt-4 text-lg text-slate-600">{blurb}</p>
 
-      {/* The two figures a sponsor scans for. They were tiles once, and two
-          boxed numbers on a card this size read as a dashboard — written out
-          in pen under a small label, they are still the first thing the eye
-          lands on after the title without shouting it. */}
-      <dl class="capstone-notes">
-        <div class="capstone-note">
-          <dt>Expected turnout</dt>
-          <dd><span class="pen-underline">{turnout}</span></dd>
-        </div>
-        <div class="capstone-note capstone-note-b">
-          <dt>Fundraising target</dt>
-          <dd><span class="pen-underline">{target}</span></dd>
-        </div>
-      </dl>
-
-      {/* The card's one action. Its ::after covers the whole card, so the photo
-          and the figures are clickable too, and the visible focus ring is drawn
-          on the card rather than on the link.
+      {/* The card's one action. Its ::after covers the whole card, so the
+          photos are clickable too, and the visible focus ring is drawn on the
+          card rather than on the link.
 
           With no page to send anyone to, the link is gone entirely rather than
           disabled — a note in its place says the detail is still on its way. */}
@@ -128,7 +148,7 @@ const {
   /*
     `.section-card` geometry and shadow, so the capstones line up with the
     showcases below them — but on warmer paper with a gold hairline, a shade
-    off white in the same direction as the frame it holds.
+    off white in the same direction as the frames it holds.
   */
   .capstone {
     position: relative;
@@ -137,18 +157,12 @@ const {
     transition: box-shadow 200ms ease;
   }
 
+  /* The paper warms under the cursor — the frames have their own lift, so the
+     card only has to say it is a target. Nothing to click, so nothing moves. */
   .capstone:hover {
     box-shadow:
       0 1px 2px rgb(28 20 8 / 0.06),
       0 22px 46px -28px rgb(120 82 10 / 0.45);
-  }
-
-  /* The frame lifts off the paper on hover, the way it does on the landing
-     page's clothesline — it is what says the card is a target. Nothing to
-     click, so nothing moves. */
-  .capstone:hover :global(.polaroid),
-  .capstone:has(.capstone-cta:focus-visible) :global(.polaroid) {
-    transform: translateY(-6px);
   }
 
   .capstone-static:hover {
@@ -157,35 +171,15 @@ const {
       0 18px 40px -28px rgb(28 20 8 / 0.35);
   }
 
-  .capstone-static:hover :global(.polaroid) {
-    transform: none;
-  }
-
   .capstone:has(.capstone-cta:focus-visible) {
     outline: 3px solid #9f1239;
     outline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .capstone,
-    .capstone :global(.polaroid) {
+    .capstone {
       transition: none;
     }
-
-    .capstone:hover :global(.polaroid) {
-      transform: none;
-    }
-  }
-
-  /* Centred in its column and capped, so the frame stays a photograph rather
-     than growing into a panel on a wide card. */
-  .capstone-photo {
-    margin-inline: auto;
-    width: 100%;
-    max-width: 22rem;
-    /* Room for the tilt to swing and for the shadow to fall without touching
-       the card's own edge. */
-    padding-block: 0.5rem 1rem;
   }
 
   .capstone-eyebrow {
@@ -216,65 +210,10 @@ const {
   .star-red    { stroke: var(--color-doodle-red); }
   .star-yellow { stroke: var(--color-doodle-yellow); }
 
-  /* Two notes side by side where there is room, stacked on a phone. No rules,
-     no boxes — the space between them is enough. */
-  .capstone-notes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem 2.5rem;
-    margin-top: 1.75rem;
-  }
-
-  .capstone-note dt {
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    color: #94856b;
-  }
-
-  .capstone-note dd {
-    margin-top: 0.1rem;
-    font-family: var(--font-hand);
-    font-size: 2rem;
-    line-height: 1.1;
-    color: var(--color-doodle-ink);
-  }
-
-  /* Nobody writes two lines at the same angle. */
-  .capstone-note   { transform: rotate(-1deg); }
-  .capstone-note-b { transform: rotate(0.8deg); }
-
-  /*
-    A red pen stroke under the figure — the line you draw under the number that
-    matters. Same idea as `.hand-underline` in global.css, but pen rather than
-    highlighter: it sits below the letterforms instead of across them, so there
-    is no blend mode involved.
-
-    The colour is baked into the data URI; if `--color-doodle-red` changes,
-    change the `%23c9203a` below with it.
-  */
-  .pen-underline {
-    position: relative;
-    display: inline-block;
-  }
-
-  .pen-underline::after {
-    content: '';
-    position: absolute;
-    /* Overshoots at both ends — nobody stops a pen on the last letter. */
-    inset-inline: -0.12em;
-    bottom: 0.14em;
-    height: 0.2em;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M5 6C41 2 78 8.4 116 4.2c24-2.6 46 1.6 79-1.2' fill='none' stroke='%23c9203a' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    pointer-events: none;
-  }
-
   /* Sits where the link would, in the same handwriting as the eyebrow — it is
      a note in the margin, not an action. */
   .capstone-soon {
-    margin-top: 1.75rem;
+    margin-top: 1.5rem;
     font-family: var(--font-hand);
     font-size: 1.375rem;
     line-height: 1;
@@ -284,7 +223,7 @@ const {
   }
 
   .capstone-more {
-    margin-top: 1.75rem;
+    margin-top: 1.5rem;
     font-size: 1rem;
     color: #57534e;
   }
