@@ -108,6 +108,16 @@
     background-repeat: repeat, repeat, repeat-x;
   }
 
+  /*
+    The marker stroke itself, shared by `.hand-underline` and its wrapping
+    variant so the shape and the colour are written once. The colour is baked
+    into the data URI; if `--color-doodle-yellow` above changes, change the
+    `%23f0b429` here with it.
+  */
+  :root {
+    --hand-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M4 8C42 3 80 10 120 5c26-3 50 2 76-1' fill='none' stroke='%23f0b429' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+
   /* Every heading picks up the display face without touching each element.
      Body copy stays on the default sans for readability. */
   h1,
@@ -192,8 +202,8 @@
     behind with `z-index: -1` would not work — it would land behind the section
     card's white background and vanish.
 
-    The colour is baked into the data URI; if `--color-doodle-yellow` above
-    changes, change the `%23f0b429` below with it.
+    For a phrase that has to be allowed to wrap, use `.hand-underline-wrap`
+    below instead.
   */
   .hand-underline {
     position: relative;
@@ -208,10 +218,39 @@
     inset-inline: -0.16em;
     bottom: -0.02em;
     height: 0.34em;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M4 8C42 3 80 10 120 5c26-3 50 2 76-1' fill='none' stroke='%23f0b429' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: var(--hand-swipe);
     background-repeat: no-repeat;
     background-size: 100% 100%;
     mix-blend-mode: multiply;
     pointer-events: none;
+  }
+
+  /*
+    The same swipe, on a phrase that is allowed to wrap — a whole heading,
+    rather than the word or two `.hand-underline` is meant for.
+
+    `.hand-underline` paints one band across the whole span, so a phrase that
+    breaks over two lines gets a single swipe stretched under the last of them.
+    This one paints the mark as the element's own background and `clone` puts a
+    copy on every line fragment, so each line is marked as it would be by hand.
+
+    That is what `display: inline` buys — an inline-block cannot break — and it
+    is also why the mark sits behind the letterforms rather than multiplied over
+    them: a background is painted under its own text either way. At this size
+    only descenders cross the band, so the two read the same.
+  */
+  .hand-underline-wrap {
+    display: inline;
+    background-image: var(--hand-swipe);
+    background-repeat: no-repeat;
+    /* Against the *padding* box, so the padding either side is what gives the
+       swipe its overshoot past the first and last letter of a line; the
+       negative margin takes that space back out of the layout. */
+    background-size: 100% 0.34em;
+    background-position: 0 100%;
+    padding-inline: 0.16em;
+    margin-inline: -0.16em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 }

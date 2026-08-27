@@ -117,7 +117,13 @@ const positions = [
         Capstone event
       </p>
 
-      <h3 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h3>
+      {/* The wrapping variant of the marker swipe, not the plain one: these
+          titles are long and the text column is narrow at the middle widths,
+          so a heading that breaks has to be marked on both lines. See
+          `.hand-underline-wrap` in global.css. */}
+      <h3 class="text-2xl font-bold tracking-tight text-slate-900">
+        <span class="hand-underline-wrap">{title}</span>
+      </h3>
       <p class="mt-4 text-lg text-slate-600">{blurb}</p>
 
       {/* The card's one action. Its ::after covers the whole card, so the
@@ -129,16 +135,15 @@ const positions = [
       {comingSoon ? (
         <p class="capstone-soon">Full details coming soon</p>
       ) : (
-        <p class="capstone-more">
-          Want to learn more?
-          <a href={href} class="capstone-cta">
-            Click here
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
-                 fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                 stroke-linejoin="round" /></svg>
-            <span class="sr-only">about {title}</span>
-          </a>
-        </p>
+        <a href={href} class="capstone-cta">
+          <span class="capstone-cta-label">Click here to learn more</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
+               fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+               stroke-linejoin="round" /></svg>
+          {/* "Click here to learn more" says nothing on its own in a list of
+              links, so the reader gets the event's name too. */}
+          <span class="sr-only">about {title}</span>
+        </a>
       )}
     </div>
   </div>
@@ -222,21 +227,25 @@ const positions = [
     transform-origin: left center;
   }
 
-  .capstone-more {
-    margin-top: 1.5rem;
-    font-size: 1rem;
-    color: #57534e;
-  }
-
+  /*
+    The card's one action. It is a button by its size and its weight rather
+    than by a filled pill: a solid red rectangle is the one thing on this page
+    that would look bought-in rather than made, and the cards either side of it
+    are photographs on paper. The padding is what makes it a real target — a
+    hair over 44px tall — while the drawn line under the label is what says it
+    can be pressed.
+  */
   .capstone-cta {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    margin-left: 0.25rem;
+    gap: 0.45rem;
+    margin-top: 1.5rem;
+    padding-block: 0.7rem;
+    /* No inline padding: the label's left edge lines up with the blurb above
+       it, and the stroke below overshoots into the space instead. */
+    font-size: 1.0625rem;
     font-weight: 600;
     color: #9f1239;
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 
   .capstone-cta svg {
@@ -245,12 +254,49 @@ const positions = [
     transition: transform 200ms ease;
   }
 
+  /*
+    A red pen stroke under the label — the line you draw under the thing you
+    want someone to do. Same idea as the yellow `.hand-underline` in
+    global.css, but pen rather than highlighter: it sits below the letterforms
+    instead of across them, so there is no blend mode involved.
+
+    The colour is baked into the data URI; if `--color-doodle-red` changes,
+    change the `%23c9203a` below with it.
+  */
+  .capstone-cta-label {
+    position: relative;
+  }
+
+  .capstone-cta-label::after {
+    content: '';
+    position: absolute;
+    /* Overshoots at both ends — nobody stops a pen on the last letter. */
+    inset-inline: -0.2em;
+    bottom: -0.2em;
+    /* `preserveAspectRatio: none` stretches the drawing into this box, so the
+       stroke's weight on screen is its width in the viewBox scaled by
+       height/10 — hence a number that looks far too heavy written down. */
+    height: 0.32em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M5 6C41 2.4 78 8 116 4.2c24-2.4 46 1.8 79-1.2' fill='none' stroke='%23c9203a' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    pointer-events: none;
+    transition: transform 200ms ease;
+  }
+
+  /* Hovering anywhere on the card moves the arrow on and drags the stroke a
+     little past the end of the word, the way a second pass of the pen would. */
   .capstone:hover .capstone-cta svg {
     transform: translateX(3px);
   }
 
+  .capstone:hover .capstone-cta-label::after {
+    transform: scaleX(1.04);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .capstone-cta svg {
+    .capstone-cta svg,
+    .capstone-cta-label::after {
       transition: none;
     }
   }

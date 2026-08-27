@@ -9,8 +9,7 @@
   3. Sponsors ......... the wall
 
   Both capstone events have their own page under this folder, and the cards
-  here are the doorway to them — but the pages are placeholders at the moment,
-  so the doors are shut. See the `capstones` note below.
+  here are the doorway to them. See the `capstones` note below.
 */
 import Layout from '../../layouts/Layout.astro';
 import CapstoneCard from '../../components/CapstoneCard.astro';
@@ -47,9 +46,11 @@ const photos = (folder: string, stem: string) =>
 /*
   Our two flagship events, in the order they lead the page.
 
-  Both detail pages are bare placeholders for now, so both cards carry
-  `comingSoon` and show a note in place of the link through. Drop the flag on
-  an event once its write-up lands.
+  TODO: both detail pages are still bare placeholders — they say "Details
+  coming soon" and nothing else — but the cards link through to them all the
+  same. Setting `comingSoon: true` on an event puts a handwritten note on its
+  card in place of the button and stops sending anyone there, if the empty page
+  turns out to be the worse of the two.
 
   TODO: `turnout` and `target` are the projections we quote to sponsors — keep
   them in step with the figures on each event's own page once those pages are
@@ -69,7 +70,6 @@ const capstones = [
     turnout: '800 viewers',
     target: '$25,000',
     href: '/events/mcgill-classic/',
-    comingSoon: true,
   },
   {
     title: 'Engineering vs. Management',
@@ -82,7 +82,6 @@ const capstones = [
     target: '$25,000',
     href: '/events/eng-vs-management/',
     flip: true,
-    comingSoon: true,
   },
 ];
 
