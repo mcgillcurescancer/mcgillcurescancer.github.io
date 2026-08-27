@@ -1,165 +1,164 @@
 ---
 /*
-  A capstone event, on foil. The two flagship events lead the events page and
-  have to read as a different class of thing from the polaroid showcases below
-  them, so this card drops the scrapbook treatment entirely: one large photo,
-  the two numbers a sponsor actually asks about, and a way through to the full
-  page.
+  A capstone event. The two flagship events lead the events page, so they have
+  to read as a bigger deal than the showcases below them — but as the same kind
+  of thing, pinned to the same board. So this is the showcase row's layout with
+  one photo instead of six: a single polaroid beside the write-up, on paper.
 
-  The gold is the same ink as the gold polaroids on the landing page, pulled
-  lighter so a card-sized wash of it still carries dark text at AA.
+  What marks it as a capstone is the gold frame, which is the same signal the
+  landing page's clothesline uses — foil for the two flagship events, white for
+  everything else. The card's own paper is warmed a shade to match, and the two
+  figures a sponsor asks about are written on it in pen rather than boxed up.
 */
-import { Image } from 'astro:assets';
+import Polaroid from './Polaroid.astro';
 
 interface Props {
   title: string;
   blurb: string;
   image: ImageMetadata;
   alt: string;
-  /** e.g. `800 viewers` — shown under "Expected turnout". */
+  /** Handwritten line under the photo — a date, in the classic polaroid style. */
+  caption?: string;
+  /** e.g. `800 viewers` — written under "Expected turnout". */
   turnout: string;
-  /** e.g. `$25,000` — shown under "Fundraising target". */
+  /** e.g. `$25,000` — written under "Fundraising target". */
   target: string;
   /** The event's own page. The whole card links here. */
   href: string;
   /** Swaps the photo to the right-hand side, so a pair of these alternates. */
   flip?: boolean;
+  /** How far the frame hangs off-square, e.g. `-2deg`. */
+  tilt?: string;
   /**
    * Set while the event's own page has nothing on it yet: the card drops its
-   * link and shows a "coming soon" note in its place, so nobody is sent
-   * through to an empty page.
+   * link and shows a handwritten note in its place, so nobody is sent through
+   * to an empty page.
    */
   comingSoon?: boolean;
 }
 const {
-  title, blurb, image, alt, turnout, target, href,
-  flip = false, comingSoon = false,
+  title, blurb, image, alt, caption, turnout, target, href,
+  flip = false, tilt = '-2.5deg', comingSoon = false,
 } = Astro.props;
 ---
 
-<article class:list={['capstone', flip && 'capstone-flip', comingSoon && 'capstone-static']}>
-  {/*
-    The photo runs edge to edge in its half of the card rather than sitting
-    inset with its own radius — at this size a second rounded rectangle
-    inside the first only muddies the silhouette. The card clips it, so the
-    photo picks up the card's own corners on the outer side.
+<section class="section-shell">
+  <div
+    class:list={[
+      'section-card capstone grid items-center gap-10 md:grid-cols-2',
+      comingSoon && 'capstone-static',
+    ]}
+  >
+    {/*
+      One frame, so it is given room to be big rather than scattered — 22rem is
+      about twice a showcase polaroid, which is what makes the pair at the top
+      of the page read as the headline acts.
 
-    The frame exists so the picture can be lifted out of the flow beside the
-    text (see the stylesheet) — a square photo in a 36rem column would
-    otherwise make the card 36rem tall and leave the text floating in a sea
-    of foil.
+      `sizes` describes the photo inside the frame, not the frame: the mount
+      eats 11% of the width. Below 27rem the frame is narrower than its cap, at
+      the viewport less the shell's 2rem and the card's 3rem of padding.
+    */}
+    <div class:list={['capstone-photo', flip && 'md:order-2']}>
+      <Polaroid
+        src={image}
+        alt={alt}
+        caption={caption}
+        tone="gold"
+        tilt={tilt}
+        sizes="(min-width: 27rem) 313px, calc((100vw - 5rem) * 0.89)"
+        class="w-full transition-transform duration-200"
+      />
+    </div>
 
-    Column is half of the 72rem card, so nothing above 600 is ever used on a
-    desktop; the extra candidates cover a phone, where it goes full width.
-  */}
-  <div class="capstone-photo-frame">
-    <Image
-      src={image}
-      alt={alt}
-      widths={[480, 720, 960, 1200]}
-      sizes="(min-width: 1152px) 576px, (min-width: 768px) 50vw, 100vw"
-      loading="lazy"
-      decoding="async"
-      class="capstone-photo"
-    />
-  </div>
-
-  <div class="capstone-body">
-    <p class="capstone-eyebrow">Capstone event</p>
-    <h3 class="capstone-title">{title}</h3>
-    <p class="capstone-blurb">{blurb}</p>
-
-    {/* The two figures a sponsor scans for, given the most weight on the
-        card after the title. */}
-    <dl class="capstone-metrics">
-      <div class="capstone-metric">
-        <dt>Expected turnout</dt>
-        <dd>{turnout}</dd>
-      </div>
-      <div class="capstone-metric">
-        <dt>Fundraising target</dt>
-        <dd>{target}</dd>
-      </div>
-    </dl>
-
-    {/* The card's one action. Its ::after covers the whole card, so the
-        photo and the figures are clickable too, and the visible focus ring
-        is drawn on the card rather than on the link.
-
-        With no page to send anyone to, the link is gone entirely rather than
-        disabled — a badge in its place says the detail is still on its way. */}
-    {comingSoon ? (
-      <p class="capstone-more">
-        <span class="capstone-soon">Full details coming soon</span>
+    <div class:list={[flip && 'md:order-1']}>
+      {/* The one label on the card. Handwritten, with a pen star beside it, so
+          "capstone" is said in the margin rather than stamped on a badge. */}
+      <p class="capstone-eyebrow">
+        <svg class="capstone-star" viewBox="0 0 22 22" aria-hidden="true">
+          <path class="star-red"    d="M11 2.5C11.5 8 11.3 14 10.6 19.5" />
+          <path class="star-yellow" d="M3 7.6C8 10.1 13.9 11.5 19 12.3" />
+          <path class="star-red"    d="M4.4 17C8.9 13.4 13.4 8.6 17.6 5" />
+        </svg>
+        Capstone event
       </p>
-    ) : (
-      <p class="capstone-more">
-        Want to learn more?
-        <a href={href} class="capstone-cta">
-          Click here
-          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
-               fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-               stroke-linejoin="round" /></svg>
-          <span class="sr-only">about {title}</span>
-        </a>
-      </p>
-    )}
+
+      <h3 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h3>
+      <p class="mt-4 text-lg text-slate-600">{blurb}</p>
+
+      {/* The two figures a sponsor scans for. They were tiles once, and two
+          boxed numbers on a card this size read as a dashboard — written out
+          in pen under a small label, they are still the first thing the eye
+          lands on after the title without shouting it. */}
+      <dl class="capstone-notes">
+        <div class="capstone-note">
+          <dt>Expected turnout</dt>
+          <dd><span class="pen-underline">{turnout}</span></dd>
+        </div>
+        <div class="capstone-note capstone-note-b">
+          <dt>Fundraising target</dt>
+          <dd><span class="pen-underline">{target}</span></dd>
+        </div>
+      </dl>
+
+      {/* The card's one action. Its ::after covers the whole card, so the photo
+          and the figures are clickable too, and the visible focus ring is drawn
+          on the card rather than on the link.
+
+          With no page to send anyone to, the link is gone entirely rather than
+          disabled — a note in its place says the detail is still on its way. */}
+      {comingSoon ? (
+        <p class="capstone-soon">Full details coming soon</p>
+      ) : (
+        <p class="capstone-more">
+          Want to learn more?
+          <a href={href} class="capstone-cta">
+            Click here
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m0 0-4.2-4.2M15 10l-4.2 4.2"
+                 fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                 stroke-linejoin="round" /></svg>
+            <span class="sr-only">about {title}</span>
+          </a>
+        </p>
+      )}
+    </div>
   </div>
-</article>
+</section>
 
 <style>
   /*
-    Same geometry as `.section-card` — the run of cards down the page has to
-    line up — but foil instead of paper. The gutter and the gap to the card
-    above come from the `.capstones` grid on the events page, which is also
-    what stretches this card to match its neighbour.
+    `.section-card` geometry and shadow, so the capstones line up with the
+    showcases below them — but on warmer paper with a gold hairline, a shade
+    off white in the same direction as the frame it holds.
   */
   .capstone {
     position: relative;
-    /* `width` is not redundant next to `max-width`: as a grid item with auto
-       margins the card would otherwise be sized to fit its own text, and the
-       two cards would come out different widths. */
-    width: 100%;
-    margin-inline: auto;
-    max-width: 72rem;
-    display: grid;
-    /* Stacked, the photo keeps its own height and the body takes whatever
-       height the card was stretched to — see `.capstone-body` for where that
-       height goes. */
-    grid-template-rows: auto 1fr;
-    border: 1px solid rgb(155 112 18 / 0.4);
-    border-radius: 1.75rem;
-    background: linear-gradient(150deg, #fdf3d6 0%, #f7e3a6 44%, #eccd76 100%);
-    box-shadow:
-      0 1px 2px rgb(120 82 10 / 0.14),
-      0 22px 46px -28px rgb(120 82 10 / 0.6);
-    /* Lets the photo take the card's corners on the outer side. */
-    overflow: clip;
-    transition: transform 200ms ease, box-shadow 200ms ease;
-  }
-
-  @media (min-width: 768px) {
-    .capstone {
-      grid-template-columns: 1fr 1fr;
-      /* Side by side there is only one row, and it fills the card. */
-      grid-template-rows: auto;
-    }
+    border-color: rgb(155 112 18 / 0.22);
+    background: #fffdf6;
+    transition: box-shadow 200ms ease;
   }
 
   .capstone:hover {
-    transform: translateY(-3px);
     box-shadow:
-      0 1px 2px rgb(120 82 10 / 0.16),
-      0 30px 54px -28px rgb(120 82 10 / 0.7);
+      0 1px 2px rgb(28 20 8 / 0.06),
+      0 22px 46px -28px rgb(120 82 10 / 0.45);
   }
 
-  /* Nothing to click, so nothing lifts — the lift is what tells you a card
-     is a target. */
+  /* The frame lifts off the paper on hover, the way it does on the landing
+     page's clothesline — it is what says the card is a target. Nothing to
+     click, so nothing moves. */
+  .capstone:hover :global(.polaroid),
+  .capstone:has(.capstone-cta:focus-visible) :global(.polaroid) {
+    transform: translateY(-6px);
+  }
+
   .capstone-static:hover {
-    transform: none;
     box-shadow:
-      0 1px 2px rgb(120 82 10 / 0.14),
-      0 22px 46px -28px rgb(120 82 10 / 0.6);
+      0 1px 2px rgb(28 20 8 / 0.05),
+      0 18px 40px -28px rgb(28 20 8 / 0.35);
+  }
+
+  .capstone-static:hover :global(.polaroid) {
+    transform: none;
   }
 
   .capstone:has(.capstone-cta:focus-visible) {
@@ -168,164 +167,126 @@ const {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .capstone {
+    .capstone,
+    .capstone :global(.polaroid) {
       transition: none;
     }
 
-    .capstone:hover {
+    .capstone:hover :global(.polaroid) {
       transform: none;
     }
   }
 
-  /* Stacked, the photo sets its own height off the card's full width: tall
-     enough to still read as the headline image and not a strip, with a
-     ceiling so it doesn't swallow the screen on a wide phone. */
-  .capstone-photo-frame {
-    position: relative;
-    min-height: 15rem;
-  }
-
+  /* Centred in its column and capped, so the frame stays a photograph rather
+     than growing into a panel on a wide card. */
   .capstone-photo {
-    display: block;
+    margin-inline: auto;
     width: 100%;
-    height: 100%;
-    max-height: 26rem;
-    object-fit: cover;
-    background: #e7d7ae;
-  }
-
-  @media (min-width: 768px) {
-    /* Beside the text, the text is what says how tall the card is. Taking the
-       picture out of the flow means its own proportions can't stretch the
-       card — it simply covers the column, however deep that turns out to be. */
-    .capstone-photo {
-      position: absolute;
-      inset: 0;
-      max-height: none;
-    }
-
-    .capstone-flip .capstone-photo-frame {
-      order: 2;
-    }
-  }
-
-  .capstone-body {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* The card is as tall as its neighbour, so this side is usually holding a
-       little more height than its own text needs. Spreading that through the
-       gaps opens the lines a hair; pooling it would leave a band of bare foil
-       under the last line. */
-    justify-content: space-between;
-    padding: 1.75rem 1.5rem 2rem;
-  }
-
-  @media (min-width: 640px) {
-    .capstone-body {
-      padding: 2.5rem;
-    }
+    max-width: 22rem;
+    /* Room for the tilt to swing and for the shadow to fall without touching
+       the card's own edge. */
+    padding-block: 0.5rem 1rem;
   }
 
   .capstone-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.4rem;
     font-family: var(--font-hand);
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     line-height: 1;
-    letter-spacing: 0.01em;
-    color: #7a5405;
+    color: #8a6008;
     transform: rotate(-1.5deg);
+    transform-origin: left center;
   }
 
-  .capstone-title {
-    margin-top: 0.5rem;
-    font-size: 1.75rem;
-    font-weight: 800;
-    line-height: 1.15;
-    color: #3b2905;
+  .capstone-star {
+    width: 1.15rem;
+    height: 1.15rem;
+    overflow: visible;
   }
 
-  @media (min-width: 640px) {
-    .capstone-title {
-      font-size: 2rem;
-    }
+  .capstone-star path {
+    fill: none;
+    stroke-width: 1.9;
+    stroke-linecap: round;
   }
 
-  .capstone-blurb {
-    margin-top: 0.75rem;
-    /* Held to a readable measure even when the card is wide. */
-    max-width: 34ch;
-    font-size: 1.0625rem;
-    line-height: 1.6;
-    color: #5a3f0a;
+  .star-red    { stroke: var(--color-doodle-red); }
+  .star-yellow { stroke: var(--color-doodle-yellow); }
+
+  /* Two notes side by side where there is room, stacked on a phone. No rules,
+     no boxes — the space between them is enough. */
+  .capstone-notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+    margin-top: 1.75rem;
   }
 
-  /* Paper tiles on the foil: the figures need a calm ground to sit on, and
-     the same off-white as the polaroid mounts is what ties them to the rest
-     of the page. */
-  .capstone-metrics {
-    margin-top: 1.5rem;
-    display: grid;
-    gap: 0.75rem;
-    width: 100%;
-  }
-
-  @media (min-width: 480px) {
-    .capstone-metrics {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  .capstone-metric {
-    border: 1px solid rgb(155 112 18 / 0.28);
-    border-radius: 0.875rem;
-    background: rgb(255 253 246 / 0.82);
-    padding: 0.875rem 1rem;
-  }
-
-  .capstone-metric dt {
+  .capstone-note dt {
     font-size: 0.8125rem;
     font-weight: 500;
-    color: #6b4c10;
+    letter-spacing: 0.01em;
+    color: #94856b;
   }
 
-  .capstone-metric dd {
-    margin-top: 0.125rem;
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: #3b2905;
+  .capstone-note dd {
+    margin-top: 0.1rem;
+    font-family: var(--font-hand);
+    font-size: 2rem;
+    line-height: 1.1;
+    color: var(--color-doodle-ink);
+  }
+
+  /* Nobody writes two lines at the same angle. */
+  .capstone-note   { transform: rotate(-1deg); }
+  .capstone-note-b { transform: rotate(0.8deg); }
+
+  /*
+    A red pen stroke under the figure — the line you draw under the number that
+    matters. Same idea as `.hand-underline` in global.css, but pen rather than
+    highlighter: it sits below the letterforms instead of across them, so there
+    is no blend mode involved.
+
+    The colour is baked into the data URI; if `--color-doodle-red` changes,
+    change the `%23c9203a` below with it.
+  */
+  .pen-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .pen-underline::after {
+    content: '';
+    position: absolute;
+    /* Overshoots at both ends — nobody stops a pen on the last letter. */
+    inset-inline: -0.12em;
+    bottom: 0.14em;
+    height: 0.2em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M5 6C41 2 78 8.4 116 4.2c24-2.6 46 1.6 79-1.2' fill='none' stroke='%23c9203a' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    pointer-events: none;
+  }
+
+  /* Sits where the link would, in the same handwriting as the eyebrow — it is
+     a note in the margin, not an action. */
+  .capstone-soon {
+    margin-top: 1.75rem;
+    font-family: var(--font-hand);
+    font-size: 1.375rem;
+    line-height: 1;
+    color: #94856b;
+    transform: rotate(-1deg);
+    transform-origin: left center;
   }
 
   .capstone-more {
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     font-size: 1rem;
-    color: #5a3f0a;
-  }
-
-  /* Sits where the link would, at the same weight, so the run of cards keeps
-     its shape — but in the muted ink rather than the red, since it is a note
-     and not an action. */
-  .capstone-soon {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    border: 1px solid rgb(155 112 18 / 0.32);
-    border-radius: 999px;
-    background: rgb(255 253 246 / 0.82);
-    padding: 0.35rem 0.85rem;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: #6b4c10;
-  }
-
-  /* The dot is the only thing carrying "not yet" at a glance. */
-  .capstone-soon::before {
-    content: '';
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 999px;
-    background: #b4820f;
+    color: #57534e;
   }
 
   .capstone-cta {

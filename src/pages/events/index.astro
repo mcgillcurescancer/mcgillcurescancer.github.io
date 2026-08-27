@@ -2,8 +2,8 @@
 /*
   The events page, read top to bottom:
 
-  1. Capstone events .. the McGill Classic and Eng vs. Management, on gold,
-                        each with its numbers
+  1. Capstone events .. the McGill Classic and Eng vs. Management, one
+                        gold-framed polaroid each, with their numbers
   2. Past events ...... last year's smaller events, as scattered polaroids
   3. Sponsors ......... the wall
 
@@ -50,6 +50,10 @@ const photos = (folder: string, stem: string) =>
   TODO: `turnout` and `target` are the projections we quote to sponsors — keep
   them in step with the figures on each event's own page once those pages are
   written.
+
+  `caption` is the handwritten line under the polaroid. Swap these for the real
+  event dates ("March 24th, 2026") once they are set, the same as the showcase
+  captions below — the frame is sized for a short single line.
 */
 const capstones = [
   {
@@ -58,9 +62,11 @@ const capstones = [
       'Our biggest tournament of the year, bringing teams from across campus together for one day of sport.',
     image: classicPlaceholder,
     alt: 'The McGill Classic',
+    caption: 'The Classic',
     turnout: '800 viewers',
     target: '$25,000',
     href: '/events/mcgill-classic/',
+    tilt: '-2.5deg',
     comingSoon: true,
   },
   {
@@ -69,9 +75,11 @@ const capstones = [
       'The annual faculty showdown — Engineering and Management go head to head to raise money for cancer research.',
     image: evmPlaceholder,
     alt: 'Engineering vs. Management',
+    caption: 'Eng vs. Management',
     turnout: '800 viewers',
     target: '$25,000',
     href: '/events/eng-vs-management/',
+    tilt: '2deg',
     flip: true,
     comingSoon: true,
   },
@@ -127,8 +135,8 @@ const showcases = [
 >
   <!-- Page title. It sits on the weave rather than on a card of its own: the
        first thing on the page should be a capstone event, not a header panel.
-       Nothing labels the two runs of cards — the gold cards say "Capstone
-       event" on their face, and the white polaroid cards below read as the
+       Nothing labels the two runs of cards — the capstones say "Capstone
+       event" on their face, and the piles of white polaroids below read as the
        archive by contrast. -->
   <header class="section-shell pt-10 pb-2 text-center">
     <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">
@@ -136,24 +144,21 @@ const showcases = [
     </h1>
   </header>
 
-  <!-- 1. Capstone events. The pair shares one grid instead of taking a
-       section each: `1fr` rows come out the height of the taller card, so
-       neither event looks like the smaller of the two when they stack on a
-       phone and the shorter blurb would otherwise cut its card short. -->
-  <section class="capstones">
-    {capstones.map((capstone, i) => (
-      <>
-        {/* A pen mark in the gap between the cards. Decorative only — see
-            Doodle.astro. No mark above the first card: the page title is
-            already in that gap. */}
-        {i > 0 && <Doodle variant="triple" />}
-        <CapstoneCard {...capstone} />
-      </>
-    ))}
-  </section>
+  <!-- 1. Capstone events. Same shape as the showcases below — a card per
+       event, a pen mark in the gap — so the page reads as one run of paper
+       rather than two. The gold frames are what set these two apart. -->
+  {capstones.map((capstone, i) => (
+    <>
+      {/* A pen mark in the gap between the cards. Decorative only — see
+          Doodle.astro. No mark above the first card: the page title is
+          already in that gap. */}
+      {i > 0 && <Doodle variant="triple" />}
+      <CapstoneCard {...capstone} />
+    </>
+  ))}
 
-  <!-- 2. Past events. The wave is the only break between the gold run and the
-       white one, so it stays even though the headings are gone. -->
+  <!-- 2. Past events. The wave is the only break between the capstone run and
+       the archive, so it stays even though the headings are gone. -->
   <Doodle variant="wave" />
 
   {showcases.map((showcase, i) => (
@@ -168,21 +173,3 @@ const showcases = [
   <SponsorWall heading="We couldn't put these events together without our sponsors" />
 </Layout>
 
-<style>
-  /*
-    Rows read card / doodle / card, and the two card rows are tied to each
-    other at `1fr` — the template assumes the two capstones above, and a third
-    would simply size itself.
-
-    The padding is `section-shell`'s, since the cards no longer bring their
-    own, and the 1.25rem gap plus the doodle's negative margins land the two
-    cards the same distance apart as two neighbouring sections.
-  */
-  .capstones {
-    display: grid;
-    grid-template-rows: 1fr auto 1fr;
-    gap: 1.25rem;
-    padding-inline: 1rem;
-    padding-block: 1.25rem;
-  }
-</style>
