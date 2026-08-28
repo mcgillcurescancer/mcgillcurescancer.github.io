@@ -253,4 +253,56 @@
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
   }
+
+  /*
+    Sections rise and fade in as they scroll into view, rather than simply
+    being there the moment the page is.
+
+    Two halves make this work without a flash of the very thing it is about to
+    hide. The resting state is plain CSS, so it applies on the first paint —
+    but only under `html[data-reveal]`, an attribute set by an inline script in
+    Layout.astro's <head>. That script is also what sets `data-revealed` on
+    each block as it comes into view. So with JavaScript off, or with the
+    reader asking for reduced motion, the attribute is never set, none of this
+    matches, and the page renders exactly as it did before. Nothing can be left
+    stuck invisible by a script that failed to arrive.
+
+    `#main > * + *` is every block on a page after the first: the sections, the
+    cards and the pen marks between them, whichever page they came from and
+    with no class to remember to add to a new one. The first block is left out
+    deliberately — it is what the visitor is already looking at when the page
+    opens, and on three of the four pages it carries the hero photo, which
+    should be on screen at once rather than waiting on a fade. (This takes a
+    page's sections to be children of `<main>`, which is what the slot in
+    Layout.astro gives them; a page that wrapped them all in one div would hand
+    this a single block and get nothing.)
+
+    Only `opacity` and `transform` move, so a block that has yet to appear
+    still holds its full space. The page's height never shifts as things
+    reveal, and a link into an anchor part-way down still lands where it should.
+  */
+  html[data-reveal] #main > * + * {
+    opacity: 0;
+    /* A short rise — the block settles into place rather than flying up into
+       it. Much further and the movement starts to read as the page reflowing
+       under the reader rather than as paper being laid down. */
+    transform: translateY(1.5rem);
+    /* Decelerating hard: quick off the mark, then easing a long way into rest,
+       which is what makes a block feel like it was already on its way in
+       rather than waiting to be told to start. */
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /*
+    Set as the block crosses into view and never taken off again: this plays
+    once on the way down the page and does not rewind on the way back up.
+    Two attribute selectors against the resting state's one, so it wins on
+    specificity without reaching for `!important`.
+  */
+  html[data-reveal] #main > [data-revealed] {
+    opacity: 1;
+    transform: none;
+  }
 }

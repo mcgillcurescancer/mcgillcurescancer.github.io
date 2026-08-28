@@ -15,8 +15,17 @@ import { Image } from 'astro:assets';
 interface Props {
   src: ImageMetadata;
   alt: string;
-  /** Handwritten line under the photo — a date, in the classic polaroid style. */
-  caption?: string;
+  /**
+   * Handwritten line under the photo — a date, in the classic polaroid style.
+   *
+   * `| undefined` is spelled out rather than left to the `?` alone: under
+   * `exactOptionalPropertyTypes` those two mean different things, and both
+   * callers pass `captions[i]` straight through from an array that is allowed
+   * to run shorter than its row of frames. They hand over an explicit
+   * `undefined` for an uncaptioned frame rather than omitting the prop, which
+   * `?` on its own would not accept.
+   */
+  caption?: string | undefined;
   /** Turns the whole frame into a link to this destination. */
   href?: string;
   /** `gold` swaps the white card for foil — used to single out our capstone events. */
