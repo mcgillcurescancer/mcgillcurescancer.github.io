@@ -18,19 +18,9 @@ import SponsorWall from '../../components/SponsorWall.astro';
 import Doodle from '../../components/Doodle.astro';
 
 /*
-  TODO: eng-vs-management and mcgill-classic use stock placeholder photos
-  (`*-placeholder.jpg`) until the real event photos land. Each capstone card
-  shows a pile of three, and there is only one placeholder per event, so the
-  same picture is currently repeated three times — it will look repetitive
-  until three real photos per event replace it. Fill in `images` and drop the
-  placeholder files when they land.
-*/
-import classicPlaceholder from '../../assets/images/events/mcgill-classic/classic-placeholder.jpg';
-import evmPlaceholder from '../../assets/images/events/eng-vs-management/evm-placeholder.jpg';
-
-/*
-  The showcase photos are numbered runs of six, so they are pulled in by glob
-  rather than named one by one. `eager` matters: it hands back the resolved
+  Every photo on this page is one of a numbered run in its event's folder — six
+  for a showcase, three for a capstone — so they are pulled in by glob rather
+  than named one by one. `eager` matters: it hands back the resolved
   `ImageMetadata` at build time, which is what `<Image>` needs — a lazy glob
   would only give back a loader function.
 */
@@ -38,9 +28,10 @@ const eventPhotos = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/images/events/**/*.webp',
   { eager: true },
 );
-const photos = (folder: string, stem: string) =>
-  [1, 2, 3, 4, 5, 6].map(
-    (i) => eventPhotos[`/src/assets/images/events/${folder}/${stem}-${i}.webp`].default,
+const photos = (folder: string, stem: string, count = 6) =>
+  Array.from(
+    { length: count },
+    (_, i) => eventPhotos[`/src/assets/images/events/${folder}/${stem}-${i + 1}.webp`].default,
   );
 
 /*
@@ -65,7 +56,7 @@ const capstones = [
     title: 'The McGill Classic',
     blurb:
       'Our biggest tournament of the year, bringing teams from across campus together for one day of sport.',
-    images: [classicPlaceholder, classicPlaceholder, classicPlaceholder],
+    images: photos('mcgill-classic', 'mcgill-classic', 3),
     alt: 'The McGill Classic',
     turnout: '800 viewers',
     target: '$25,000',
@@ -75,7 +66,7 @@ const capstones = [
     title: 'Engineering vs. Management',
     blurb:
       'The annual faculty showdown — Engineering and Management go head to head to raise money for cancer research.',
-    images: [evmPlaceholder, evmPlaceholder, evmPlaceholder],
+    images: photos('eng-vs-management', 'eng-vs-management', 3),
     alt: 'Engineering vs. Management',
     shortTitle: 'Eng vs. Management',
     turnout: '800 viewers',
