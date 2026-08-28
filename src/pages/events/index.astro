@@ -29,10 +29,19 @@ const eventPhotos = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true },
 );
 const photos = (folder: string, stem: string, count = 6) =>
-  Array.from(
-    { length: count },
-    (_, i) => eventPhotos[`/src/assets/images/events/${folder}/${stem}-${i + 1}.webp`].default,
-  );
+  Array.from({ length: count }, (_, i) => {
+    /*
+      The glob only holds what is actually on disk, so this lookup really can
+      come back empty — a `count` raised past the number of photos in the
+      folder, or a file that never got committed. Left alone it would reach
+      `<Image>` as an undefined `src` and break the page quietly at runtime;
+      named here, it stops the build with the path that is missing.
+    */
+    const path = `/src/assets/images/events/${folder}/${stem}-${i + 1}.webp`;
+    const photo = eventPhotos[path];
+    if (!photo) throw new Error(`Missing event photo: ${path}`);
+    return photo.default;
+  });
 
 /*
   Our two flagship events, in the order they lead the page.
