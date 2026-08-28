@@ -17,8 +17,8 @@ import SponsorWall from '../components/SponsorWall.astro';
 // Astro's image pipeline, which emits the resized variants and hashes the
 // filenames for long-lived caching.
 import teamPic from '../assets/images/team/team-pic.webp';
-import evmPhoto from '../assets/images/events/eng-vs-management/eng-vs-management-1.webp';
 import classicPhoto from '../assets/images/events/mcgill-classic/mcgill-classic-1.webp';
+import evmPhoto from '../assets/images/events/eng-vs-management/eng-vs-management-1.webp';
 import threeVthree from '../assets/images/events/3v3-tournament/3v3-1.webp';
 import dodgeball from '../assets/images/events/dodgeball-tournament/dodgeball-1.webp';
 import barNight from '../assets/images/events/bar-night/bar-night-1.webp';
@@ -45,18 +45,18 @@ const CORD = `M0 3 C18 3.6 40 8.4 61 10 C84 9.6 104 5.2 122 3
 
 const events = [
   {
-    src: evmPhoto,
-    alt: 'Engineering vs. Management',
-    caption: 'Eng vs. Management',
-    href: '/events/eng-vs-management/',
-    tone: 'gold' as const,
-    tilt: '-2deg',
-  },
-  {
     src: classicPhoto,
     alt: 'The McGill Classic',
     caption: 'The McGill Classic',
     href: '/events/mcgill-classic/',
+    tone: 'gold' as const,
+    tilt: '-2deg',
+  },
+  {
+    src: evmPhoto,
+    alt: 'Engineering vs. Management',
+    caption: 'Eng vs. Management',
+    href: '/events/eng-vs-management/',
     tone: 'gold' as const,
     tilt: '1.5deg',
   },
