@@ -32,9 +32,12 @@ const {
       <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
       <p class="mt-4 max-w-2xl text-lg text-slate-600">{tagline}</p>
       {/* This is the page's LCP, so it loads eagerly rather than lazily. The
-          card caps out at 1088px, so there is nothing to gain above 1200. */}
+          card caps out at 1088px, so there is nothing to gain above 1200 —
+          `width` pins the fallback `src` there too, which otherwise renders at
+          the source photo's full intrinsic size. */}
       <Image src={heroImage} alt={title}
              widths={[600, 900, 1200]}
+             width={1200}
              sizes="(min-width: 1152px) 1088px, 100vw"
              loading="eager" fetchpriority="high" decoding="async"
              class="mt-10 h-80 w-full rounded-2xl object-cover shadow-sm" />

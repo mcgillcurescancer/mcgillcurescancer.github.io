@@ -58,11 +58,17 @@ const {
   <div class="polaroid-frame">
     {/* The frame is small and never grows past a few hundred pixels, so the
         candidates stop well short of the source file's full size — see `sizes`
-        above. CSS does the square crop, so no height is set here. */}
+        above. CSS does the square crop, so no height is set here.
+
+        `width` has to match the largest candidate. It is what the fallback
+        `src` gets rendered at, and without it Astro falls back to the source's
+        intrinsic width — which on our 6000px event photos meant shipping a
+        4MB file per polaroid that no `srcset`-aware browser ever asks for. */}
     <Image
       src={src}
       alt={alt}
       widths={[200, 300, 400, 600]}
+      width={600}
       sizes={sizes}
       loading="lazy"
       decoding="async"
