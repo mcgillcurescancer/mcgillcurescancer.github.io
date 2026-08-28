@@ -1,0 +1,31 @@
+name: CI
+
+# Verification only — nothing here publishes. The `build` job is the required
+# status check on `main`, so this file is what stands between a broken commit
+# and the live site.
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # `astro build` does not typecheck, so a wrong prop type or a misspelled
+      # field builds clean and breaks the page instead. This catches that.
+      - run: npm run check
+      - run: npm run build

@@ -1,0 +1,41 @@
+name: Deploy to GitHub Pages
+
+# Publishing only. Reached exclusively by merging a PR that passed CI, since
+# `main` rejects direct pushes.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel a deploy in flight: a half-published site is worse than a slow
+# one, so queued deploys wait their turn instead of superseding each other.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Build and publish are one job because `deploy-pages` can only consume an
+  # artifact uploaded during the same run — splitting them would buy nothing.
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
