@@ -35,6 +35,12 @@ interface Props {
   target: string;
   /** The event's own page. The whole card links here. */
   href: string;
+  /**
+   * The event's own mark, beside its name — a path under `public/`. Left off,
+   * the heading stands on its own, which is what an event without artwork of
+   * its own does.
+   */
+  logo?: string;
   /** Swaps the pile to the right-hand side, so a pair of these alternates. */
   flip?: boolean;
   /**
@@ -45,7 +51,7 @@ interface Props {
   comingSoon?: boolean;
 }
 const {
-  title, blurb, images, alt, shortTitle, turnout, target, href,
+  title, blurb, images, alt, shortTitle, turnout, target, href, logo,
   flip = false, comingSoon = false,
 } = Astro.props;
 
@@ -121,9 +127,27 @@ const positions = [
           titles are long and the text column is narrow at the middle widths,
           so a heading that breaks has to be marked on both lines. See
           `.hand-underline-wrap` in global.css. */}
-      <h3 class="text-2xl font-bold tracking-tight text-slate-900">
-        <span class="hand-underline-wrap">{title}</span>
-      </h3>
+      <div class="capstone-title">
+        {/* The event's own mark, beside its name.
+
+            It stays on the black tile it was drawn on. The artwork's linework
+            — the bird's outline, the skates, the stick — is the same black as
+            that ground, so keying the ground out would take the drawing with
+            it and leave a red silhouette; on the tile it reads as it was
+            drawn. Rounded off and ringed in the card's own gold so it sits
+            with the frames beside it rather than as a black square dropped on
+            the paper.
+
+            `alt=""`: the heading right next to it already says the name, and a
+            mark that repeats it is one more thing to listen through. */}
+        {logo && (
+          <img src={logo} alt="" width="256" height="256"
+               class="capstone-logo" loading="lazy" decoding="async" />
+        )}
+        <h3 class="text-2xl font-bold tracking-tight text-slate-900">
+          <span class="hand-underline-wrap">{title}</span>
+        </h3>
+      </div>
       <p class="mt-4 text-lg text-slate-600">{blurb}</p>
 
       {/* The card's one action. Its ::after covers the whole card, so the
@@ -216,6 +240,38 @@ const positions = [
 
   .star-red    { stroke: var(--color-doodle-red); }
   .star-yellow { stroke: var(--color-doodle-yellow); }
+
+  /*
+    Mark and heading on one line. `align-items: center` centres the tile on
+    the heading as a whole, which is what looks right whether the name holds
+    one line or breaks over two at the middle widths.
+  */
+  .capstone-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* `min-width: 0` so a long name still wraps inside the row instead of
+     pushing the tile out of the column. */
+  .capstone-title h3 {
+    min-width: 0;
+  }
+
+  .capstone-logo {
+    flex: none;
+    width: 3.25rem;
+    height: 3.25rem;
+    /* Sits inside the card's 1.75rem corner at about the ratio the two radii
+       are apart in size — a tile this small takes a gentler round than the
+       paper it is on. */
+    border-radius: 0.85rem;
+    /* The same gold hairline as the card's edge and the polaroid mounts, so
+       the tile belongs to this card. */
+    box-shadow:
+      0 0 0 1px rgb(155 112 18 / 0.35),
+      0 2px 10px -4px rgb(28 20 8 / 0.4);
+  }
 
   /* Sits where the link would, in the same handwriting as the eyebrow — it is
      a note in the margin, not an action. */
