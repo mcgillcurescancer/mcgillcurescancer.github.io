@@ -59,6 +59,9 @@ const photos = (folder: string, stem: string, count = 6) =>
 
   `shortTitle` is what goes under the first photo, for a name too long to sit
   on one line. Leave it off where `title` already fits.
+
+  `logo` is the event's own mark, shown beside its name on the card. Only the
+  Classic has artwork of its own so far; leave it off until an event does.
 */
 const capstones = [
   {
@@ -70,6 +73,7 @@ const capstones = [
     turnout: '800 viewers',
     target: '$25,000',
     href: '/events/mcgill-classic/',
+    logo: '/assets/images/logos/mcgill-classic/mcgill-classic-logo.webp',
   },
   {
     title: 'Engineering vs. Management',
