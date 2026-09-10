@@ -36,7 +36,8 @@ interface Props {
   /** The event's own page. The whole card links here. */
   href: string;
   /**
-   * The event's own mark, beside its name — a path under `public/`. Left off,
+   * The event's own mark, beside its name — a path under `public/`, cut out
+   * to the drawing with nothing behind it, like the sponsor logos. Left off,
    * the heading stands on its own, which is what an event without artwork of
    * its own does.
    */
@@ -128,20 +129,14 @@ const positions = [
           so a heading that breaks has to be marked on both lines. See
           `.hand-underline-wrap` in global.css. */}
       <div class="capstone-title">
-        {/* The event's own mark, beside its name.
-
-            It stays on the black tile it was drawn on. The artwork's linework
-            — the bird's outline, the skates, the stick — is the same black as
-            that ground, so keying the ground out would take the drawing with
-            it and leave a red silhouette; on the tile it reads as it was
-            drawn. Rounded off and ringed in the card's own gold so it sits
-            with the frames beside it rather than as a black square dropped on
-            the paper.
+        {/* The event's own mark, beside its name — cut out to the drawing
+            itself, like the sponsor logos, so it sits on the paper rather
+            than on a tile of its own.
 
             `alt=""`: the heading right next to it already says the name, and a
             mark that repeats it is one more thing to listen through. */}
         {logo && (
-          <img src={logo} alt="" width="256" height="256"
+          <img src={logo} alt="" width="322" height="256"
                class="capstone-logo" loading="lazy" decoding="async" />
         )}
         <h3 class="text-2xl font-bold tracking-tight text-slate-900">
@@ -258,19 +253,13 @@ const positions = [
     min-width: 0;
   }
 
+  /* Sized by height — the mark is cropped to its own ink and comes out wider
+     than it is tall, so a height is what keeps it in proportion with the name
+     beside it. */
   .capstone-logo {
     flex: none;
-    width: 3.25rem;
+    width: auto;
     height: 3.25rem;
-    /* Sits inside the card's 1.75rem corner at about the ratio the two radii
-       are apart in size — a tile this small takes a gentler round than the
-       paper it is on. */
-    border-radius: 0.85rem;
-    /* The same gold hairline as the card's edge and the polaroid mounts, so
-       the tile belongs to this card. */
-    box-shadow:
-      0 0 0 1px rgb(155 112 18 / 0.35),
-      0 2px 10px -4px rgb(28 20 8 / 0.4);
   }
 
   /* Sits where the link would, in the same handwriting as the eyebrow — it is
