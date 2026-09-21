@@ -36,6 +36,8 @@ const socialImage = new URL(typeof image === 'string' ? image : image.src, Astro
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <!-- No image thumbnail beside the result in Google Search. -->
+    <meta name="robots" content="max-image-preview:none" />
     <link rel="canonical" href={canonical} />
 
     <!-- Display face for headings + handwriting face for polaroid captions. -->
