@@ -38,8 +38,9 @@ const photos = [
   { src: theCrowd, alt: '', caption: 'The crowd' },
 ];
 
-/* The key facts under the tagline, as small pills. */
-const facts = ['February 2027', 'Venue to be announced', '3v3 hockey', 'Food, drinks & music'];
+/* The key facts under the tagline, as small pills. What the day is — 3v3,
+   food, drinks, music — is already in the tagline, so only when and where. */
+const facts = ['February 2027', 'Venue to be announced'];
 
 const highlights = [
   {
@@ -101,12 +102,12 @@ const packagePages = [
   fundraisingGoal="$25,000"
 >
   <Fragment slot="hero">
-    <ul class="mt-5 flex flex-wrap gap-2 text-sm font-medium text-slate-600">
+    <ul class="mt-4 flex flex-wrap gap-2 text-sm font-medium text-slate-600">
       {facts.map((fact) => (
         <li class="rounded-full border border-stone-200 bg-stone-50 px-3 py-1">{fact}</li>
       ))}
     </ul>
-    <div class="mt-8 flex flex-wrap gap-3">
+    <div class="mt-6 flex flex-wrap gap-3">
       <a href="#sponsor"
          class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-mcc-700">
         Sponsor the Classic
@@ -119,7 +120,7 @@ const packagePages = [
   </Fragment>
 
   <!-- What the day is made of, on the first card's paper below a pen rule. -->
-  <div slot="highlights" class="mt-14 border-t border-dashed border-stone-300 pt-10">
+  <div slot="highlights" class="mt-10 border-t border-dashed border-stone-300 pt-8">
     <h2 class="text-2xl font-bold tracking-tight text-slate-900">
       More than a <span class="hand-underline">hockey game</span>
     </h2>
@@ -127,7 +128,7 @@ const packagePages = [
       The Classic is a day out for the whole campus, whether you are on a team or
       cheering from the boards.
     </p>
-    <ul class="mt-8 grid gap-6 sm:grid-cols-3">
+    <ul class="mt-6 grid gap-6 sm:grid-cols-3">
       {highlights.map((item) => (
         <li class="flex gap-4">
           <span class:list={['flex h-12 w-12 flex-none items-center justify-center rounded-full ring-1', item.tone]}>
