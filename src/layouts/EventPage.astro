@@ -1,46 +1,119 @@
 ---
 /*
-  Shared shell for our two flagship events. Both pages need the same four
-  blocks — outline, expected turnout, structure, fundraising goal — so the
-  shape lives here and each page supplies only its own content.
+  Shared shell for our two flagship events. Both pages open the same way, so
+  the shape lives here and each page supplies only its own content:
+
+  1. The first card .... name, tagline, the page's own buttons and facts, the
+                         two figures a sponsor asks about, and a pile of three
+                         gold polaroids — then whatever the page puts in the
+                         `highlights` slot, on the same paper
+  2. The default slot .. page-specific cards
 */
-import { Image } from 'astro:assets';
 import Layout from './Layout.astro';
 import Doodle from '../components/Doodle.astro';
+import Polaroid from '../components/Polaroid.astro';
 
 interface Props {
   title: string;
   description: string;
   tagline: string;
-  heroImage: ImageMetadata;
+  /**
+   * Three photos of the event for the pile in the first card, each with the
+   * handwritten line under it. The first one is also the social-share image.
+   */
+  photos: { src: ImageMetadata; alt: string; caption: string }[];
   expectedTurnout: string;
   fundraisingGoal: string;
-  structure: string[];
+  /**
+   * The event's own mark, beside its name — a path under `public/`, cut out
+   * to the drawing like the one on its capstone card. Left off, the heading
+   * stands on its own.
+   */
+  logo?: string;
 }
 
 const {
-  title, description, tagline, heroImage,
-  expectedTurnout, fundraisingGoal, structure,
+  title, description, tagline, photos,
+  expectedTurnout, fundraisingGoal, logo,
 } = Astro.props;
+
+/*
+  Scatter for the three frames. A frame is 1.165x as tall as it is wide.
+
+  On a phone they stack down the page: 55% of the box width, so 0.64 widths
+  tall, in an `aspect-[4/5]` box 1.25 widths tall.
+
+  From `md` up they fan out sideways instead, so the pile is no taller than
+  the text beside it: 46% wide (0.54 widths tall) in an `aspect-[10/7]` box
+  0.7 widths tall. The middle frame sits lowest and underneath, so its caption
+  shows below the other two, and theirs sit on top.
+
+  Either way each frame overlaps its neighbours only across the photo, so
+  every caption stays readable.
+*/
+const positions = [
+  'left-0 top-0 z-30 rotate-[-4deg]',
+  'right-0 top-[22%] z-20 rotate-[3deg] md:right-auto md:left-[27%] md:top-auto md:bottom-0 md:z-10',
+  'left-[8%] bottom-0 z-10 rotate-[-2deg] md:left-auto md:right-0 md:bottom-auto md:top-[5%] md:z-20',
+];
 ---
 
-<Layout title={`${title} | McGill Cures Cancer`} description={description} image={heroImage}>
+<Layout title={`${title} | McGill Cures Cancer`} description={description}
+        {...(photos[0] && { image: photos[0].src })}>
   <section class="section-shell pt-10">
     <div class="section-card">
-      {/* No marker swipe on this one: the event titles are long enough to
-          wrap, and the swipe is sized for a phrase that stays on one line. */}
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
-      <p class="mt-4 max-w-2xl text-lg text-slate-600">{tagline}</p>
-      {/* This is the page's LCP, so it loads eagerly rather than lazily. The
-          card caps out at 1088px, so there is nothing to gain above 1200 —
-          `width` pins the fallback `src` there too, which otherwise renders at
-          the source photo's full intrinsic size. */}
-      <Image src={heroImage} alt={title}
-             widths={[600, 900, 1200]}
-             width={1200}
-             sizes="(min-width: 1152px) 1088px, 100vw"
-             loading="eager" fetchpriority="high" decoding="async"
-             class="mt-10 h-80 w-full rounded-2xl object-cover shadow-sm" />
+      <div class="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
+        <div>
+          <div class="flex items-center gap-4">
+            {/* `alt=""`: the heading beside it already says the name. */}
+            {logo && (
+              <img src={logo} alt="" width="334" height="256"
+                   class="h-14 w-auto flex-none sm:h-16" loading="eager" decoding="async" />
+            )}
+            {/* No marker swipe on this one: the event titles are long enough
+                to wrap, and the swipe is sized for a phrase that stays on one
+                line. */}
+            <h1 class="min-w-0 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
+          </div>
+          <p class="mt-3 max-w-xl text-lg text-slate-600">{tagline}</p>
+
+          {/* The page's own buttons and key facts. */}
+          <slot name="hero" />
+
+          {/* Tinted, so the two figures read as tiles on the white card. The
+              coloured left edge is the only thing telling the pair apart at a
+              glance. */}
+          <dl class="mt-6 grid grid-cols-2 gap-4">
+            <div class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-yellow bg-stone-50/70 p-4 sm:p-5">
+              <dt class="text-sm font-medium text-slate-500">Expected turnout</dt>
+              <dd class="mt-1 text-lg font-bold text-slate-900 sm:text-2xl">{expectedTurnout}</dd>
+            </div>
+            <div class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-red bg-stone-50/70 p-4 sm:p-5">
+              <dt class="text-sm font-medium text-slate-500">Fundraising goal</dt>
+              <dd class="mt-1 text-lg font-bold text-mcc-600 sm:text-2xl">{fundraisingGoal}</dd>
+            </div>
+          </dl>
+        </div>
+
+        {/* On screen as the page opens, so the frames load eagerly. Only the
+            first carries alt text; the other two are more of the same day. */}
+        <div class="relative mx-auto aspect-[4/5] w-full max-w-md md:aspect-[10/7] md:max-w-none">
+          {photos.slice(0, 3).map((photo, i) => (
+            <Polaroid
+              src={photo.src}
+              alt={i === 0 ? photo.alt : ''}
+              caption={photo.caption}
+              tone="gold"
+              loading="eager"
+              sizes="(min-width: 768px) 230px, 50vw"
+              class:list={['absolute w-[55%] md:w-[46%]', positions[i]]}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Page-specific detail that belongs on the same paper as the intro. */}
+      <slot name="highlights" />
     </div>
   </section>
 
@@ -48,46 +121,6 @@ const {
        Doodle.astro. -->
   <Doodle variant="wave" />
 
-  <section class="section-shell">
-    <div class="section-card">
-      <dl class="grid gap-6 sm:grid-cols-2">
-        {/* Tinted, so the two figures still read as tiles now that the card
-            behind them is white. The coloured left edge is the only thing
-            telling the pair apart at a glance. */}
-        <div class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-yellow bg-stone-50/70 p-6">
-          <dt class="text-sm font-medium text-slate-500">Expected turnout</dt>
-          <dd class="mt-1 text-2xl font-bold text-slate-900">{expectedTurnout}</dd>
-        </div>
-        <div class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-red bg-stone-50/70 p-6">
-          <dt class="text-sm font-medium text-slate-500">Fundraising goal</dt>
-          <dd class="mt-1 text-2xl font-bold text-mcc-600">{fundraisingGoal}</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <Doodle variant="loop" />
-
-  <section class="section-shell">
-    <div class="section-card">
-      <h2 class="text-2xl font-bold tracking-tight text-slate-900">
-        <span class="hand-underline">Event structure</span>
-      </h2>
-      <ol class="mt-6 space-y-3">
-        {structure.map((item, i) => (
-          <li class="flex gap-4">
-            <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mcc-100 text-sm font-bold text-mcc-700">
-              {i + 1}
-            </span>
-            <p class="text-slate-700">{item}</p>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
-
-  <Doodle variant="triple" />
-
-  <!-- Page-specific detail goes here — each page supplies its own card. -->
+  <!-- Page-specific detail goes here — each page supplies its own cards. -->
   <slot />
 </Layout>

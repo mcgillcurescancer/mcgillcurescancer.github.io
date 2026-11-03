@@ -1,23 +1,399 @@
 ---
 /*
-  Placeholder. The write-up for this event was pulled until the real details
-  are settled, but the event's card on the events page now links straight here,
-  so this page is what a reader lands on when they follow it. When the content
-  lands, rebuild it on EventPage.astro.
+  The McGill Classic, read top to bottom:
+
+  1. The first card .. name, tagline, when, the way in for a sponsor, the two
+                       figures, three polaroids, and what the day is made of
+                       — hockey, food and drinks, music (EventPage.astro)
+  2. Sponsor ......... (#sponsor) the partnership package itself
+
+  The package is shown exactly as exported from Canva, one image per page, in
+  src/assets/images/sponsorship/package-{1..7}.webp. When the package changes,
+  export it again and replace those files — don't retype it here. Each page's
+  `alt` carries its text for anyone who can't see the image, so update those
+  alongside.
 */
-import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import EventPage from '../../layouts/EventPage.astro';
+import Icon from '../../components/Icon.astro';
+
+import onTheIce from '../../assets/images/events/mcgill-classic/mcgill-classic-3.webp';
+import lacingUp from '../../assets/images/events/mcgill-classic/mcgill-classic-1.webp';
+import theCrowd from '../../assets/images/events/mcgill-classic/mcgill-classic-2.webp';
+
+import page1 from '../../assets/images/sponsorship/package-1.webp';
+import page2 from '../../assets/images/sponsorship/package-2.webp';
+import page3 from '../../assets/images/sponsorship/package-3.webp';
+import page4 from '../../assets/images/sponsorship/package-4.webp';
+import page5 from '../../assets/images/sponsorship/package-5.webp';
+import page6 from '../../assets/images/sponsorship/package-6.webp';
+import page7 from '../../assets/images/sponsorship/package-7.webp';
+
+const EMAIL = 'mcgillcurescancer@ssmu.ca';
+const sponsorMailto = `mailto:${EMAIL}?subject=${encodeURIComponent('Sponsoring the McGill Classic')}`;
+
+const photos = [
+  { src: onTheIce, alt: 'A 3v3 game on the outdoor rink at the McGill Classic', caption: 'On the ice' },
+  { src: lacingUp, alt: '', caption: 'Lacing up' },
+  { src: theCrowd, alt: '', caption: 'The crowd' },
+];
+
+/* The key facts under the tagline, as small pills. What the day is — 3v3,
+   food, drinks, music — is already in the tagline, so only when and where. */
+const facts = ['February 2027', 'McGill Lower Field'];
+
+const highlights = [
+  {
+    icon: 'sticks',
+    title: 'On the ice',
+    text: 'Three-on-three hockey: open ice, quick shifts and plenty of goals, with teams from every corner of McGill.',
+    tone: 'bg-mcc-50 text-mcc-700 ring-mcc-100',
+  },
+  {
+    icon: 'cup',
+    title: 'Food and drinks',
+    text: 'Something warm to eat and drink rinkside, for players between games and fans in the stands.',
+    tone: 'bg-amber-50 text-amber-700 ring-amber-200',
+  },
+  {
+    icon: 'music',
+    title: 'Music',
+    text: 'Music playing all day, from the first puck drop to the final.',
+    tone: 'bg-stone-100 text-stone-700 ring-stone-200',
+  },
+] as const;
+
+const packagePages = [
+  { src: page1, alt: 'Partnership Package — McGill Classic. Cover.' },
+  {
+    src: page2,
+    alt: 'What is MCC? McGill Cures Cancer (MCC) is a 100% student-run, non-profit organization that brings together the McGill community through sporting events in an effort to fundraise money towards cancer research. As the official chapter of the Canadian Cancer Society’s Rivalry program, MCC engages the community through fundraising initiatives and events that inspire positive change and unite people around a common cause. MCC was founded in Fall 2025, driven by a shared commitment to making a meaningful impact. Each with a personal story connected to cancer, our executive team understands the impact cancer can have on the lives of those affected, and are therefore personally motivated to make a big impact. @mcgillcurescancer, mcgillcurescancer@ssmu.ca.',
+  },
+  {
+    src: page3,
+    alt: 'Why sponsor? McGill Cures Cancer is committed to building meaningful, mutually beneficial partnerships with our sponsors. Your support helps maximize our donation to the Canadian Cancer Society while enhancing the experience for the students, athletes, and fans who make our events possible. Our annual hockey tournament, the McGill Classic, offers sponsors valuable brand exposure across the McGill and Montreal communities, while creating opportunities to engage directly with talented students from every faculty. In February 2027, McGill will host its second annual rivalry hockey tournament. We invite you to join us in bringing the community together through sport to support the more than 220,000 Canadians diagnosed with cancer each year. Every partnership helps create a memorable event while making a meaningful impact in the fight against cancer.',
+  },
+  {
+    src: page4,
+    alt: 'McGill Classic Partnerships, February 2027. $5,000 – Title Sponsor: Sponsor the McGill Classic, receiving recognition in all promotional platforms. “The McGill Classic presented by COMPANY NAME”. Contribution open to discussion. Benefits: name and logo on promotional materials (tickets, posters, digital assets, player jerseys); free admission for company representatives; social media feature across channels; logo displayed at event. $2,000 Jersey Sponsor: As our Jersey Sponsor, you cover the cost of the customized game jerseys, or supply them directly. Benefits: the only company logo on the front of both teams’ game jerseys; your logo in every game photo, highlight video and post-game post; a dedicated Instagram post revealing the jerseys before the game; logo on posters and the sponsor banner at the event.',
+  },
+  {
+    src: page5,
+    alt: 'McGill Classic Partnerships, February 2027. In Kind Prize Sponsor: In-kind sponsors donate prizes for the winning team, MVP and raffle winners, or food and drinks for players and fans. Benefits: social media feature across channels; logo displayed at event; shoutout after the game.',
+  },
+  {
+    src: page6,
+    alt: 'Past sponsors: Prince Arthur Orchard, Celsius, Enso Yoga, Chef On Call, Easy Mondays, Batiste, Café Campus, Red Bull, Shape and Poppi.',
+  },
+  {
+    src: page7,
+    alt: 'Contact. On behalf of the entire McGill Cures Cancer Executive Team, we thank you for your interest in our mission and invite you to play a significant role in the success of this year. We look forward to discussing the implementation of a mutually beneficial partnership that would maximize the value to your organization, as well as maximize our donation to the Canadian Cancer Society. Maahir Paliwal, Co-Chair, maahir.paliwal@mail.mcgill.ca. Esmé Chapman, Co-Chair, esme.korchinsky@mail.mcgill.ca. McGill Cures Cancer, mcgillcurescancer@ssmu.ca.',
+  },
+];
 ---
 
-<Layout
-  title="The McGill Classic | McGill Cures Cancer"
-  description="The McGill Classic — McGill Cures Cancer's flagship tournament raising money for the Canadian Cancer Society."
+<EventPage
+  title="The McGill Classic"
+  description="The McGill Classic is McGill Cures Cancer's 3v3 hockey tournament, with food, drinks and music, and every dollar raised going to cancer research. Partnership package inside."
+  tagline="A 3v3 hockey tournament with food, drinks and music — and every dollar it raises goes to cancer research."
+  photos={photos}
+  logo="/assets/images/logos/mcgill-classic/mcgill-classic-logo.webp"
+  expectedTurnout="800 viewers"
+  fundraisingGoal="$25,000"
 >
-  <section class="section-shell pt-10 pb-16">
-    <div class="section-card text-center">
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-        The McGill Classic
-      </h1>
-      <p class="mt-4 text-lg text-slate-600">Details coming soon.</p>
+  <Fragment slot="hero">
+    <ul class="mt-4 flex flex-wrap gap-2 text-sm font-medium text-slate-600">
+      {facts.map((fact) => (
+        <li class="rounded-full border border-stone-200 bg-stone-50 px-3 py-1">{fact}</li>
+      ))}
+    </ul>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="#sponsor"
+         class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-mcc-700">
+        Sponsor the Classic
+      </a>
+      <a href={`mailto:${EMAIL}`}
+         class="rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-stone-50">
+        Email the team
+      </a>
+    </div>
+  </Fragment>
+
+  <!-- What the day is made of, on the first card's paper below a pen rule. -->
+  <div slot="highlights" class="mt-10 border-t border-dashed border-stone-300 pt-8">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+      More than a <span class="hand-underline">hockey game</span>
+    </h2>
+    <p class="mt-3 text-lg text-slate-600">
+      The Classic is a day out for the whole campus, whether you are on a team or
+      cheering from the boards.
+    </p>
+    <ul class="mt-6 grid gap-6 sm:grid-cols-3">
+      {highlights.map((item) => (
+        <li class="flex gap-4">
+          <span class:list={['flex h-12 w-12 flex-none items-center justify-center rounded-full ring-1', item.tone]}>
+            <Icon name={item.icon} class="h-6 w-6" />
+          </span>
+          <div>
+            <h3 class="font-bold text-slate-900">{item.title}</h3>
+            <p class="mt-1 text-sm text-slate-600">{item.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <!-- 2. The partnership package, page by page — the target for the hero's
+       "Sponsor the Classic" button. Each page opens full size on its own. -->
+  <section id="sponsor" class="section-shell scroll-mt-24 pb-16">
+    <div class="section-card">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+          Partnership <span class="hand-underline">package</span>
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+          Swipe through the package, or tap a page to open it full size.
+        </p>
+      </div>
+
+      {/*
+        One page at a time, swiped sideways. It is a plain horizontal scroller
+        with snap points, so touch, trackpad and arrow keys all work natively
+        and it still scrolls with JavaScript off; the script below only drives
+        the buttons, the dots and the counter, which stay hidden without it.
+        From `sm` up the next page peeks in past the right edge; on a phone
+        each page fills the slot and the dots say there is more.
+      */}
+      <div class="carousel mt-10" role="region" aria-roledescription="carousel" aria-label="Partnership package">
+        <ol class="carousel-track" tabindex="0">
+          {packagePages.map((page, i) => (
+            <li class="carousel-slide" role="group" aria-roledescription="slide"
+                aria-label={`Page ${i + 1} of ${packagePages.length}`}>
+              <a href={page.src.src} target="_blank" rel="noopener"
+                 class="block overflow-hidden rounded-xl shadow-md ring-1 ring-stone-200 transition-shadow hover:shadow-lg focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-mcc-700">
+                <Image src={page.src} alt={page.alt}
+                       widths={[600, 900, 1200]} width={1200}
+                       sizes="(min-width: 640px) 416px, calc(100vw - 96px)"
+                       class="h-auto w-full" />
+                <span class="sr-only">Opens full size</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+
+        <div class="carousel-controls mt-6 flex items-center justify-center gap-4" hidden>
+          <button type="button" class="carousel-button" data-step="-1" aria-label="Previous page">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" /></svg>
+          </button>
+          <div class="flex items-center gap-2">
+            {packagePages.map((_, i) => (
+              <button type="button" class="carousel-dot" data-index={i}
+                      aria-label={`Go to page ${i + 1}`}></button>
+            ))}
+          </div>
+          <button type="button" class="carousel-button" data-step="1" aria-label="Next page">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" /></svg>
+          </button>
+        </div>
+        <p class="carousel-count mt-3 text-center text-sm font-medium text-slate-500" aria-live="polite" hidden></p>
+      </div>
+
+      <div class="mt-12 flex flex-wrap justify-center gap-3">
+        <a href={sponsorMailto}
+           class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-mcc-700">
+          Email us about sponsoring
+        </a>
+        <a href="https://www.instagram.com/mcgillcurescancer/" rel="noopener" target="_blank"
+           class="rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-stone-50">
+          Message us on Instagram
+        </a>
+      </div>
     </div>
   </section>
-</Layout>
+</EventPage>
+
+<script>
+  /*
+    Wires up the package carousel's buttons, dots and counter. The swiping
+    itself is the browser's own scroll-snap; this only follows along. More
+    than one page can be on screen at once on a wide screen, so the counter
+    names the run that is showing and every dot in it lights up.
+  */
+  for (const carousel of document.querySelectorAll<HTMLElement>('.carousel')) {
+    const track = carousel.querySelector<HTMLElement>('.carousel-track')!;
+    const slides = [...track.querySelectorAll<HTMLElement>('.carousel-slide')];
+    const dots = [...carousel.querySelectorAll<HTMLButtonElement>('.carousel-dot')];
+    const [prev, next] = carousel.querySelectorAll<HTMLButtonElement>('.carousel-button');
+    const count = carousel.querySelector<HTMLElement>('.carousel-count')!;
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let first = 0;
+
+    /* Brings a page to the left edge, where the snap points are. The browser
+       stops short at the end of the track on its own. */
+    const goTo = (index: number) => {
+      const slide = slides[Math.max(0, Math.min(slides.length - 1, index))]!;
+      const inset = parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0;
+      track.scrollTo({ left: slide.offsetLeft - inset, behavior: smooth ? 'smooth' : 'auto' });
+    };
+
+    /* A page counts as showing once more than half of it is in view. */
+    const update = () => {
+      const left = track.scrollLeft;
+      const right = left + track.clientWidth;
+      const showing = slides.flatMap((slide, i) => {
+        const start = slide.offsetLeft;
+        const end = start + slide.clientWidth;
+        const inView = Math.min(end, right) - Math.max(start, left);
+        return inView > slide.clientWidth / 2 ? [i] : [];
+      });
+      first = showing[0] ?? 0;
+      const last = showing.at(-1) ?? first;
+
+      dots.forEach((dot, i) => {
+        dot.toggleAttribute('data-showing', i >= first && i <= last);
+        i === first ? dot.setAttribute('aria-current', 'true') : dot.removeAttribute('aria-current');
+      });
+      prev!.disabled = left <= 1;
+      next!.disabled = right >= track.scrollWidth - 1;
+      count.textContent = first === last
+        ? `Page ${first + 1} of ${slides.length}`
+        : `Pages ${first + 1}–${last + 1} of ${slides.length}`;
+    };
+
+    prev!.addEventListener('click', () => goTo(first - 1));
+    next!.addEventListener('click', () => goTo(first + 1));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+    track.addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+
+    carousel.querySelector<HTMLElement>('.carousel-controls')!.hidden = false;
+    count.hidden = false;
+    update();
+  }
+</script>
+
+<style>
+  /*
+    Pages line up from the left edge of the card, like the text above them.
+    On a phone each page fills the whole slot, one at a time; from `sm` up a
+    page is 82% of the carousel's width, capped at 26rem — about two and a
+    half pages across on a wide screen, with the next one showing past the
+    edge. Sized off the carousel's own width rather than the viewport.
+  */
+  .carousel {
+    container-type: inline-size;
+  }
+
+  .carousel-track {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    /* A hair of inset so the first page's shadow isn't cut off, matched by
+       the scroll padding so every page snaps to that same line. Room below
+       for the shadows too, which the scroller would otherwise clip. */
+    padding: 0.5rem 0.5rem 1.25rem;
+    scroll-padding-inline: 0.5rem;
+    scrollbar-width: none;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-track {
+      gap: 1.5rem;
+    }
+  }
+
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-track:focus-visible {
+    outline: 3px solid #9f1239;
+    outline-offset: 4px;
+    border-radius: 1rem;
+  }
+
+  /* The full width of the track, less its 0.5rem inset either side. */
+  .carousel-slide {
+    flex: none;
+    width: calc(100cqw - 1rem);
+    scroll-snap-align: start;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-slide {
+      width: min(82cqw, 26rem);
+    }
+  }
+
+  .carousel-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgb(203 213 225);
+    border-radius: 9999px;
+    background: #fff;
+    color: #334155;
+    transition: background-color 150ms ease, opacity 150ms ease;
+  }
+
+  .carousel-button:hover:not(:disabled) {
+    background: rgb(250 250 249);
+  }
+
+  .carousel-button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .carousel-button svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* The dot is drawn small inside a 24px target. */
+  .carousel-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .carousel-dot::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: rgb(203 213 225);
+    transition: background-color 150ms ease, transform 150ms ease;
+  }
+
+  .carousel-dot[data-showing]::before {
+    background: #be123c;
+    transform: scale(1.3);
+  }
+
+  .carousel-button:focus-visible,
+  .carousel-dot:focus-visible {
+    outline: 3px solid #9f1239;
+    outline-offset: 2px;
+    border-radius: 9999px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-button,
+    .carousel-dot::before {
+      transition: none;
+    }
+  }
+</style>
