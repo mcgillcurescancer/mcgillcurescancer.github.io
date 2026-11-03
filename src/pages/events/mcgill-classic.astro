@@ -160,7 +160,7 @@ const packagePages = [
         with snap points, so touch, trackpad and arrow keys all work natively
         and it still scrolls with JavaScript off; the script below only drives
         the buttons, the dots and the counter, which stay hidden without it.
-        The pages either side peek in at the edges, which is what tells a
+        The next page peeks in past the right edge, which is what tells a
         reader there is more to swipe to.
       */}
       <div class="carousel mt-10" role="region" aria-roledescription="carousel" aria-label="Partnership package">
@@ -172,7 +172,7 @@ const packagePages = [
                  class="block overflow-hidden rounded-xl shadow-md ring-1 ring-stone-200 transition-shadow hover:shadow-lg focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-mcc-700">
                 <Image src={page.src} alt={page.alt}
                        widths={[600, 900, 1200]} width={1200}
-                       sizes="(min-width: 640px) 416px, 78vw"
+                       sizes="(min-width: 640px) 416px, 82vw"
                        class="h-auto w-full" />
                 <span class="sr-only">Opens full size</span>
               </a>
@@ -214,7 +214,9 @@ const packagePages = [
 <script>
   /*
     Wires up the package carousel's buttons, dots and counter. The swiping
-    itself is the browser's own scroll-snap; this only follows along.
+    itself is the browser's own scroll-snap; this only follows along. More
+    than one page can be on screen at once on a wide screen, so the counter
+    names the run that is showing and every dot in it lights up.
   */
   for (const carousel of document.querySelectorAll<HTMLElement>('.carousel')) {
     const track = carousel.querySelector<HTMLElement>('.carousel-track')!;
@@ -223,36 +225,42 @@ const packagePages = [
     const [prev, next] = carousel.querySelectorAll<HTMLButtonElement>('.carousel-button');
     const count = carousel.querySelector<HTMLElement>('.carousel-count')!;
     const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let current = -1;
+    let first = 0;
 
+    /* Brings a page to the left edge, where the snap points are. The browser
+       stops short at the end of the track on its own. */
     const goTo = (index: number) => {
       const slide = slides[Math.max(0, Math.min(slides.length - 1, index))]!;
-      track.scrollTo({
-        left: slide.offsetLeft - (track.clientWidth - slide.clientWidth) / 2,
-        behavior: smooth ? 'smooth' : 'auto',
-      });
+      const inset = parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0;
+      track.scrollTo({ left: slide.offsetLeft - inset, behavior: smooth ? 'smooth' : 'auto' });
     };
 
-    /* The slide whose centre is nearest the track's centre is the current one. */
+    /* A page counts as showing once more than half of it is in view. */
     const update = () => {
-      const middle = track.scrollLeft + track.clientWidth / 2;
-      let nearest = 0;
-      slides.forEach((slide, i) => {
-        const distance = Math.abs(slide.offsetLeft + slide.clientWidth / 2 - middle);
-        const best = Math.abs(slides[nearest]!.offsetLeft + slides[nearest]!.clientWidth / 2 - middle);
-        if (distance < best) nearest = i;
+      const left = track.scrollLeft;
+      const right = left + track.clientWidth;
+      const showing = slides.flatMap((slide, i) => {
+        const start = slide.offsetLeft;
+        const end = start + slide.clientWidth;
+        const inView = Math.min(end, right) - Math.max(start, left);
+        return inView > slide.clientWidth / 2 ? [i] : [];
       });
-      if (nearest === current) return;
-      current = nearest;
-      dots.forEach((dot, i) =>
-        i === current ? dot.setAttribute('aria-current', 'true') : dot.removeAttribute('aria-current'));
-      prev!.disabled = current === 0;
-      next!.disabled = current === slides.length - 1;
-      count.textContent = `Page ${current + 1} of ${slides.length}`;
+      first = showing[0] ?? 0;
+      const last = showing.at(-1) ?? first;
+
+      dots.forEach((dot, i) => {
+        dot.toggleAttribute('data-showing', i >= first && i <= last);
+        i === first ? dot.setAttribute('aria-current', 'true') : dot.removeAttribute('aria-current');
+      });
+      prev!.disabled = left <= 1;
+      next!.disabled = right >= track.scrollWidth - 1;
+      count.textContent = first === last
+        ? `Page ${first + 1} of ${slides.length}`
+        : `Pages ${first + 1}–${last + 1} of ${slides.length}`;
     };
 
-    prev!.addEventListener('click', () => goTo(current - 1));
-    next!.addEventListener('click', () => goTo(current + 1));
+    prev!.addEventListener('click', () => goTo(first - 1));
+    next!.addEventListener('click', () => goTo(first + 1));
     dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
     track.addEventListener('scroll', update, { passive: true });
     addEventListener('resize', update);
@@ -265,17 +273,16 @@ const packagePages = [
 
 <style>
   /*
-    Sized off the carousel's own width rather than the viewport: a slide is
-    78% of it on a phone, capped at 26rem, and the track's inline padding is
-    whatever is left either side — which is what lets the first and last
-    pages snap to the centre like the rest.
+    Pages line up from the left edge of the card, like the text above them.
+    A page is 82% of the carousel's width on a phone, so the next one shows
+    past the edge, and caps at 26rem — about two and a half pages across on a
+    wide screen. Sized off the carousel's own width rather than the viewport.
   */
   .carousel {
     container-type: inline-size;
   }
 
   .carousel-track {
-    --slide: min(78cqw, 26rem);
     position: relative;
     display: flex;
     /* Tighter on a phone, so more of the next page shows past the edge. */
@@ -283,9 +290,11 @@ const packagePages = [
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
-    padding-inline: calc((100cqw - var(--slide)) / 2);
-    /* Room for the page shadows, which the scroller would otherwise clip. */
-    padding-block: 0.5rem 1.25rem;
+    /* A hair of inset so the first page's shadow isn't cut off, matched by
+       the scroll padding so every page snaps to that same line. Room below
+       for the shadows too, which the scroller would otherwise clip. */
+    padding: 0.5rem 0.5rem 1.25rem;
+    scroll-padding-inline: 0.5rem;
     scrollbar-width: none;
   }
 
@@ -307,8 +316,8 @@ const packagePages = [
 
   .carousel-slide {
     flex: none;
-    width: var(--slide);
-    scroll-snap-align: center;
+    width: min(82cqw, 26rem);
+    scroll-snap-align: start;
   }
 
   .carousel-button {
@@ -361,7 +370,7 @@ const packagePages = [
     transition: background-color 150ms ease, transform 150ms ease;
   }
 
-  .carousel-dot[aria-current]::before {
+  .carousel-dot[data-showing]::before {
     background: #be123c;
     transform: scale(1.3);
   }
