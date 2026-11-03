@@ -7,13 +7,11 @@
                          two figures a sponsor asks about, and a pile of three
                          gold polaroids — then whatever the page puts in the
                          `highlights` slot, on the same paper
-  2. Event structure ... how the day runs, as a row of illustrated steps
-  3. The default slot .. page-specific cards
+  2. The default slot .. page-specific cards
 */
 import Layout from './Layout.astro';
 import Doodle from '../components/Doodle.astro';
 import Polaroid from '../components/Polaroid.astro';
-import Icon, { type IconName } from '../components/Icon.astro';
 
 interface Props {
   title: string;
@@ -26,8 +24,6 @@ interface Props {
   photos: { src: ImageMetadata; alt: string; caption: string }[];
   expectedTurnout: string;
   fundraisingGoal: string;
-  /** The day in order. Keep `text` to a line or two — the icon carries the rest. */
-  structure: { title: string; text: string; icon: IconName }[];
   /**
    * The event's own mark, beside its name — a path under `public/`, cut out
    * to the drawing like the one on its capstone card. Left off, the heading
@@ -38,7 +34,7 @@ interface Props {
 
 const {
   title, description, tagline, photos,
-  expectedTurnout, fundraisingGoal, structure, logo,
+  expectedTurnout, fundraisingGoal, logo,
 } = Astro.props;
 
 /*
@@ -117,65 +113,6 @@ const positions = [
        Doodle.astro. -->
   <Doodle variant="wave" />
 
-  <section class="section-shell">
-    <div class="section-card">
-      <h2 class="text-2xl font-bold tracking-tight text-slate-900">
-        <span class="hand-underline">Event structure</span>
-      </h2>
-      {/* One step per column from `lg` up, joined by a dashed pen line; a
-          single column below that, with the line running down the left. */}
-      <ol class="steps mt-10 grid gap-8 lg:grid-cols-5 lg:gap-6">
-        {structure.map((step, i) => (
-          <li class="step relative flex gap-5 lg:flex-col lg:items-center lg:gap-4 lg:text-center">
-            <div class:list={[
-              'relative flex h-16 w-16 flex-none items-center justify-center rounded-full ring-1',
-              i % 2 ? 'bg-amber-50 text-amber-700 ring-amber-200' : 'bg-mcc-50 text-mcc-700 ring-mcc-100',
-            ]}>
-              <Icon name={step.icon} class="h-7 w-7" />
-              <span class="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-bold text-slate-700 shadow-sm ring-1 ring-stone-200">
-                {i + 1}
-              </span>
-            </div>
-            <div class="pt-2 lg:pt-0">
-              <h3 class="font-bold text-slate-900">{step.title}</h3>
-              <p class="mt-1 text-sm text-slate-600">{step.text}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
-
-  <Doodle variant="loop" />
-
   <!-- Page-specific detail goes here — each page supplies its own cards. -->
   <slot />
 </Layout>
-
-<style>
-  /*
-    The pen line joining one step to the next: down the left edge, from under
-    one icon to the top of the next, on a phone; across, from the right of one
-    icon to the left of the next, once the steps sit in a row. The offsets
-    follow the 4rem icon and the grid gaps above (2rem, then 1.5rem).
-  */
-  .step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 2rem;
-    top: 4.5rem;
-    bottom: -1.5rem;
-    border-left: 2px dashed rgb(201 32 58 / 0.35);
-  }
-
-  @media (min-width: 1024px) {
-    .step:not(:last-child)::after {
-      left: calc(50% + 2.75rem);
-      top: 2rem;
-      bottom: auto;
-      width: calc(100% + 1.5rem - 5.5rem);
-      border-left: 0;
-      border-top: 2px dashed rgb(201 32 58 / 0.35);
-    }
-  }
-</style>

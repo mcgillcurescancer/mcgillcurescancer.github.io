@@ -5,36 +5,31 @@
   1. The first card .. name, tagline, when, the way in for a sponsor, the two
                        figures, three polaroids, and what the day is made of
                        — hockey, food and drinks, music (EventPage.astro)
-  2. Structure ....... how the day runs, as illustrated steps (EventPage)
-  3. What is MCC? .... who runs it, beside the package's cover photo
-  4. Sponsor ......... (#sponsor) why sponsor, the three tiers, how to get in
-                       touch, and past sponsors
+  2. Sponsor ......... (#sponsor) the partnership package itself
 
-  Sections 3 and 4 are the McGill Classic partnership package (Canva, February
-  2027 edition), word for word, with the photos cut from its pages. Keep them
-  in step with it — a sponsor will often have both open at once.
+  The package is shown exactly as exported from Canva, one image per page, in
+  src/assets/images/sponsorship/package-{1..7}.webp. When the package changes,
+  export it again and replace those files — don't retype it here. Each page's
+  `alt` carries its text for anyone who can't see the image, so update those
+  alongside.
 */
 import { Image } from 'astro:assets';
 import EventPage from '../../layouts/EventPage.astro';
-import SponsorWall from '../../components/SponsorWall.astro';
-import Doodle from '../../components/Doodle.astro';
 import Icon from '../../components/Icon.astro';
 
 import onTheIce from '../../assets/images/events/mcgill-classic/mcgill-classic-3.webp';
 import lacingUp from '../../assets/images/events/mcgill-classic/mcgill-classic-1.webp';
 import theCrowd from '../../assets/images/events/mcgill-classic/mcgill-classic-2.webp';
 
-/*
-  Cut from the package's own pages, where they sit behind its text panels —
-  the cover's outdoor rink, and the skates and puck below the in-kind tier.
-  Only the parts of each photo no panel covers survived, so swap in the
-  originals from the Canva design if they turn up.
-*/
-import outdoorRink from '../../assets/images/sponsorship/outdoor-rink.webp';
-import skatesAndPuck from '../../assets/images/sponsorship/skates-and-puck.webp';
+import page1 from '../../assets/images/sponsorship/package-1.webp';
+import page2 from '../../assets/images/sponsorship/package-2.webp';
+import page3 from '../../assets/images/sponsorship/package-3.webp';
+import page4 from '../../assets/images/sponsorship/package-4.webp';
+import page5 from '../../assets/images/sponsorship/package-5.webp';
+import page6 from '../../assets/images/sponsorship/package-6.webp';
+import page7 from '../../assets/images/sponsorship/package-7.webp';
 
 const EMAIL = 'mcgillcurescancer@ssmu.ca';
-const INSTAGRAM = 'https://www.instagram.com/mcgillcurescancer/';
 const sponsorMailto = `mailto:${EMAIL}?subject=${encodeURIComponent('Sponsoring the McGill Classic')}`;
 
 const photos = [
@@ -45,19 +40,6 @@ const photos = [
 
 /* The key facts under the tagline, as small pills. */
 const facts = ['February 2027', 'Venue to be announced', '3v3 hockey', 'Food, drinks & music'];
-
-/*
-  TODO: the shape of the day as we describe it to sponsors — confirm it
-  against the real schedule once the venue and date are booked, and add the
-  venue to `facts` at the same time.
-*/
-const structure = [
-  { icon: 'team', title: 'Sign up', text: 'Teams of three enter and are drawn into the bracket.' },
-  { icon: 'sticks', title: 'Face off', text: 'Fast 3v3 games run back to back on the ice.' },
-  { icon: 'music', title: 'Off the ice', text: 'Food, drinks and music all day for players and fans.' },
-  { icon: 'trophy', title: 'The final', text: 'Prizes for the winning team, the MVP and raffle winners.' },
-  { icon: 'ribbon', title: 'Give back', text: 'Every dollar raised goes to the Canadian Cancer Society.' },
-] as const;
 
 const highlights = [
   {
@@ -80,63 +62,43 @@ const highlights = [
   },
 ] as const;
 
-/*
-  The three tiers, as the package words them. `band` is the colour of the
-  tier's bar in the package — gold, silver, deep maroon — carried over as the
-  stripe along the top of each card. The tier's name says the same thing in
-  words, so nothing rests on the colour alone.
-*/
-const tiers = [
+const packagePages = [
+  { src: page1, alt: 'Partnership Package — McGill Classic. Cover.' },
   {
-    name: 'Title Sponsor',
-    price: '$5,000',
-    band: '#c8975a',
-    summary: 'Sponsor the McGill Classic, receiving recognition in all promotional platforms.',
-    quote: '“The McGill Classic presented by COMPANY NAME”',
-    note: 'Contribution open to discussion',
-    benefits: [
-      'Name and logo on promotional materials (tickets, posters, digital assets, player jerseys)',
-      'Free admission for company representatives',
-      'Social media feature across channels',
-      'Logo displayed at event',
-    ],
-    featured: true,
+    src: page2,
+    alt: 'What is MCC? McGill Cures Cancer (MCC) is a 100% student-run, non-profit organization that brings together the McGill community through sporting events in an effort to fundraise money towards cancer research. As the official chapter of the Canadian Cancer Society’s Rivalry program, MCC engages the community through fundraising initiatives and events that inspire positive change and unite people around a common cause. MCC was founded in Fall 2025, driven by a shared commitment to making a meaningful impact. Each with a personal story connected to cancer, our executive team understands the impact cancer can have on the lives of those affected, and are therefore personally motivated to make a big impact. @mcgillcurescancer, mcgillcurescancer@ssmu.ca.',
   },
   {
-    name: 'Jersey Sponsor',
-    price: '$2,000',
-    band: '#a3a3a3',
-    summary: 'As our Jersey Sponsor, you cover the cost of the customized game jerseys, or supply them directly.',
-    benefits: [
-      'The only company logo on the front of both teams’ game jerseys.',
-      'Your logo in every game photo, highlight video and post-game post.',
-      'A dedicated Instagram post revealing the jerseys before the game.',
-      'Logo on posters and the sponsor banner at the event.',
-    ],
+    src: page3,
+    alt: 'Why sponsor? McGill Cures Cancer is committed to building meaningful, mutually beneficial partnerships with our sponsors. Your support helps maximize our donation to the Canadian Cancer Society while enhancing the experience for the students, athletes, and fans who make our events possible. Our annual hockey tournament, the McGill Classic, offers sponsors valuable brand exposure across the McGill and Montreal communities, while creating opportunities to engage directly with talented students from every faculty. In February 2027, McGill will host its second annual rivalry hockey tournament. We invite you to join us in bringing the community together through sport to support the more than 220,000 Canadians diagnosed with cancer each year. Every partnership helps create a memorable event while making a meaningful impact in the fight against cancer.',
   },
   {
-    name: 'In Kind Prize Sponsor',
-    price: 'In kind',
-    band: '#4a0004',
-    summary: 'In-kind sponsors donate prizes for the winning team, MVP and raffle winners, or food and drinks for players and fans.',
-    benefits: [
-      'Social media feature across channels',
-      'Logo displayed at event',
-      'Shoutout after the game',
-    ],
+    src: page4,
+    alt: 'McGill Classic Partnerships, February 2027. $5,000 – Title Sponsor: Sponsor the McGill Classic, receiving recognition in all promotional platforms. “The McGill Classic presented by COMPANY NAME”. Contribution open to discussion. Benefits: name and logo on promotional materials (tickets, posters, digital assets, player jerseys); free admission for company representatives; social media feature across channels; logo displayed at event. $2,000 Jersey Sponsor: As our Jersey Sponsor, you cover the cost of the customized game jerseys, or supply them directly. Benefits: the only company logo on the front of both teams’ game jerseys; your logo in every game photo, highlight video and post-game post; a dedicated Instagram post revealing the jerseys before the game; logo on posters and the sponsor banner at the event.',
+  },
+  {
+    src: page5,
+    alt: 'McGill Classic Partnerships, February 2027. In Kind Prize Sponsor: In-kind sponsors donate prizes for the winning team, MVP and raffle winners, or food and drinks for players and fans. Benefits: social media feature across channels; logo displayed at event; shoutout after the game.',
+  },
+  {
+    src: page6,
+    alt: 'Past sponsors: Prince Arthur Orchard, Celsius, Enso Yoga, Chef On Call, Easy Mondays, Batiste, Café Campus, Red Bull, Shape and Poppi.',
+  },
+  {
+    src: page7,
+    alt: 'Contact. On behalf of the entire McGill Cures Cancer Executive Team, we thank you for your interest in our mission and invite you to play a significant role in the success of this year. We look forward to discussing the implementation of a mutually beneficial partnership that would maximize the value to your organization, as well as maximize our donation to the Canadian Cancer Society. Maahir Paliwal, Co-Chair, maahir.paliwal@mail.mcgill.ca. Esmé Chapman, Co-Chair, esme.korchinsky@mail.mcgill.ca. McGill Cures Cancer, mcgillcurescancer@ssmu.ca.',
   },
 ];
 ---
 
 <EventPage
   title="The McGill Classic"
-  description="The McGill Classic is McGill Cures Cancer's 3v3 hockey tournament, with food, drinks and music, and every dollar raised going to cancer research. Partnership tiers inside."
+  description="The McGill Classic is McGill Cures Cancer's 3v3 hockey tournament, with food, drinks and music, and every dollar raised going to cancer research. Partnership package inside."
   tagline="A 3v3 hockey tournament with food, drinks and music — and every dollar it raises goes to cancer research."
   photos={photos}
   logo="/assets/images/logos/mcgill-classic/mcgill-classic-logo.webp"
   expectedTurnout="800 viewers"
   fundraisingGoal="$25,000"
-  structure={[...structure]}
 >
   <Fragment slot="hero">
     <ul class="mt-5 flex flex-wrap gap-2 text-sm font-medium text-slate-600">
@@ -180,152 +142,49 @@ const tiers = [
     </ul>
   </div>
 
-  <!-- 3. What is MCC? — the package's second page, beside its cover photo. -->
-  <section class="section-shell">
-    <div class="section-card grid items-center gap-10 md:grid-cols-[2fr_3fr]">
-      <Image src={outdoorRink} alt="Pickup hockey on an outdoor rink in downtown Montreal"
-             widths={[400, 600, 900]} width={900}
-             sizes="(min-width: 1152px) 400px, (min-width: 768px) 36vw, 100vw"
-             class="aspect-square w-full rounded-2xl object-cover shadow-sm md:aspect-[4/5]" />
-      <div>
-        <h2 class="text-3xl font-bold tracking-tight text-slate-900">
-          What is <span class="hand-underline">MCC</span>?
-        </h2>
-        <p class="mt-5 text-lg text-slate-700">
-          McGill Cures Cancer (MCC) is a 100% student-run, non-profit organization
-          that brings together the McGill community through sporting events in an
-          effort to fundraise money towards cancer research. As the official
-          chapter of the Canadian Cancer Society’s Rivalry program, MCC engages
-          the community through fundraising initiatives and events that inspire
-          positive change and unite people around a common cause.
-        </p>
-        <p class="mt-4 text-lg text-slate-700">
-          MCC was founded in Fall 2025, driven by a shared commitment to making a
-          meaningful impact. Each with a personal story connected to cancer, our
-          executive team understands the impact cancer can have on the lives of
-          those affected, and are therefore personally motivated to make a big
-          impact.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-x-8 gap-y-2 border-t border-stone-200 pt-5 font-medium">
-          <a href={INSTAGRAM} rel="noopener" target="_blank" class="text-mcc-600 hover:underline">@mcgillcurescancer</a>
-          <a href={`mailto:${EMAIL}`} class="text-mcc-600 hover:underline">{EMAIL}</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <Doodle variant="triple" />
-
-  <!-- 4. Sponsor. The target for the hero's "Sponsor the Classic" button. The
-       package's "Why sponsor?", partnership and contact pages, in order. -->
+  <!-- 2. The partnership package, page by page — the target for the hero's
+       "Sponsor the Classic" button. Two pages to a row from `md` up, so it
+       reads like a printed spread; each one opens full size on its own. -->
   <section id="sponsor" class="section-shell scroll-mt-24 pb-16">
     <div class="section-card">
-      <div class="mx-auto max-w-3xl">
-        <h2 class="text-center text-3xl font-bold tracking-tight text-slate-900">
-          Why <span class="hand-underline">sponsor</span>?
+      <div class="text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+          Partnership <span class="hand-underline">package</span>
         </h2>
-        <p class="mt-6 text-lg text-slate-700">
-          McGill Cures Cancer is committed to building meaningful, mutually
-          beneficial partnerships with our sponsors. Your support helps maximize
-          our donation to the Canadian Cancer Society while enhancing the
-          experience for the students, athletes, and fans who make our events
-          possible.
-        </p>
-        <p class="mt-4 text-lg text-slate-700">
-          Our annual hockey tournament, the McGill Classic, offers sponsors
-          valuable brand exposure across the McGill and Montreal communities,
-          while creating opportunities to engage directly with talented students
-          from every faculty.
-        </p>
-        <p class="mt-4 text-lg text-slate-700">
-          In February 2027, McGill will host its second annual rivalry hockey
-          tournament. We invite you to join us in bringing the community together
-          through sport to support the more than 220,000 Canadians diagnosed with
-          cancer each year. Every partnership helps create a memorable event
-          while making a meaningful impact in the fight against cancer.
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+          Tap any page to open it full size.
         </p>
       </div>
 
-      <Image src={skatesAndPuck} alt="" widths={[600, 1000, 1500]} width={1500}
-             sizes="(min-width: 1152px) 992px, 100vw"
-             class="mt-12 h-44 w-full rounded-2xl object-cover object-[50%_30%] sm:h-64" />
-
-      <div class="mt-12 text-center">
-        <p class="font-hand text-2xl text-[#8a6008]">February 2027</p>
-        <h3 class="text-2xl font-bold tracking-tight text-slate-900">McGill Classic partnerships</h3>
-      </div>
-
-      <ul class="mt-8 grid gap-6 lg:grid-cols-3">
-        {tiers.map((tier) => (
-          <li class:list={['tier', tier.featured && 'tier-featured']} style={`--tier-band: ${tier.band}`}>
-            <h4 class="text-xl font-bold text-slate-900">{tier.name}</h4>
-            <p class="mt-1 text-3xl font-extrabold tracking-tight text-mcc-600">{tier.price}</p>
-            <p class="mt-4 text-slate-700">{tier.summary}</p>
-            {tier.quote && <p class="mt-2 font-semibold text-slate-800">{tier.quote}</p>}
-            {tier.note && <p class="mt-1 text-sm italic text-slate-500">{tier.note}</p>}
-            <p class="mt-5 border-t border-stone-200 pt-5 text-sm font-bold text-slate-900">Benefits:</p>
-            <ul class="mt-3 space-y-2.5">
-              {tier.benefits.map((benefit) => (
-                <li class="flex gap-3 text-sm text-slate-700">
-                  <svg viewBox="0 0 20 20" aria-hidden="true" class="mt-0.5 h-4 w-4 flex-none text-mcc-600">
-                    <path d="M4 10.5 8 14.5 16 5.5" fill="none" stroke="currentColor" stroke-width="2.2"
-                          stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                  {benefit}
-                </li>
-              ))}
-            </ul>
+      <ol class="mt-10 grid gap-6 md:grid-cols-2">
+        {packagePages.map((page, i) => (
+          /* An odd page out at the end sits centred under the last spread
+             rather than hanging off the left. */
+          <li class:list={[
+            i === packagePages.length - 1 && i % 2 === 0 && 'md:col-span-2 md:mx-auto md:w-[calc(50%-0.75rem)]',
+          ]}>
+            <a href={page.src.src} target="_blank" rel="noopener"
+               class="block overflow-hidden rounded-xl shadow-md ring-1 ring-stone-200 transition-shadow hover:shadow-lg focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-mcc-700">
+              <Image src={page.src} alt={page.alt}
+                     widths={[600, 900, 1200, 1545]} width={1545}
+                     sizes="(min-width: 1152px) 512px, (min-width: 768px) calc((100vw - 152px) / 2), calc(100vw - 80px)"
+                     class="h-auto w-full" />
+              <span class="sr-only">Page {i + 1} of {packagePages.length}, opens full size</span>
+            </a>
           </li>
         ))}
-      </ul>
+      </ol>
 
-      <!-- The package's contact page. -->
-      <div class="mx-auto mt-14 max-w-3xl rounded-2xl bg-stone-900 px-6 py-10 text-center text-white sm:px-10">
-        <p class="text-lg leading-relaxed text-white/90">
-          On behalf of the entire McGill Cures Cancer Executive Team, we thank you
-          for your interest in our mission and invite you to play a significant
-          role in the success of this year. We look forward to discussing the
-          implementation of a mutually beneficial partnership that would maximize
-          the value to your organization, as well as maximize our donation to the
-          Canadian Cancer Society.
-        </p>
-        <p class="mt-8 text-lg font-extrabold uppercase tracking-wide">McGill Cures Cancer</p>
-        <a href={sponsorMailto} class="mt-1 inline-block text-white/80 underline hover:text-white">{EMAIL}</a>
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <a href={sponsorMailto}
-             class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-mcc-500">
-            Email us about sponsoring
-          </a>
-          <a href={INSTAGRAM} rel="noopener" target="_blank"
-             class="rounded-lg border border-white/40 bg-white/10 px-5 py-3 text-sm font-semibold text-white hover:bg-white/20">
-            Message us on Instagram
-          </a>
-        </div>
+      <div class="mt-12 flex flex-wrap justify-center gap-3">
+        <a href={sponsorMailto}
+           class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-mcc-700">
+          Email us about sponsoring
+        </a>
+        <a href="https://www.instagram.com/mcgillcurescancer/" rel="noopener" target="_blank"
+           class="rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-stone-50">
+          Message us on Instagram
+        </a>
       </div>
-
-      <SponsorWall heading="Past sponsors" bare class="mt-16" />
     </div>
   </section>
 </EventPage>
-
-<style>
-  /* The tier cards: tinted tiles, like the figures in the first card, with the
-     package's tier colour as a band along the top. */
-  .tier {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid rgb(231 229 228);
-    border-top: 6px solid var(--tier-band);
-    border-radius: 1rem;
-    background: rgb(250 250 249 / 0.7);
-    padding: 1.5rem;
-  }
-
-  /* The title tier on the capstone card's warm paper and gold hairline. */
-  .tier-featured {
-    border-color: rgb(155 112 18 / 0.35);
-    border-top-color: var(--tier-band);
-    background: #fffdf6;
-    box-shadow: 0 18px 40px -30px rgb(120 82 10 / 0.5);
-  }
-</style>
