@@ -47,10 +47,12 @@ interface Props {
    * neither of which gets past ~250px.
    */
   sizes?: string;
+  /** `eager` for a frame that is on screen the moment the page opens. */
+  loading?: 'lazy' | 'eager';
 }
 const {
   src, alt, caption, href, tone = 'white', clip = false, tilt,
-  class: className, sizes = '(min-width: 640px) 250px, 50vw',
+  class: className, sizes = '(min-width: 640px) 250px, 50vw', loading = 'lazy',
 } = Astro.props;
 ---
 
@@ -79,7 +81,7 @@ const {
       widths={[200, 300, 400, 600]}
       width={600}
       sizes={sizes}
-      loading="lazy"
+      loading={loading}
       decoding="async"
       class="polaroid-photo"
     />

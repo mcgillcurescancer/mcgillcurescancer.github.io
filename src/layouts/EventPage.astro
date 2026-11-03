@@ -1,21 +1,33 @@
 ---
 /*
-  Shared shell for our two flagship events. Both pages need the same four
-  blocks — outline, expected turnout, structure, fundraising goal — so the
-  shape lives here and each page supplies only its own content.
+  Shared shell for our two flagship events. Both pages open the same way, so
+  the shape lives here and each page supplies only its own content:
+
+  1. The first card .... name, tagline, the page's own buttons and facts, the
+                         two figures a sponsor asks about, and a pile of three
+                         gold polaroids — then whatever the page puts in the
+                         `highlights` slot, on the same paper
+  2. Event structure ... how the day runs, as a row of illustrated steps
+  3. The default slot .. page-specific cards
 */
-import { Image } from 'astro:assets';
 import Layout from './Layout.astro';
 import Doodle from '../components/Doodle.astro';
+import Polaroid from '../components/Polaroid.astro';
+import Icon, { type IconName } from '../components/Icon.astro';
 
 interface Props {
   title: string;
   description: string;
   tagline: string;
-  heroImage: ImageMetadata;
+  /**
+   * Three photos of the event for the pile in the first card, each with the
+   * handwritten line under it. The first one is also the social-share image.
+   */
+  photos: { src: ImageMetadata; alt: string; caption: string }[];
   expectedTurnout: string;
   fundraisingGoal: string;
-  structure: string[];
+  /** The day in order. Keep `text` to a line or two — the icon carries the rest. */
+  structure: { title: string; text: string; icon: IconName }[];
   /**
    * The event's own mark, beside its name — a path under `public/`, cut out
    * to the drawing like the one on its capstone card. Left off, the heading
@@ -25,38 +37,79 @@ interface Props {
 }
 
 const {
-  title, description, tagline, heroImage,
+  title, description, tagline, photos,
   expectedTurnout, fundraisingGoal, structure, logo,
 } = Astro.props;
+
+/*
+  Scatter for the three frames. A frame is 1.165x as tall as it is wide, so at
+  55% of the box width it stands 0.64 widths tall, and the `aspect-[4/5]` box
+  is 1.25 widths. Each frame overlaps its neighbour only across the photo, so
+  every caption stays readable.
+*/
+const positions = [
+  'left-0 top-0 z-30 rotate-[-4deg]',
+  'right-0 top-[22%] z-20 rotate-[3deg]',
+  'left-[8%] bottom-0 z-10 rotate-[-2deg]',
+];
 ---
 
-<Layout title={`${title} | McGill Cures Cancer`} description={description} image={heroImage}>
+<Layout title={`${title} | McGill Cures Cancer`} description={description}
+        {...(photos[0] && { image: photos[0].src })}>
   <section class="section-shell pt-10">
     <div class="section-card">
-      {/* No marker swipe on this one: the event titles are long enough to
-          wrap, and the swipe is sized for a phrase that stays on one line. */}
-      <div class="flex items-center gap-4">
-        {/* `alt=""`: the heading beside it already says the name. */}
-        {logo && (
-          <img src={logo} alt="" width="334" height="256"
-               class="h-16 w-auto flex-none sm:h-20" loading="eager" decoding="async" />
-        )}
-        <h1 class="min-w-0 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
+      <div class="grid items-center gap-12 md:grid-cols-[1.15fr_1fr]">
+        <div>
+          <div class="flex items-center gap-4">
+            {/* `alt=""`: the heading beside it already says the name. */}
+            {logo && (
+              <img src={logo} alt="" width="334" height="256"
+                   class="h-16 w-auto flex-none sm:h-20" loading="eager" decoding="async" />
+            )}
+            {/* No marker swipe on this one: the event titles are long enough
+                to wrap, and the swipe is sized for a phrase that stays on one
+                line. */}
+            <h1 class="min-w-0 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
+          </div>
+          <p class="mt-4 max-w-xl text-lg text-slate-600">{tagline}</p>
+
+          {/* The page's own buttons and key facts. */}
+          <slot name="hero" />
+
+          {/* Tinted, so the two figures read as tiles on the white card. The
+              coloured left edge is the only thing telling the pair apart at a
+              glance. */}
+          <dl class="mt-8 grid grid-cols-2 gap-4">
+            <div class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-yellow bg-stone-50/70 p-4 sm:p-5">
+              <dt class="text-sm font-medium text-slate-500">Expected turnout</dt>
+              <dd class="mt-1 text-lg font-bold text-slate-900 sm:text-2xl">{expectedTurnout}</dd>
+            </div>
+            <div class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-red bg-stone-50/70 p-4 sm:p-5">
+              <dt class="text-sm font-medium text-slate-500">Fundraising goal</dt>
+              <dd class="mt-1 text-lg font-bold text-mcc-600 sm:text-2xl">{fundraisingGoal}</dd>
+            </div>
+          </dl>
+        </div>
+
+        {/* On screen as the page opens, so the frames load eagerly. Only the
+            first carries alt text; the other two are more of the same day. */}
+        <div class="relative mx-auto aspect-[4/5] w-full max-w-md">
+          {photos.slice(0, 3).map((photo, i) => (
+            <Polaroid
+              src={photo.src}
+              alt={i === 0 ? photo.alt : ''}
+              caption={photo.caption}
+              tone="gold"
+              loading="eager"
+              sizes="(min-width: 768px) 230px, 50vw"
+              class:list={['absolute w-[55%]', positions[i]]}
+            />
+          ))}
+        </div>
       </div>
-      <p class="mt-4 max-w-2xl text-lg text-slate-600">{tagline}</p>
-      {/* The first screen's next step — the page supplies its own buttons and
-          key facts here, between the tagline and the photo. */}
-      <slot name="hero" />
-      {/* This is the page's LCP, so it loads eagerly rather than lazily. The
-          card caps out at 1088px, so there is nothing to gain above 1200 —
-          `width` pins the fallback `src` there too, which otherwise renders at
-          the source photo's full intrinsic size. */}
-      <Image src={heroImage} alt={title}
-             widths={[600, 900, 1200]}
-             width={1200}
-             sizes="(min-width: 1152px) 1088px, 100vw"
-             loading="eager" fetchpriority="high" decoding="async"
-             class="mt-10 h-80 w-full rounded-2xl object-cover shadow-sm" />
+
+      {/* Page-specific detail that belongs on the same paper as the intro. */}
+      <slot name="highlights" />
     </div>
   </section>
 
@@ -66,44 +119,63 @@ const {
 
   <section class="section-shell">
     <div class="section-card">
-      <dl class="grid gap-6 sm:grid-cols-2">
-        {/* Tinted, so the two figures still read as tiles now that the card
-            behind them is white. The coloured left edge is the only thing
-            telling the pair apart at a glance. */}
-        <div class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-yellow bg-stone-50/70 p-6">
-          <dt class="text-sm font-medium text-slate-500">Expected turnout</dt>
-          <dd class="mt-1 text-2xl font-bold text-slate-900">{expectedTurnout}</dd>
-        </div>
-        <div class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-red bg-stone-50/70 p-6">
-          <dt class="text-sm font-medium text-slate-500">Fundraising goal</dt>
-          <dd class="mt-1 text-2xl font-bold text-mcc-600">{fundraisingGoal}</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <Doodle variant="loop" />
-
-  <section class="section-shell">
-    <div class="section-card">
       <h2 class="text-2xl font-bold tracking-tight text-slate-900">
         <span class="hand-underline">Event structure</span>
       </h2>
-      <ol class="mt-6 space-y-3">
-        {structure.map((item, i) => (
-          <li class="flex gap-4">
-            <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mcc-100 text-sm font-bold text-mcc-700">
-              {i + 1}
-            </span>
-            <p class="text-slate-700">{item}</p>
+      {/* One step per column from `lg` up, joined by a dashed pen line; a
+          single column below that, with the line running down the left. */}
+      <ol class="steps mt-10 grid gap-8 lg:grid-cols-5 lg:gap-6">
+        {structure.map((step, i) => (
+          <li class="step relative flex gap-5 lg:flex-col lg:items-center lg:gap-4 lg:text-center">
+            <div class:list={[
+              'relative flex h-16 w-16 flex-none items-center justify-center rounded-full ring-1',
+              i % 2 ? 'bg-amber-50 text-amber-700 ring-amber-200' : 'bg-mcc-50 text-mcc-700 ring-mcc-100',
+            ]}>
+              <Icon name={step.icon} class="h-7 w-7" />
+              <span class="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-bold text-slate-700 shadow-sm ring-1 ring-stone-200">
+                {i + 1}
+              </span>
+            </div>
+            <div class="pt-2 lg:pt-0">
+              <h3 class="font-bold text-slate-900">{step.title}</h3>
+              <p class="mt-1 text-sm text-slate-600">{step.text}</p>
+            </div>
           </li>
         ))}
       </ol>
     </div>
   </section>
 
-  <Doodle variant="triple" />
+  <Doodle variant="loop" />
 
-  <!-- Page-specific detail goes here — each page supplies its own card. -->
+  <!-- Page-specific detail goes here — each page supplies its own cards. -->
   <slot />
 </Layout>
+
+<style>
+  /*
+    The pen line joining one step to the next: down the left edge, from under
+    one icon to the top of the next, on a phone; across, from the right of one
+    icon to the left of the next, once the steps sit in a row. The offsets
+    follow the 4rem icon and the grid gaps above (2rem, then 1.5rem).
+  */
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 2rem;
+    top: 4.5rem;
+    bottom: -1.5rem;
+    border-left: 2px dashed rgb(201 32 58 / 0.35);
+  }
+
+  @media (min-width: 1024px) {
+    .step:not(:last-child)::after {
+      left: calc(50% + 2.75rem);
+      top: 2rem;
+      bottom: auto;
+      width: calc(100% + 1.5rem - 5.5rem);
+      border-left: 0;
+      border-top: 2px dashed rgb(201 32 58 / 0.35);
+    }
+  }
+</style>
