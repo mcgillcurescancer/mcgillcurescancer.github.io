@@ -16,11 +16,17 @@ interface Props {
   expectedTurnout: string;
   fundraisingGoal: string;
   structure: string[];
+  /**
+   * The event's own mark, beside its name — a path under `public/`, cut out
+   * to the drawing like the one on its capstone card. Left off, the heading
+   * stands on its own.
+   */
+  logo?: string;
 }
 
 const {
   title, description, tagline, heroImage,
-  expectedTurnout, fundraisingGoal, structure,
+  expectedTurnout, fundraisingGoal, structure, logo,
 } = Astro.props;
 ---
 
@@ -29,8 +35,18 @@ const {
     <div class="section-card">
       {/* No marker swipe on this one: the event titles are long enough to
           wrap, and the swipe is sized for a phrase that stays on one line. */}
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
+      <div class="flex items-center gap-4">
+        {/* `alt=""`: the heading beside it already says the name. */}
+        {logo && (
+          <img src={logo} alt="" width="334" height="256"
+               class="h-16 w-auto flex-none sm:h-20" loading="eager" decoding="async" />
+        )}
+        <h1 class="min-w-0 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
+      </div>
       <p class="mt-4 max-w-2xl text-lg text-slate-600">{tagline}</p>
+      {/* The first screen's next step — the page supplies its own buttons and
+          key facts here, between the tagline and the photo. */}
+      <slot name="hero" />
       {/* This is the page's LCP, so it loads eagerly rather than lazily. The
           card caps out at 1088px, so there is nothing to gain above 1200 —
           `width` pins the fallback `src` there too, which otherwise renders at

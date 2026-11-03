@@ -1,23 +1,292 @@
 ---
 /*
-  Placeholder. The write-up for this event was pulled until the real details
-  are settled, but the event's card on the events page now links straight here,
-  so this page is what a reader lands on when they follow it. When the content
-  lands, rebuild it on EventPage.astro.
+  The McGill Classic, read top to bottom:
+
+  1. Hero ............. name, one line on what it is, when, and the way in for
+                        a sponsor (EventPage.astro)
+  2. Figures .......... expected turnout and fundraising goal (EventPage)
+  3. Structure ........ how the day runs, in order (EventPage)
+  4. What's on ........ hockey, food and drinks, music — beside two polaroids
+  5. Where it goes .... every dollar to cancer research, through the CCS
+  6. Sponsor (#sponsor) the partnership package: the three tiers, how to get
+                        in touch, and the sponsors who have backed us before
+
+  The tiers are copied from the McGill Classic partnership package (Canva,
+  February 2027 edition). Keep them in step with it — a sponsor will often have
+  both open at once.
 */
-import Layout from '../../layouts/Layout.astro';
+import EventPage from '../../layouts/EventPage.astro';
+import Polaroid from '../../components/Polaroid.astro';
+import SponsorWall from '../../components/SponsorWall.astro';
+import Doodle from '../../components/Doodle.astro';
+
+import onTheIce from '../../assets/images/events/mcgill-classic/mcgill-classic-3.webp';
+import lacingUp from '../../assets/images/events/mcgill-classic/mcgill-classic-1.webp';
+import theCrowd from '../../assets/images/events/mcgill-classic/mcgill-classic-2.webp';
+
+const EMAIL = 'mcgillcurescancer@ssmu.ca';
+const sponsorMailto = `mailto:${EMAIL}?subject=${encodeURIComponent('Sponsoring the McGill Classic')}`;
+
+/*
+  TODO: the format below is the shape of the day as we describe it to
+  sponsors — confirm it against the real schedule once the venue and date are
+  booked, and add the venue to `facts` at the same time.
+*/
+const structure = [
+  'Teams of three sign up and are drawn into the tournament bracket.',
+  'Fast 3v3 games run back to back on the ice, playing down to a final.',
+  'Off the ice, food, drinks and music keep players and the crowd going all day.',
+  'Prizes go to the winning team and the tournament MVP, with a raffle for the fans.',
+  'Every dollar raised is donated to cancer research through the Canadian Cancer Society.',
+];
+
+/* The key facts under the tagline. Plain text, so they hold their meaning
+   without the dots between them. */
+const facts = ['February 2027', 'Venue to be announced', '3v3 hockey', 'Food, drinks & music'];
+
+/*
+  The three ways in, as on the package. `featured` gives the title tier the
+  gold paper the capstone cards use — the same signal for "the headline one"
+  that the rest of the site already teaches.
+*/
+const tiers = [
+  {
+    name: 'Title Sponsor',
+    price: '$5,000',
+    note: 'Contribution open to discussion',
+    summary: 'Your name on the event itself: “The McGill Classic presented by [your company]”, recognised across every promotional platform.',
+    perks: [
+      'Name and logo on promotional materials — tickets, posters, digital assets and player jerseys',
+      'Free admission for company representatives',
+      'Social media feature across our channels',
+      'Logo displayed at the event',
+    ],
+    featured: true,
+  },
+  {
+    name: 'Jersey Sponsor',
+    price: '$2,000',
+    summary: 'Cover the cost of the customised game jerseys, or supply them directly.',
+    perks: [
+      'The only company logo on the front of the game jerseys',
+      'Your logo in every game photo, highlight video and post-game post',
+      'A dedicated Instagram post revealing the jerseys before the tournament',
+      'Logo on posters and the sponsor banner at the event',
+    ],
+  },
+  {
+    name: 'In-Kind Prize Sponsor',
+    price: 'In kind',
+    summary: 'Donate prizes for the winning team, the MVP and raffle winners — or food and drinks for players and fans.',
+    perks: [
+      'Social media feature across our channels',
+      'Logo displayed at the event',
+      'A shout-out after the final',
+    ],
+  },
+];
 ---
 
-<Layout
-  title="The McGill Classic | McGill Cures Cancer"
-  description="The McGill Classic — McGill Cures Cancer's flagship tournament raising money for the Canadian Cancer Society."
+<EventPage
+  title="The McGill Classic"
+  description="The McGill Classic is McGill Cures Cancer's 3v3 hockey tournament, with food, drinks and music, and every dollar raised going to cancer research. Sponsorship tiers inside."
+  tagline="A 3v3 hockey tournament with food, drinks and music — and every dollar it raises goes to cancer research."
+  heroImage={onTheIce}
+  logo="/assets/images/logos/mcgill-classic/mcgill-classic-logo.webp"
+  expectedTurnout="800 viewers"
+  fundraisingGoal="$25,000"
+  structure={structure}
 >
-  <section class="section-shell pt-10 pb-16">
-    <div class="section-card text-center">
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-        The McGill Classic
-      </h1>
-      <p class="mt-4 text-lg text-slate-600">Details coming soon.</p>
+  <Fragment slot="hero">
+    <ul class="mt-5 flex flex-wrap gap-x-3 gap-y-1 text-sm font-medium text-slate-500">
+      {facts.map((fact, i) => (
+        <li class="flex items-center gap-3">
+          {i > 0 && <span aria-hidden="true" class="text-slate-300">•</span>}
+          {fact}
+        </li>
+      ))}
+    </ul>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="#sponsor"
+         class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-mcc-700">
+        Sponsor the Classic
+      </a>
+      <a href={`mailto:${EMAIL}`}
+         class="rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-stone-50">
+        Email the team
+      </a>
+    </div>
+  </Fragment>
+
+  <!-- 4. What's on. The three things the day is made of, as tinted tiles in the
+       same idiom as the figures above, beside two of the Classic's own photos. -->
+  <section class="section-shell">
+    <div class="section-card grid items-center gap-10 md:grid-cols-[3fr_2fr]">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+          More than a <span class="hand-underline">hockey game</span>
+        </h2>
+        <p class="mt-4 text-lg text-slate-600">
+          The Classic is a day out for the whole campus, whether you are on a
+          team or cheering from the boards.
+        </p>
+        <ul class="mt-8 space-y-4">
+          <li class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-red bg-stone-50/70 p-5">
+            <h3 class="font-bold text-slate-900">On the ice</h3>
+            <p class="mt-1 text-slate-600">
+              Three-on-three hockey: open ice, quick shifts and plenty of goals,
+              with teams from every corner of McGill.
+            </p>
+          </li>
+          <li class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-yellow bg-stone-50/70 p-5">
+            <h3 class="font-bold text-slate-900">Food and drinks</h3>
+            <p class="mt-1 text-slate-600">
+              Something warm to eat and drink rinkside, for players between games
+              and fans in the stands.
+            </p>
+          </li>
+          <li class="rounded-2xl border border-stone-200 border-l-4 border-l-doodle-ink bg-stone-50/70 p-5">
+            <h3 class="font-bold text-slate-900">Music</h3>
+            <p class="mt-1 text-slate-600">
+              Music playing all day, from the first puck drop to the final.
+            </p>
+          </li>
+        </ul>
+      </div>
+
+      {/* Two gold frames, the capstone's colour, lightly overlapping. Purely
+          illustrative, so only the first carries alt text. */}
+      <div class="relative mx-auto aspect-[3/4] w-full max-w-sm">
+        <Polaroid src={lacingUp} alt="Players lacing up their skates rinkside at the McGill Classic"
+                  caption="Lacing up" tone="gold"
+                  sizes="(min-width: 768px) 230px, 60vw"
+                  class="absolute left-0 top-0 z-10 w-[58%] rotate-[-4deg]" />
+        <Polaroid src={theCrowd} alt="" caption="The crowd" tone="gold"
+                  sizes="(min-width: 768px) 230px, 60vw"
+                  class="absolute bottom-0 right-0 z-20 w-[58%] rotate-[3deg]" />
+      </div>
     </div>
   </section>
-</Layout>
+
+  <Doodle variant="wave" />
+
+  <!-- 5. Where the money goes. Set out the way the landing page's "Who we are"
+       is — the CCS daffodil beside the copy — because it is the same promise. -->
+  <section class="section-shell">
+    <div class="section-card flex flex-col items-center gap-8 md:flex-row md:gap-12">
+      <img src="/assets/images/logos/ccs/ccs-flower.svg" alt="Canadian Cancer Society"
+           loading="lazy" width="192" height="192"
+           class="h-28 w-28 shrink-0 md:h-40 md:w-40" />
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+          Every dollar goes to <span class="hand-underline">cancer research</span>
+        </h2>
+        <p class="mt-4 text-lg text-slate-700">
+          All of the money the Classic generates is donated to the
+          <strong>Canadian Cancer Society</strong>. McGill Cures Cancer is a
+          100% student-run, non-profit club and the official McGill chapter of
+          the CCS's Rivalry program.
+        </p>
+        <p class="mt-4 text-lg text-slate-700">
+          More than 220,000 Canadians are diagnosed with cancer every year. The
+          Classic is how we bring campus together to do something about it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Doodle variant="loop" />
+
+  <!-- 6. Sponsor. The target for the hero's "Sponsor the Classic" button. -->
+  <section id="sponsor" class="section-shell scroll-mt-24 pb-16">
+    <div class="section-card">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+          Sponsor <span class="hand-underline">the Classic</span>
+        </h2>
+        <p class="mt-4 text-lg text-slate-600">
+          The Classic puts your brand in front of the McGill and Montreal
+          communities, and face to face with students from every faculty. Your
+          support grows our donation to the Canadian Cancer Society and makes the
+          day better for the players and fans who show up for it.
+        </p>
+      </div>
+
+      <ul class="mt-12 grid gap-6 lg:grid-cols-3">
+        {tiers.map((tier) => (
+          <li class:list={['tier', tier.featured && 'tier-featured']}>
+            {tier.featured && <p class="tier-eyebrow">Headline partner</p>}
+            <h3 class="text-xl font-bold text-slate-900">{tier.name}</h3>
+            <p class="mt-2 text-3xl font-extrabold tracking-tight text-mcc-600">{tier.price}</p>
+            {tier.note && <p class="mt-1 text-sm italic text-slate-500">{tier.note}</p>}
+            <p class="mt-4 text-slate-700">{tier.summary}</p>
+            <ul class="mt-5 space-y-2.5 border-t border-stone-200 pt-5">
+              {tier.perks.map((perk) => (
+                <li class="flex gap-3 text-sm text-slate-700">
+                  <svg viewBox="0 0 20 20" aria-hidden="true" class="mt-0.5 h-4 w-4 flex-none text-mcc-600">
+                    <path d="M4 10.5 8 14.5 16 5.5" fill="none" stroke="currentColor" stroke-width="2.2"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  {perk}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-12 text-center">
+        <p class="text-slate-600">
+          Every partnership is shaped together — get in touch and we will build one
+          that works for you.
+        </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <a href={sponsorMailto}
+             class="rounded-lg bg-mcc-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-mcc-700">
+            Email us about sponsoring
+          </a>
+          <a href="https://www.instagram.com/mcgillcurescancer/" rel="noopener" target="_blank"
+             class="rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-stone-50">
+            Message us on Instagram
+          </a>
+        </div>
+        <p class="mt-4 text-sm text-slate-500">
+          Or write to <a href={sponsorMailto} class="font-medium text-mcc-600 underline">{EMAIL}</a>
+        </p>
+      </div>
+
+      <SponsorWall heading="Sponsors who have backed our events" bare class="mt-16" />
+    </div>
+  </section>
+</EventPage>
+
+<style>
+  /* The tier cards: tinted tiles, like the figures at the top of the page. */
+  .tier {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(231 229 228);
+    border-radius: 1rem;
+    background: rgb(250 250 249 / 0.7);
+    padding: 1.5rem;
+  }
+
+  /* The title tier on the capstone card's warm paper and gold hairline. */
+  .tier-featured {
+    border-color: rgb(155 112 18 / 0.35);
+    background: #fffdf6;
+    box-shadow: 0 18px 40px -30px rgb(120 82 10 / 0.5);
+  }
+
+  /* Handwritten, in the capstone eyebrow's gold — a note in the margin rather
+     than a badge. */
+  .tier-eyebrow {
+    margin-bottom: 0.35rem;
+    font-family: var(--font-hand);
+    font-size: 1.3rem;
+    line-height: 1;
+    color: #8a6008;
+    transform: rotate(-1.5deg);
+    transform-origin: left center;
+  }
+</style>
